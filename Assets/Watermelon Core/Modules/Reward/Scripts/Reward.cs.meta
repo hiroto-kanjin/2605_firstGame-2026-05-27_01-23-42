@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 646547f29d8eb1c40ac86bcee1893eb2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Watermelon Core/Modules/Reward/Scripts/Reward.cs
+  uploadId: 868576

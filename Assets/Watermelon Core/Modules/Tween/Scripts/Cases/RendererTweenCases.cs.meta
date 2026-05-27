@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: cb0c96866e4b0ea4ca6d0de575ef7fb1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Watermelon Core/Modules/Tween/Scripts/Cases/RendererTweenCases.cs
+  uploadId: 868576

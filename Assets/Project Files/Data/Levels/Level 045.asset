@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
+  m_Name: Level 045
+  m_EditorClassIdentifier: 
+  note: Corners + x4 BounceZone + x5 Ice(1hp)
+  bubblesOnTheFieldAmount: 7
+  turnsLimit: 44
+  coinsReward: 20
+  requirements:
+    recipe:
+      ResultPreview: {fileID: 21300000, guid: 5de491c524210aa47b73b56347ab60da, type: 3}
+      Ingridients:
+      - branch: 5
+        stageId: 2
+        amount: 3
+      - branch: 3
+        stageId: 2
+        amount: 4
+      - branch: 9
+        stageId: 2
+        amount: 3
+    iceBubblesPerLevel: 5
+    iceBubblesHealth: 1
+    boxesPerLevel: 0
+    boxesHealth: 0
+    bombsData: []
+  canBeUsedInRandomizer: 1
+  items:
+  - type: 0
+    position: {x: 0.72, y: -3.88, z: 0}
+    rotation: {x: -0, y: -0, z: 119.99977}
+    scale: {x: 0.21208, y: 1.5457332, z: 1}
+  - type: 0
+    position: {x: -0.6619989, y: 4.06, z: 0}
+    rotation: {x: -0, y: 0, z: 300.00012}
+    scale: {x: 0.21208, y: 1.5457332, z: 1}
+  - type: 0
+    position: {x: -0.662, y: -3.88, z: 0}
+    rotation: {x: -0, y: -0, z: 59.999878}
+    scale: {x: 0.21208, y: 1.5457332, z: 1}
+  - type: 0
+    position: {x: 0.7200018, y: 4.06, z: 0}
+    rotation: {x: 0, y: 0, z: 240.00023}
+    scale: {x: 0.21208, y: 1.5457332, z: 1}
+  levelShapeType: 7
+  levelBackType: 0

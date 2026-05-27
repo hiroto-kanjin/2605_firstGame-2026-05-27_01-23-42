@@ -1,0 +1,5 @@
+Watermelon Games does not own the rights to this music. It was made by Steve Oxen and distributed on https://www.FesliyanStudios.com
+
+Song was added to the project only to demonstrate how the audio controller works and to give customers the ability to use their own music without writing any code.
+
+If you want to use this song in your commercial project, you need to purchase a license from an author.

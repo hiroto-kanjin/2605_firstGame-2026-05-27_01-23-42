@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e43ef6edb4b349341a9bb33b94820bb4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 6200000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Physics Materials/Bubble Physics Material
+    2D.physicsMaterial2D
+  uploadId: 868576

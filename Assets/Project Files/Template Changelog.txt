@@ -1,0 +1,92 @@
+v1.2.1
+General: Improved support of Unity 6
+Tools: Fixed Dev panel
+
+v1.2.0
+UI: Added IPausePopup class and pause logic to UIController. Now game automatically pauses when a popup with interface is opened.
+UI: Reworked UIController architecture and introduced the CachedPages class for managing page loading from prefabs. This optimization improves performance by dynamically loading and unloading canvases, reducing memory and CPU overhead.
+Monetization: Reworked restore purchases logic to IAPManager. Now purchase callback has an extra parameter that indicates if the purchase was restored.
+Monetization: Added AppLovin ads provider.
+Monetization: Removed ATT and UMP from the Monetization module. Now they are part of the Initializer system.
+Monetization: Added Remote Config fields to control ad frequency.
+Monetization: Reworked disable logic for banners and interstitials. Now it is possible to disable them only for certain periods of time.
+Monetization: Added IAPFirstPurchase and AdFreePeriodExpired events to analytics module.
+Monetization: Added support for IAP package v5.
+Monetization: Implemented a Reward system for all IAP products to ensure rewards are granted consistently from any part of the game.
+Monetization: Added LevelPlay 9.1.0 support
+Monetization: Removed support for Unity Ads Legacy
+Monetization: Added AdMob 10.6.0 support
+Analytics: Added analytics placeholder. Currently in beta.
+Analytics: Added support for in-app purchase, advertisement, and currency tracking events.
+Initializer: Reworked initialization logic. Added SDKInitializer to manage initialization of all SDKs.
+Initializer: Added ATT and UMP initialization to the Initializer system.
+Initializer: Added RemoteConfig system placeholder. Currently in beta.
+Initializer: Reworked the auto-loading process for non-Init scenes. The system now loads the Init scene first, then the currently open scene, instead of spawning the prefab directly. This adjustment guarantees correct Remote Config operation.
+Currency: Added Remote Config field to control default count. 
+Currency: Added overloads for HasAmount, Set, Add, and Subtract methods in CurrencyController that accept a CurrencyAmount parameter.
+Haptic: Adjusted intensity of default presets.
+Haptic: Fixed a bug where the haptics stopped working after the app lost focus on iOS.
+Reward: Completely reworked module structure. Each reward now consists of a Reward and a RewardView class.
+Audio: Added constructors to the AudioClipHandler class.
+Utils & Extensions: Introduced the VerboseLogging class, which allows toggling of DEBUG_LOGS. Enabling this define provides detailed logging from Core modules.
+
+v1.1.4
+Template: Added no-ads pop up
+
+v1.1.3
+Template: Fixed bug with skin picker
+Template: Level Editor update
+Template: Support of both Unity 2022.3 and Unity 6
+
+v1.1.2
+Template: Fixed bug with lives system
+Template: Main Lives System script renamed LivesManager -> LivesSystem
+
+v1.1.1
+Template: IAP Store folder renamed to UI Store
+Template: Fixed a bug with the Level Editor that occurs on 4K screens
+Core: Updated to v2.7.3
+
+v1.1.0
+Template: Added Unity 6 support
+Template: Added support for the fast launch feature (enter play mode without recompiling)
+Core: New project structure (Watermelon Core folder moved to root folder)
+Defines: Fixed an issue with defines recalculation during the first import
+Defines: Reworked the define disable check. Instead of checking the file path, the system now verifies if the script type exists
+Core: Fixed Promotion window image size on 4k displays
+Core: Added the StaticUnloader script. It allows unloading static variables to support fast game launches (Editor only)
+Tween: Reworked the Tween script structure
+Tween: Added static unload functionality for Tween
+Tween: Reworked NextFrame tween logic
+Save: Removed unused variable
+Core: The script names have been changed to use singular instead of plural (e.g., CurrenciesController is now CurrencyController)
+Currency: Reworked CurrencyController.GetCurrency method (editor only)
+Monetization: A full-screen loading message has been added before displaying interstitial and rewarded video ads
+
+v1.0.6
+Raycast improved
+Level Editor improved
+Core updated
+
+v1.0.5
+IAP store images fixes
+PU enum fixes
+
+v1.0.4
+Core update
+
+v1.0.3
+Minor bugfixes
+All coin icons in UI linked to the currency system
+
+v1.0.2
+Particle effects reworked
+Watermelon Core update
+
+v1.0.1
+Fixed iOS vibration bug
+Reworked PU system's structure
+Watermelon Core update
+
+v1.0.0
+Release

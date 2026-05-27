@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a74ae8446e9ab024fac07e62018e7f77
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 6200000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Physics Materials/Crate Physics Material 2D.physicsMaterial2D
+  uploadId: 868576

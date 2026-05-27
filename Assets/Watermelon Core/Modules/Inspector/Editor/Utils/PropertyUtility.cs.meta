@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2c9af68325b7f714b8c093958cfaac9d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Watermelon Core/Modules/Inspector/Editor/Utils/PropertyUtility.cs
+  uploadId: 868576

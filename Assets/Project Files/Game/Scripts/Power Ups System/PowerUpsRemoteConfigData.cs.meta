@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9ee105a2bb188d0458b9c6d50037a1d8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Scripts/Power Ups System/PowerUpsRemoteConfigData.cs
+  uploadId: 868576

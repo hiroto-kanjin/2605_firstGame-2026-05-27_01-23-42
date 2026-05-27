@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a62fdf0937cf714d92ee43548954c48, type: 3}
+  m_Name: Coins Preview Settings
+  m_EditorClassIdentifier: 
+  previewSprite: {fileID: 21300000, guid: 4face3fb1471f5d42b2e17d82af3b774, type: 3}
+  overrides:
+  - maxAmount: 5001
+    sprite: {fileID: 21300000, guid: 4face3fb1471f5d42b2e17d82af3b774, type: 3}
+  - maxAmount: 25001
+    sprite: {fileID: 21300000, guid: d50a0bcf9f5b4034f8531bb6ffc41799, type: 3}
+  - maxAmount: 50001
+    sprite: {fileID: 21300000, guid: 8453a3416047bb447add08ac5ce7be02, type: 3}

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9d1d81f2c31823f4abfb67bbb1944dd3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Scripts/PoissonDiscSampler.cs
+  uploadId: 868576

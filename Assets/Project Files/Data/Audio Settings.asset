@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8634c5cf5896bb84ca6474552cf85648, type: 3}
+  m_Name: Audio Settings
+  m_EditorClassIdentifier: 
+  loseSound: {fileID: 8300000, guid: a95a49e8527c2ab44a18abf1ab9bfdb7, type: 3}
+  winSound: {fileID: 8300000, guid: 24f607de2338e9a4696578f938d4731a, type: 3}
+  launchBubbleSound: {fileID: 8300000, guid: aa26c6513b45eac42bbe71fb0339b2b8, type: 3}
+  bubbleHitSound: {fileID: 8300000, guid: c510f91cf69f22b4eb6a15d40133d065, type: 3}
+  bubbleMergeSound: {fileID: 8300000, guid: 8a9e1079f5aa7274c8ef3dcaf0ac4543, type: 3}
+  bubblePopSound: {fileID: 8300000, guid: 8b078c5dbe3deac4384465d112d30b3a, type: 3}
+  requirementMetSound: {fileID: 8300000, guid: b9f439b8c06a5f240ac5bf13be9ce3e3,
+    type: 3}
+  iceCrackSound: {fileID: 8300000, guid: 1418ac60acc335d459216b7607475cad, type: 3}
+  crateCrackSound: {fileID: 8300000, guid: e9dee8c06a076c843a21d444a66bb7d2, type: 3}
+  cageEatSound: {fileID: 8300000, guid: e4012b5321b162c40994ceb10bc07f28, type: 3}
+  cageHitSound: {fileID: 8300000, guid: 675ab5a208c629f4d8c239daaebff660, type: 3}
+  cageVomitSound: {fileID: 8300000, guid: 193f0f93779fb2446a8f4ee1b7c2cea1, type: 3}
+  freezingSound: {fileID: 8300000, guid: e809a67062dc794418fb3dfc7bf74083, type: 3}
+  bombExplosionSound: {fileID: 8300000, guid: ad996c648c26957478b4a817860ebd2b,
+    type: 3}
+  bombWickSound: {fileID: 8300000, guid: 5d8074c591a15a147916f617beab6ba5, type: 3}
+  bouncePlatformSound: {fileID: 8300000, guid: 81bdf5cd8398b8d4985760d5a61bc528,
+    type: 3}
+  powerupSound: {fileID: 8300000, guid: 2cb21823d19bd8c4194ff32229765495, type: 3}
+  buttonSound: {fileID: 8300000, guid: 43778771ca132fe44baa768ab4be8bc2, type: 3}

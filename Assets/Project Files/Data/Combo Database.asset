@@ -1,0 +1,187 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ab1eaa1e44d0564880ff57c03aa5edb, type: 3}
+  m_Name: Combo Database
+  m_EditorClassIdentifier: 
+  comboBreakDuration: 3
+  stages:
+  - counter: 0
+    bubblesAmount: 0
+    type: 0
+  - counter: 1
+    bubblesAmount: 0
+    type: 0
+  - counter: 2
+    bubblesAmount: 2
+    type: 0
+  - counter: 3
+    bubblesAmount: 3
+    type: 0
+  - counter: 4
+    bubblesAmount: 1
+    type: 0
+  - counter: 5
+    bubblesAmount: 2
+    type: 0
+  - counter: 6
+    bubblesAmount: 3
+    type: 0
+  - counter: 7
+    bubblesAmount: 1
+    type: 0
+  - counter: 8
+    bubblesAmount: 2
+    type: 0
+  - counter: 9
+    bubblesAmount: 3
+    type: 0
+  - counter: 10
+    bubblesAmount: 4
+    type: 0
+  comboTextPrefab: {fileID: 2574143663799062551, guid: b33e0d150a536364ebd2d5797735adb2,
+    type: 3}
+  startCounter: 2
+  comboTextOffset: {x: 0.5, y: 0.5, z: -1}
+  comboText: Combo X{0}!
+  showDuration: 0.1
+  showEasing: 0
+  hideDuration: 0.1
+  hideEasing: 0
+  comboTextDuration: 1
+  shouldHideOnNext: 1
+  scaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2
+      value: 0.1
+      inSlope: 0.0023179527
+      outSlope: 0.0023179527
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 3.0141466
+      value: 0.10470149
+      inSlope: 0.0035217004
+      outSlope: 0.0035217004
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 5
+      value: 0.10948242
+      inSlope: 0.002263263
+      outSlope: 0.002263263
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 9.995361
+      value: 0.120067745
+      inSlope: 0.0021190306
+      outSlope: 0.0021190306
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  explosionSettings:
+    explosionPrefab: {fileID: 9148241134731414830, guid: ef933ac0367578b4ca3a0fa180031047,
+      type: 3}
+    explosionOffset: {x: 0, y: 0, z: -1}
+    explosionForce: 10
+    explosionRadius: 3
+    explosionInitialDelay: 0.1
+    explosionDuration: 1
+    explosionDistForceCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -0.6992146
+        outSlope: -0.6992146
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.9999323
+      - serializedVersion: 3
+        time: 1
+        value: 0.3
+        inSlope: -0.7010431
+        outSlope: -0.7010431
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 1
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    explosionDistDelayCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0.5
+        inSlope: 0.81138444
+        outSlope: 0.81138444
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.020119488
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  jokerSettings:
+    initialParticlePrefab: {fileID: 0}
+    initialParticleOffset: {x: 0, y: 0, z: 0}
+    projectilePrefab: {fileID: 0}
+    projectileSpeed: 0
+    projectileStartDelay: 0
+    hitParticlePrefab: {fileID: 0}
+  nextLevelSettings:
+    initialParticlePrefab: {fileID: 9148241134731414830, guid: ef933ac0367578b4ca3a0fa180031047,
+      type: 3}
+    initialParticleOffset: {x: 0, y: 0, z: -1}
+    initialParticleDuraion: 1
+    projectilePrefab: {fileID: 5286009331984167594, guid: a29531809f20d4e4d8ab1c3066ba00ba,
+      type: 3}
+    projectileSpeed: 3
+    projectileStartDelay: 0.2
+    hitParticlePrefab: {fileID: 9148241134731414830, guid: ef933ac0367578b4ca3a0fa180031047,
+      type: 3}
+    hitParticleOffset: {x: 0, y: 0, z: 0}
+    hitParticleDuraion: 1

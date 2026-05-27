@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
+  m_Name: Level 035
+  m_EditorClassIdentifier: 
+  note: Crystal + x6 SpikesZone + x2 BounceZone + x8 Ice(1hp)
+  bubblesOnTheFieldAmount: 7
+  turnsLimit: 40
+  coinsReward: 20
+  requirements:
+    recipe:
+      ResultPreview: {fileID: 21300000, guid: 03828651c97bb3e4b9d243d4997cbfee, type: 3}
+      Ingridients:
+      - branch: 4
+        stageId: 2
+        amount: 4
+      - branch: 6
+        stageId: 2
+        amount: 2
+    iceBubblesPerLevel: 8
+    iceBubblesHealth: 1
+    boxesPerLevel: 0
+    boxesHealth: 0
+    bombsData: []
+  canBeUsedInRandomizer: 1
+  items:
+  - type: 3
+    position: {x: 2.346, y: -3.095, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.34, y: 0.34, z: 0.34}
+  - type: 3
+    position: {x: -1.414, y: 4.0129995, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.34, y: 0.34, z: 0.34}
+  - type: 3
+    position: {x: 1.89, y: -3.538, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.34, y: 0.34, z: 0.34}
+  - type: 3
+    position: {x: -1.87, y: 3.57, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.34, y: 0.34, z: 0.34}
+  - type: 3
+    position: {x: 1.462, y: -3.964, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.34, y: 0.34, z: 0.34}
+  - type: 3
+    position: {x: -2.2979999, y: 3.1439998, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0.34, y: 0.34, z: 0.34}
+  - type: 0
+    position: {x: -1.94, y: -3.64, z: 0}
+    rotation: {x: -0, y: -0, z: 44.999916}
+    scale: {x: 0.27512, y: 1.8542, z: 1}
+  - type: 0
+    position: {x: 1.9, y: 3.68, z: 0}
+    rotation: {x: -0, y: 0, z: 225.00024}
+    scale: {x: 0.27512, y: 1.8542, z: 1}
+  levelShapeType: 6
+  levelBackType: 1

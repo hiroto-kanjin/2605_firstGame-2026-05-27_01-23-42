@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1bfa31d5169442e49afa6fab5087f52a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Scripts/Controllers/LevelController.cs
+  uploadId: 868576

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
+  m_Name: Level 030
+  m_EditorClassIdentifier: 
+  note: TopTriangles + x2 BounceZone + x2 Teleport + x5 Ice(3hp)
+  bubblesOnTheFieldAmount: 8
+  turnsLimit: 40
+  coinsReward: 20
+  requirements:
+    recipe:
+      ResultPreview: {fileID: 21300000, guid: c21598c7689e8074cb3217d45aed3853, type: 3}
+      Ingridients:
+      - branch: 7
+        stageId: 2
+        amount: 2
+      - branch: 9
+        stageId: 2
+        amount: 4
+    iceBubblesPerLevel: 5
+    iceBubblesHealth: 3
+    boxesPerLevel: 0
+    boxesHealth: 0
+    bombsData: []
+  canBeUsedInRandomizer: 1
+  items:
+  - type: 0
+    position: {x: 0.79, y: -4.04, z: 0}
+    rotation: {x: -0, y: -0, z: 44.999916}
+    scale: {x: 0.288218, y: 1, z: 1}
+  - type: 0
+    position: {x: -0.76, y: 4.01, z: -0.00000001517427}
+    rotation: {x: 1.1558899, y: 355.59592, z: 226.57489}
+    scale: {x: 0.288218, y: 1, z: 1}
+  - type: 4
+    position: {x: 2.75, y: -2.87, z: 0}
+    rotation: {x: -0, y: -0, z: 179.99966}
+    scale: {x: 1, y: 1, z: 1}
+  - type: 4
+    position: {x: -2.61, y: 3.03, z: 0}
+    rotation: {x: -0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+  levelShapeType: 2
+  levelBackType: 1

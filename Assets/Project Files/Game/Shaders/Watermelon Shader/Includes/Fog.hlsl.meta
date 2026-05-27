@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 3121be9b2c0e60142b46a7756cc3fce1
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Shaders/Watermelon Shader/Includes/Fog.hlsl
+  uploadId: 868576

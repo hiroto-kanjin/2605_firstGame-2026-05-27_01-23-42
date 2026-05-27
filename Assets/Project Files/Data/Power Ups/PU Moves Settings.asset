@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50df450a5e7c6e14a9b21fc7efe5d8b0, type: 3}
+  m_Name: PU Moves Settings
+  m_EditorClassIdentifier: 
+  type: 0
+  icon: {fileID: 21300000, guid: 568302ba18eb2244691de6d889727848, type: 3}
+  behaviorPrefab: {fileID: 3063647110883700352, guid: 4d964638e821fda49a71e036a5174989,
+    type: 3}
+  defaultAmount: 3
+  description: Gives you extra 5 moves!
+  requiredLevel: 3
+  backgroundColor: {r: 1, g: 0.90588236, b: 0.4745098, a: 1}
+  backgroundSolidColor: {r: 0.7490196, g: 0.54509807, b: 0, a: 0.49019608}
+  currencyType: 0
+  price: 100
+  purchaseAmount: 3
+  floatingMessage: +{0} MOVES
+  extraTurns: 5

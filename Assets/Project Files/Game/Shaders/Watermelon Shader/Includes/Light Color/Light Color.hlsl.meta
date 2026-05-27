@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 6c2da481c2768b44893123a7c3829b2c
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Shaders/Watermelon Shader/Includes/Light Color/Light
+    Color.hlsl
+  uploadId: 868576

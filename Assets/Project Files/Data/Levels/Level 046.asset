@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
+  m_Name: Level 046
+  m_EditorClassIdentifier: 
+  note: CenterDiamond + x1 Wind + x4 Bomb
+  bubblesOnTheFieldAmount: 7
+  turnsLimit: 40
+  coinsReward: 20
+  requirements:
+    recipe:
+      ResultPreview: {fileID: 21300000, guid: 03828651c97bb3e4b9d243d4997cbfee, type: 3}
+      Ingridients:
+      - branch: 2
+        stageId: 2
+        amount: 4
+      - branch: 7
+        stageId: 2
+        amount: 2
+      - branch: 3
+        stageId: 2
+        amount: 2
+    iceBubblesPerLevel: 0
+    iceBubblesHealth: 0
+    boxesPerLevel: 0
+    boxesHealth: 0
+    bombsData:
+    - movesToSpawn: 5
+    - movesToSpawn: 10
+    - movesToSpawn: 15
+    - movesToSpawn: 20
+  canBeUsedInRandomizer: 1
+  items:
+  - type: 5
+    position: {x: 0, y: -7.41, z: 0}
+    rotation: {x: -0, y: -0, z: 89.99983}
+    scale: {x: 1, y: 1, z: 1}
+  levelShapeType: 9
+  levelBackType: 0

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f48c22438ea93ad45846aad693d34786
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Watermelon Core/Scripts/Weighted List/WeightedList.cs
+  uploadId: 868576

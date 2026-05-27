@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 4fe97020321ee09478d1ef3e7d4c7b47
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Animation/Tutorial/Pointer/Pointer Animator
+    Controller.controller
+  uploadId: 868576

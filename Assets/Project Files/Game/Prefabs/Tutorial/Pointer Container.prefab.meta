@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a68b6b0836c0aeb4285c105e68adda8e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Project Files/Game/Prefabs/Tutorial/Pointer Container.prefab
+  uploadId: 868576

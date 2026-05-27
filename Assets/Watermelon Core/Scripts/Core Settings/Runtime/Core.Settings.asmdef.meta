@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: ead44b7ff0c1fef46af9d702fccc0dd9
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 276359
+  packageName: Bubble Merge | Template & Editor
+  packageVersion: v1.2.1
+  assetPath: Assets/Watermelon Core/Scripts/Core Settings/Runtime/Core.Settings.asmdef
+  uploadId: 868576

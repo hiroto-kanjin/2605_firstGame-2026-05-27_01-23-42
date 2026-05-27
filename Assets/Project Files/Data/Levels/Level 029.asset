@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
+  m_Name: Level 029
+  m_EditorClassIdentifier: 
+  note: HourGlass + x2 IceZone + x3 Bomb
+  bubblesOnTheFieldAmount: 8
+  turnsLimit: 28
+  coinsReward: 20
+  requirements:
+    recipe:
+      ResultPreview: {fileID: 21300000, guid: 5de491c524210aa47b73b56347ab60da, type: 3}
+      Ingridients:
+      - branch: 8
+        stageId: 2
+        amount: 4
+      - branch: 9
+        stageId: 2
+        amount: 2
+    iceBubblesPerLevel: 0
+    iceBubblesHealth: 0
+    boxesPerLevel: 0
+    boxesHealth: 0
+    bombsData:
+    - movesToSpawn: 2
+    - movesToSpawn: 14
+    - movesToSpawn: 28
+  canBeUsedInRandomizer: 1
+  items:
+  - type: 2
+    position: {x: -1.6628543, y: 0.94, z: 0}
+    rotation: {x: -0, y: -0, z: 51.63946}
+    scale: {x: 0.3, y: 1.6, z: 1}
+  - type: 2
+    position: {x: 1.7671921, y: -1.1063973, z: 0}
+    rotation: {x: -0, y: 0, z: 230.18456}
+    scale: {x: 0.3, y: 1.6, z: 1}
+  levelShapeType: 3
+  levelBackType: 0
