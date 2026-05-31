@@ -787,7 +787,7 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Standalone: MODULE_INPUT_SYSTEM;MODULE_TMP;MODULE_MONETIZATION;MODULE_POWERUPS;MODULE_HAPTIC
+    Standalone: DEBUG_LOGS;MODULE_INPUT_SYSTEM;MODULE_TMP;MODULE_MONETIZATION;MODULE_POWERUPS;MODULE_HAPTIC
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

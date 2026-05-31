@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   note: Leaf
   bubblesOnTheFieldAmount: 10
-  turnsLimit: 40
-  coinsReward: 20
+  turnsLimit: 20
+  coinsReward: 2
   requirements:
     recipe:
       ResultPreview: {fileID: 21300000, guid: 5de491c524210aa47b73b56347ab60da, type: 3}
       Ingridients:
       - branch: 0
-        stageId: 2
+        stageId: 1
         amount: 2
       - branch: 1
-        stageId: 2
+        stageId: 1
         amount: 2
-      - branch: 9
-        stageId: 2
+      - branch: 1
+        stageId: 1
         amount: 2
     iceBubblesPerLevel: 0
     iceBubblesHealth: 0
