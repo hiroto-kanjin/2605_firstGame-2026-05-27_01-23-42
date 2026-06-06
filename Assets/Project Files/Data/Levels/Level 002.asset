@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
   m_Name: Level 002
   m_EditorClassIdentifier: 
-  note: Leaf
+  note: Base
   bubblesOnTheFieldAmount: 10
   turnsLimit: 20
   coinsReward: 2
@@ -23,12 +23,6 @@ MonoBehaviour:
       - branch: 0
         stageId: 1
         amount: 2
-      - branch: 1
-        stageId: 1
-        amount: 2
-      - branch: 1
-        stageId: 1
-        amount: 2
     iceBubblesPerLevel: 0
     iceBubblesHealth: 0
     boxesPerLevel: 0
@@ -36,5 +30,5 @@ MonoBehaviour:
     bombsData: []
   canBeUsedInRandomizer: 0
   items: []
-  levelShapeType: 5
+  levelShapeType: 0
   levelBackType: 0
