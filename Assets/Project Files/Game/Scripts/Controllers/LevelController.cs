@@ -241,6 +241,7 @@ namespace Watermelon.BubbleMerge
             data.stageId = settings.stageId;
             data.color = branch.backgroundColor;
             data.icon = stage.icon;
+            data.size = stage.size; // hk追加
 
             return true;
         }
@@ -262,6 +263,7 @@ namespace Watermelon.BubbleMerge
             data.stageId = settings.stageId;
             data.color = branch.backgroundColor;
             data.icon = stage.icon;
+            data.size = stage.size; // hk追加
 
             return true;
         }

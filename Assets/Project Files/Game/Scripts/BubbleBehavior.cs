@@ -94,7 +94,7 @@ namespace Watermelon.BubbleMerge
             scaleTween.KillActive();
             transform.localScale = Vector3.zero;
 
-            scaleTween = transform.DOScale(bubbleSize, quickAppearance ? 0.15f : 0.5f).SetCustomEasing(Ease.GetCustomEasingFunction("BackOutLight"));
+            scaleTween = transform.DOScale(data.size, quickAppearance ? 0.15f : 0.5f).SetCustomEasing(Ease.GetCustomEasingFunction("BackOutLight"));
 
             name = data.icon.name;
 
@@ -372,5 +372,6 @@ namespace Watermelon.BubbleMerge
         public int stageId;
         public Sprite icon;
         public Color color;
+        public float size; // hk追加
     }
 }
