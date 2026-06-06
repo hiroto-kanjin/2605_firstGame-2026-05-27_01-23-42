@@ -16,13 +16,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c6570b5e6cc0ea243817d1caf88c1bd8, type: 2}
   - {fileID: 11400000, guid: 58a76b045a37ae84889ae58198c0d285, type: 2}
   - {fileID: 11400000, guid: 4697cf8485750b54fbda04cba3fd3445, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: ba69e15943b0dd14e97838c3ac194384, type: 2}
+  - {fileID: 11400000, guid: 8143c4c9db7819f4687bb832fe933699, type: 2}
+  - {fileID: 11400000, guid: 21f72577b45e69b41a629090f986ec4b, type: 2}
+  - {fileID: 11400000, guid: bb44a9d591d41d340b15dbc5f3b9e31d, type: 2}
+  - {fileID: 11400000, guid: 8480547a4c75cd546a4e37ea5b8223d9, type: 2}
+  - {fileID: 11400000, guid: bf65380b561adb84db85d243fcac5744, type: 2}
+  - {fileID: 11400000, guid: ab3d2eb6e39dc9141b19a121af6523af, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -105,12 +105,17 @@ MonoBehaviour:
     requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
       type: 3}
     stages:
-    - icon: {fileID: 21300000, guid: 562ca03f899181642b58dcf2410e0df0, type: 3}
-    - icon: {fileID: 21300000, guid: 4c24057e72fdffb4bb87ea12bd07d2f2, type: 3}
-    - icon: {fileID: 21300000, guid: 4922fb459f99f4f41b9903063ef17ff7, type: 3}
-    - icon: {fileID: 21300000, guid: 0fbe78a99bc42374b80fcb699f817c1b, type: 3}
-    - icon: {fileID: 21300000, guid: 77cce62a4f83e8843b4710b1e83a2f87, type: 3}
-    - icon: {fileID: 21300000, guid: 275ffbd9c1aa238448cfbbc4f4668a84, type: 3}
+    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
+    - icon: {fileID: 21300000, guid: fec2a7e37b5b05641aab9162998e81f5, type: 3}
+    - icon: {fileID: 21300000, guid: b12aca74230bb8b4bb2f761ff050e278, type: 3}
+    - icon: {fileID: 21300000, guid: 8a27cdc64a2ef0d49a06aa6c45257696, type: 3}
+    - icon: {fileID: 21300000, guid: 33c86932ce3ea2c419daaf765f69e218, type: 3}
+    - icon: {fileID: 21300000, guid: fa9999342fc844b4390117782705deea, type: 3}
+    - icon: {fileID: 21300000, guid: cf99b62de8a55e44b9e41535086c595e, type: 3}
+    - icon: {fileID: 21300000, guid: d5e3291587ebe6047adf4d72371601af, type: 3}
+    - icon: {fileID: 21300000, guid: dcd92b4f0656dda46a99d0912b573a7f, type: 3}
+    - icon: {fileID: 21300000, guid: f17d4d0283fd42c4b9da9361e2784dd6, type: 3}
+    - icon: {fileID: 21300000, guid: 151563f179e2e05468113976325e2bf5, type: 3}
   - branch: 1
     backgroundColor: {r: 0.5188679, g: 0.31040242, b: 0.24265115, a: 1}
     requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
