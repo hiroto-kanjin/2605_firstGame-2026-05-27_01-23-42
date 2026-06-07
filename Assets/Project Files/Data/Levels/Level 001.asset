@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Level 001
   m_EditorClassIdentifier: 
   note: Base
-  bubblesOnTheFieldAmount: 10
+  bubblesOnTheFieldAmount: 20
   turnsLimit: 1000
-  coinsReward: 1
+  coinsReward: 200
   requirements:
     recipe:
       ResultPreview: {fileID: 21300000, guid: 03828651c97bb3e4b9d243d4997cbfee, type: 3}
       Ingridients:
       - branch: 0
-        stageId: 10
+        stageId: 9
         amount: 1
     iceBubblesPerLevel: 0
     iceBubblesHealth: 0
