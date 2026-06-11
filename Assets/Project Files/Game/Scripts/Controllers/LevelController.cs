@@ -154,10 +154,11 @@ namespace Watermelon.BubbleMerge
 
         public static void UpdateRequirements()
         {
-            if (GeneralLevelTargets.TotalDoneRequirements >= GeneralLevelTargets.TotalRequirementsAmount)
-            {
-                LevelComplete();
-            }
+            // hk追加：クリア判定を無効化（HKGameManagerが代わりに担当）
+            // if (GeneralLevelTargets.TotalDoneRequirements >= GeneralLevelTargets.TotalRequirementsAmount)
+            // {
+            //     LevelComplete();
+            // }
 
             CurrentTarget = GeneralLevelTargets.GetActiveRequirements();
             LevelBehavior.SetRequirements(CurrentTarget);

@@ -129,8 +129,6 @@ namespace Watermelon.BubbleMerge
                 items.Add(newItem);
             }
 
-            //handle bombs
-
             bombData.Clear();
             bombData.AddRange(bombs);
         }
@@ -261,24 +259,27 @@ namespace Watermelon.BubbleMerge
             positionsList.Shuffle();
 
             StartCoroutine(InitialSpawnCoroutine(onSpawned));
-
         }
 
         private IEnumerator InitialSpawnCoroutine(SimpleCallback onSpawned = null)
         {
-            for (int i = 0; i < LevelController.Level.BubblesOnTheFieldAmount; i++)
-            {
-                SpawnRandomBubble(false, false);
+            // hk追加：自動スポーンを無効化（HKSupplyManagerが代わりに担当）
+            // for (int i = 0; i < LevelController.Level.BubblesOnTheFieldAmount; i++)
+            // {
+            //     SpawnRandomBubble(false, false);
+            //     yield return new WaitForSeconds(Random.Range(0.05f, 0.1f));
+            // }
 
-                yield return new WaitForSeconds(Random.Range(0.05f, 0.1f));
-            }
+            // hk追加：コンパイルエラー回避
+            yield return null;
 
             CheckIfBombSpawnRequired();
 
-            if (!PairAvailable())
-            {
-                SpawnRandomBubble(false, false);
-            }
+            // hk追加：ペア確認スポーンも無効化
+            // if (!PairAvailable())
+            // {
+            //     SpawnRandomBubble(false, false);
+            // }
 
             for (int i = 0; i < bubbles.Count; i++)
             {
@@ -374,14 +375,12 @@ namespace Watermelon.BubbleMerge
         public void SwapSmallestBubble()
         {
             var smallest = GetSmallestBubble();
-
             var secondSmallest = GetSmallestBubble(smallest);
 
             if (smallest == null || secondSmallest == null)
                 return;
 
             smallest.SwapData(secondSmallest.Data);
-
         }
 
         private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity)
@@ -498,21 +497,22 @@ namespace Watermelon.BubbleMerge
                 }
             }
 
-            if (Time.frameCount % 60 == 0)
-            {
-                if (!PairAvailable())
-                {
-                    if (SpawnRandomBubble(true, false) == null)
-                    {
-                        SpawnRandomBubble(false, false);
-                    }
-
-                    if (!IsActiveBubbleExists())
-                    {
-                        LevelController.LevelFail();
-                    }
-                }
-            }
+            // hk追加：自動スポーンを無効化（HKSupplyManagerが代わりに担当）
+            // if (Time.frameCount % 60 == 0)
+            // {
+            //     if (!PairAvailable())
+            //     {
+            //         if (SpawnRandomBubble(true, false) == null)
+            //         {
+            //             SpawnRandomBubble(false, false);
+            //         }
+            //
+            //         if (!IsActiveBubbleExists())
+            //         {
+            //             LevelController.LevelFail();
+            //         }
+            //     }
+            // }
         }
 
         public void OnBubblePopped(BubbleBehavior bubbleBehavior)
@@ -555,7 +555,6 @@ namespace Watermelon.BubbleMerge
                             }
                         }
 
-
                         LevelController.OnRequirementDone(i);
                         LevelController.UpdateRequirements();
                     });
@@ -590,7 +589,6 @@ namespace Watermelon.BubbleMerge
                 {
                     firstBubbleBehavior = bubbles[i];
                     firstBubbleIndex = i;
-
                     break;
                 }
             }
@@ -605,7 +603,6 @@ namespace Watermelon.BubbleMerge
                 if (bubbles[i].Data.branch == branch && bubbles[i].Data.stageId == stageIndex && bubbles[i].BubbleSpecialEffect == null)
                 {
                     secondBubbleBehavior = bubbles[i];
-
                     break;
                 }
             }
@@ -620,7 +617,6 @@ namespace Watermelon.BubbleMerge
                     if (LevelController.CreateRandomBubbleData(bubbleSpawnData, out newBubbleData))
                     {
                         secondBubbleBehavior = SpawnBubble(newBubbleData, GetRandomPosition(), true, Vector2.zero);
-
                         return new BubblesPair() { bubbleBehavior1 = firstBubbleBehavior, bubbleBehavior2 = secondBubbleBehavior };
                     }
                 }
@@ -770,20 +766,18 @@ namespace Watermelon.BubbleMerge
                 }
             }
 
-            if (bubbles.Count - 1 <= LevelController.Level.BubblesOnTheFieldAmount)
-            {
-                var newRandomBubble = SpawnRandomBubble(true, false);
-
-                if (newRandomBubble != null)
-                {
-                    CheckRequirements(newRandomBubble);
-                }
-            }
+            // hk追加：自動スポーンを無効化（HKSupplyManagerが代わりに担当）
+            // if (bubbles.Count - 1 <= LevelController.Level.BubblesOnTheFieldAmount)
+            // {
+            //     var newRandomBubble = SpawnRandomBubble(true, false);
+            //     if (newRandomBubble != null)
+            //     {
+            //         CheckRequirements(newRandomBubble);
+            //     }
+            // }
         }
 
-
         #region Dev
-
 
         public void RemoveRandomBubbleDev()
         {
