@@ -334,11 +334,40 @@ namespace Watermelon.BubbleMerge
 
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                return SpawnBubble(spawnData, data, position, false, Vector2.zero);
+                BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero);
+
+                // hk追加：BallBehaviorHKに値を設定する
+                BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
+                if (ballHK != null)
+                {
+                    ballHK.SetData(BallCategory.Evolution, branch, GetBallTypeFromStageId(stageId));
+                }
+
+                return bubble;
             }
 
             Debug.LogError("SpawnBallHK: ボールデータの生成に失敗しました");
             return null;
+        }
+
+        // hk追加：stageIdをBallTypeに変換する（プログラム0始まり→企画1始まり）
+        private BallType GetBallTypeFromStageId(int stageId)
+        {
+            switch (stageId)
+            {
+                case 0: return BallType.EvolutionBall_01;
+                case 1: return BallType.EvolutionBall_02;
+                case 2: return BallType.EvolutionBall_03;
+                case 3: return BallType.EvolutionBall_04;
+                case 4: return BallType.EvolutionBall_05;
+                case 5: return BallType.EvolutionBall_06;
+                case 6: return BallType.EvolutionBall_07;
+                case 7: return BallType.EvolutionBall_08;
+                case 8: return BallType.EvolutionBall_09;
+                case 9: return BallType.EvolutionBall_10;
+                case 10: return BallType.EvolutionBall_11;
+                default: return BallType.EvolutionBall_01;
+            }
         }
 
         public BubbleBehavior SpawnRandomBubble(bool checkAvailable, bool checkAmount = true)

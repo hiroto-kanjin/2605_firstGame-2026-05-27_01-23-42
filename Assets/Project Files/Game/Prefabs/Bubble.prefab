@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6681351782316929509}
   - component: {fileID: 3957912005644861032}
   - component: {fileID: 7349332004102407695}
+  - component: {fileID: 7667392931469995671}
   m_Layer: 0
   m_Name: Bubble
   m_TagString: Bubble
@@ -79,6 +80,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &7667392931469995671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2575003353096176513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 816a012833ff3d144a47991ec80b362d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.BallBehaviorHK
+  ballCategory: 0
+  branch: 0
+  ballType: 0
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0

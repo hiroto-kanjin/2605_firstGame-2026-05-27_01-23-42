@@ -18,6 +18,7 @@ namespace Watermelon.BubbleMerge
         // 何かが鍋に入ってきた時
         private void OnTriggerEnter2D(Collider2D other) // hk追加
         {
+            Debug.Log("OnTriggerEnter2D called: " + other.gameObject.name); // hk追加：デバッグ用        
             // フィニッシャーかどうかチェック
             FinisherBall finisher = other.GetComponent<FinisherBall>();
             if (finisher != null)
@@ -29,20 +30,22 @@ namespace Watermelon.BubbleMerge
             }
 
             // 食材ボールかどうかチェック
-            BallBehaviorHK ball = other.GetComponent<BallBehaviorHK>();
-            if (ball != null)
+            BallBehaviorHK ball = other.GetComponentInParent<BallBehaviorHK>(); // hk追加：子コライダーからも親のBallBehaviorHKを取得
+            if (ball != null && !ballsInPot.Contains(ball)) // hk追加：重複追加を防ぐ
             {
                 ballsInPot.Add(ball);
+                Debug.Log("ballsInPot に追加: " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count); // hk追加：デバッグ用
             }
         }
 
         // 何かが鍋から出ていった時
         private void OnTriggerExit2D(Collider2D other) // hk追加
         {
-            BallBehaviorHK ball = other.GetComponent<BallBehaviorHK>();
+            BallBehaviorHK ball = other.GetComponentInParent<BallBehaviorHK>(); // hk追加：子コライダーからも親のBallBehaviorHKを取得
             if (ball != null)
             {
                 ballsInPot.Remove(ball);
+                Debug.Log("ballsInPot から削除: " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count); // hk追加：デバッグ用
             }
         }
 
@@ -62,6 +65,14 @@ namespace Watermelon.BubbleMerge
         public void ResetPot() // hk追加
         {
             ballsInPot.Clear();
+        }
+        // hk追加：ボールが破棄された時に外部から呼ばれる
+        public void RemoveFromPot(BallBehaviorHK ball)
+        {
+            if (ballsInPot.Remove(ball))
+            {
+                Debug.Log("ballsInPot から削除(破棄): " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count); // hk追加：デバッグ用
+            }
         }
     }
 }

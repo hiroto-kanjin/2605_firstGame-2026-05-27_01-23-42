@@ -22,6 +22,21 @@ namespace Watermelon.BubbleMerge
         {
             return ballType;
         }
+        // hk追加：外部から値を設定するためのメソッド
+        public void SetData(BallCategory category, Branch branch, BallType type)
+        {
+            ballCategory = category;
+            this.branch = branch;
+            ballType = type;
+        }
+        // hk追加：このボールが無効化された時に鍋から削除する
+        private void OnDisable()
+        {
+            if (CookingAreaManager.Instance != null)
+            {
+                CookingAreaManager.Instance.RemoveFromPot(this);
+            }
+        }
     }
 
     public enum BallCategory // hk追加
