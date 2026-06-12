@@ -19,7 +19,7 @@ namespace Watermelon.BubbleMerge
         public void Judge(List<BallBehaviorHK> ballsInPot) // hk追加
         {
             // 鍋の中身を集計する
-            Dictionary<BallType, int> potContents = CountBalls(ballsInPot);
+            Dictionary<(Branch, BallType), int> potContents = CountBalls(ballsInPot);
 
             // レシピと照合する
             bool recipeMatched = CheckRecipe(potContents);
@@ -34,33 +34,33 @@ namespace Watermelon.BubbleMerge
         // 鍋の中身がレシピを満たしているか確認する（フィニッシャーなしで呼べる版）
         public bool CheckRecipeReady(List<BallBehaviorHK> ballsInPot) // hk追加
         {
-            Dictionary<BallType, int> potContents = CountBalls(ballsInPot);
+            Dictionary<(Branch, BallType), int> potContents = CountBalls(ballsInPot);
             return CheckRecipe(potContents);
         }
 
-
         // 鍋の中のボールを種類ごとに数える
-        private Dictionary<BallType, int> CountBalls(List<BallBehaviorHK> balls) // hk追加
+        private Dictionary<(Branch, BallType), int> CountBalls(List<BallBehaviorHK> balls) // hk追加
         {
-            Dictionary<BallType, int> counts = new Dictionary<BallType, int>();
+            Dictionary<(Branch, BallType), int> counts = new Dictionary<(Branch, BallType), int>();
             foreach (BallBehaviorHK ball in balls)
             {
-                BallType type = ball.GetBallType();
-                if (counts.ContainsKey(type))
-                    counts[type]++;
+                var key = (ball.GetBranch(), ball.GetBallType());
+                if (counts.ContainsKey(key))
+                    counts[key]++;
                 else
-                    counts[type] = 1;
+                    counts[key] = 1;
             }
             return counts;
         }
 
         // レシピの条件を満たしているか確認する
-        private bool CheckRecipe(Dictionary<BallType, int> potContents) // hk追加
+        private bool CheckRecipe(Dictionary<(Branch, BallType), int> potContents) // hk追加
         {
             foreach (RecipeIngredient ingredient in currentRecipe.requiredIngredients)
             {
-                if (!potContents.ContainsKey(ingredient.ingredientType) ||
-                    potContents[ingredient.ingredientType] < ingredient.requiredCount)
+                var key = (ingredient.branch, ingredient.ballType);
+                if (!potContents.ContainsKey(key) ||
+                    potContents[key] < ingredient.requiredCount)
                 {
                     return false;
                 }

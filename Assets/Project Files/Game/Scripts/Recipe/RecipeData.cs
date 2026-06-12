@@ -3,17 +3,18 @@ using UnityEngine;
 
 namespace Watermelon.BubbleMerge
 {
-    [CreateAssetMenu(fileName = "RecipeData", menuName = "HK/RecipeData")] // hk追加
-    public class RecipeData : ScriptableObject // hk追加
+    [CreateAssetMenu(fileName = "RecipeData", menuName = "HK/RecipeData")]
+    public class RecipeData : ScriptableObject
     {
-        // レシピに必要な食材リスト
         public List<RecipeIngredient> requiredIngredients;
     }
 
     [System.Serializable]
     public class RecipeIngredient // hk追加
     {
-        public BallType ingredientType; // 食材の種類
-        public int requiredCount;       // 必要個数
+        public BallCategory category;   // hk追加
+        public Branch branch;            // hk追加：Evolutionの場合のみ使用
+        public BallType ballType;
+        public int requiredCount;
     }
 }

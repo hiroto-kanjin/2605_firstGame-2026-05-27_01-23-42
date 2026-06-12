@@ -4,15 +4,18 @@ namespace Watermelon.BubbleMerge
 {
     public class BallBehaviorHK : MonoBehaviour // hk追加
     {
-        // ボールのカテゴリ（進化・特殊・お邪魔）
         [SerializeField] private BallCategory ballCategory; // hk追加
-
-        // ボールの種類（レシピ照合で使う）
+        [SerializeField] private Branch branch; // hk追加：進化ボールの種類（Vegetables等）
         [SerializeField] private BallType ballType; // hk追加
 
         public BallCategory GetBallCategory() // hk追加
         {
             return ballCategory;
+        }
+
+        public Branch GetBranch() // hk追加
+        {
+            return branch;
         }
 
         public BallType GetBallType() // hk追加
@@ -21,35 +24,30 @@ namespace Watermelon.BubbleMerge
         }
     }
 
-    // ボールのカテゴリ定義
     public enum BallCategory // hk追加
     {
-        Evolution,  // 進化ボール
-        Special,    // 特殊ボール
-        Nuisance    // お邪魔ボール
+        Evolution,
+        Special,
+        Nuisance
     }
 
-    // ボールの種類定義（レシピで使う食材の識別子）
     public enum BallType // hk追加
     {
-        // 進化ボール（11段階）
-        Evo_Stage1,
-        Evo_Stage2,
-        Evo_Stage3,
-        Evo_Stage4,
-        Evo_Stage5,
-        Evo_Stage6,
-        Evo_Stage7,
-        Evo_Stage8,
-        Evo_Stage9,
-        Evo_Stage10,
-        Evo_Stage11,
+        EvolutionBall_01,
+        EvolutionBall_02,
+        EvolutionBall_03,
+        EvolutionBall_04,
+        EvolutionBall_05,
+        EvolutionBall_06,
+        EvolutionBall_07,
+        EvolutionBall_08,
+        EvolutionBall_09,
+        EvolutionBall_10,
+        EvolutionBall_11,
 
-        // 特殊ボール（今後追加）
-        Special_001,
-        Special_002,
+        SpecialBall_001,
+        SpecialBall_002,
 
-        // お邪魔ボール
-        Nuisance_001
+        NuisanceBall_001
     }
 }

@@ -35,7 +35,7 @@ namespace Watermelon.BubbleMerge
                 }
 
                 // レシピに含まれているか確認する
-                if (!IsInRecipe(type, recipe))
+                if (!IsInRecipe(ball.GetBranch(), type, recipe))
                 {
                     // 進化ボールの場合
                     if (category == BallCategory.Evolution)
@@ -54,11 +54,11 @@ namespace Watermelon.BubbleMerge
         }
 
         // レシピに含まれている食材かどうか確認する
-        private bool IsInRecipe(BallType type, RecipeData recipe) // hk追加
+        private bool IsInRecipe(Branch branch, BallType type, RecipeData recipe) // hk追加
         {
             foreach (RecipeIngredient ingredient in recipe.requiredIngredients)
             {
-                if (ingredient.ingredientType == type)
+                if (ingredient.branch == branch && ingredient.ballType == type)
                     return true;
             }
             return false;
