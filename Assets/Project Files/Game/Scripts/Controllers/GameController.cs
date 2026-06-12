@@ -104,6 +104,9 @@ namespace Watermelon
 
             UIController.HidePage<UIMainMenu>();
             UIController.ShowPage<UIGame>();
+
+            // hk追加：HKゲームロジックを開始する
+            HKGameManager.Instance.StartGame(RecipeManager.Instance.GetCurrentRecipe());
         }
 
         public static void OnLevelCompleted()

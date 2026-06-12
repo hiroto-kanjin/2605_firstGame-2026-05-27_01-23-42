@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Watermelon.BubbleMerge
 {
-    [CreateAssetMenu(fileName = "BallSupplyData", menuName = "HK/BallSupplyData")] // hk追加
+    [CreateAssetMenu(fileName = "BallSupplyData", menuName = "HK/BallSupplyData")]
     public class BallSupplyData : ScriptableObject // hk追加
     {
         [SerializeField] private List<BallSupplyEntry> entries;
 
-        // 出現率に基づいてランダムにボールの種類を返す
-        public BallType GetRandomBallType() // hk追加
+        // 出現率に基づいてランダムにボールを返す（Branch + BallType）
+        public (Branch branch, BallType ballType) GetRandomBall() // hk追加
         {
             float total = 0f;
             foreach (BallSupplyEntry entry in entries)
@@ -22,19 +22,19 @@ namespace Watermelon.BubbleMerge
             {
                 cumulative += entry.spawnRate;
                 if (random <= cumulative)
-                    return entry.ballType;
+                    return (entry.branch, entry.ballType);
             }
 
-            // フォールバック（念のため）
-            return entries[0].ballType;
+            return (entries[0].branch, entries[0].ballType);
         }
     }
 
     [System.Serializable]
     public class BallSupplyEntry // hk追加
     {
-        public BallType ballType;   // ボールの種類
+        public Branch branch;       // hk追加
+        public BallType ballType;
         [Range(0f, 100f)]
-        public float spawnRate;     // 出現率（0〜100）
+        public float spawnRate;
     }
 }

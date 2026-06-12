@@ -27,11 +27,11 @@ namespace Watermelon.BubbleMerge
             currentScore = 0;
             isRecipeReady = false;
 
-            // レシピをセットする
             RecipeManager.Instance.SetRecipe(recipe);
-
-            // 鍋をリセットする
             CookingAreaManager.Instance.ResetPot();
+
+            // hk追加：供給システムを開始する
+            HKSupplyManager.Instance.StartSupply();
         }
 
         // 鍋の中身が変わるたびにRecipeManagerから呼ばれる

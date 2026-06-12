@@ -6,69 +6,128 @@ namespace Watermelon.BubbleMerge
     {
         public static HKSupplyManager Instance { get; private set; }
 
-        // インスペクターで設定するプレハブ
         [SerializeField] private GameObject finisherPrefab;
-
-        // 供給ボールの出現率設定（インスペクターで設定）
         [SerializeField] private BallSupplyData supplyData;
-
-        // 現在・ネクスト・ネクストネクストのボールデータ
-        private BallType currentBall;   // hk追加
-        private BallType nextBall;      // hk追加
-        private BallType nextNextBall;  // hk追加
-
-        // フィニッシャーの状態管理
-        private bool isFinisherActive = false;       // hk追加
-        private GameObject currentFinisher = null;   // hk追加
-
-        // 助手悪魔の位置（インスペクターで設定）
         [SerializeField] private Transform assistantPosition;
+
+        // 現在・ネクスト・ネクストネクストのボール情報（Branch + BallType）
+        private (Branch branch, BallType ballType) currentBall;   // hk追加
+        private (Branch branch, BallType ballType) nextBall;      // hk追加
+        private (Branch branch, BallType ballType) nextNextBall;  // hk追加
+
+        private bool isFinisherActive = false;
+        private GameObject currentFinisher = null;
+        private BubbleBehavior currentBallObject; // hk追加
 
         private void Awake()
         {
             Instance = this;
         }
 
-        private void Start()
+        // 変更後
+        // hk追加：レベル開始時にHKGameManagerから呼ばれる
+        public void StartSupply()
         {
-            // ゲーム開始時に3つ分のボールを準備する
-            currentBall = supplyData.GetRandomBallType();
-            nextBall = supplyData.GetRandomBallType();
-            nextNextBall = supplyData.GetRandomBallType();
+            currentBall = supplyData.GetRandomBall();
+            nextBall = supplyData.GetRandomBall();
+            nextNextBall = supplyData.GetRandomBall();
+
+            SpawnCurrentBall();
+            LevelController.LevelBehavior.OnBubbleLaunched += OnBubbleLaunched; // hk追加
 
             UpdateUI();
+        }
+
+        // hk追加：現在のボールを助手悪魔の位置に生成する
+        private void SpawnCurrentBall()
+        {
+            currentBallObject = LevelController.LevelBehavior.SpawnBallHK(
+                currentBall.branch,
+                GetStageIdFromBallType(currentBall.ballType),
+                assistantPosition.position
+            );
+
+            // hk追加：補充されたボールは他のボールと干渉しない
+            if (currentBallObject != null)
+            {
+                currentBallObject.DisablePhysics();
+            }
+        }
+
+        private void OnBubbleLaunched(BubbleBehavior launchedBubble)
+        {
+            if (launchedBubble == currentBallObject)
+            {
+                // hk追加：弾かれたボールは干渉可能にする
+                launchedBubble.EnablePhysics();
+
+                OnAssistantBallLaunched();
+            }
+            else
+            {
+                OnFieldBallLaunched();
+            }
         }
 
         // 助手悪魔のボールが弾かれた時
-        public void OnAssistantBallLaunched() // hk追加
+        public void OnAssistantBallLaunched()
         {
-            ShiftQueue();
+            ShiftQueue(false); // 弾いたボールは消さない
         }
 
-        // 盤面のボールが弾かれた時
-        public void OnFieldBallLaunched() // hk追加
+        public void OnFieldBallLaunched()
         {
-            // 保持中のボールを破棄してキューをずらす
-            ShiftQueue();
+            ShiftQueue(true); // 助手悪魔のボールを消す
         }
 
-        // キューを1つ前にずらして新しいネクストネクストを生成する
-        private void ShiftQueue() // hk追加
+        private void ShiftQueue(bool discardCurrentBall)
         {
+            if (discardCurrentBall && currentBallObject != null)
+            {
+                OnAssistantBallDiscarded(currentBallObject);
+            }
+
             currentBall = nextBall;
             nextBall = nextNextBall;
-            nextNextBall = supplyData.GetRandomBallType();
+            nextNextBall = supplyData.GetRandomBall();
+
+            SpawnCurrentBall();
 
             UpdateUI();
+        }
+
+        // hk追加：助手悪魔が保持していたボールが不要になった時に呼ばれる（捨てるアニメーションは今後実装）
+        private void OnAssistantBallDiscarded(BubbleBehavior ball)
+        {
+            // hk追加：アニメーション実装までの仮処理として非表示にする   ☆彡
+            ball.gameObject.SetActive(false);
+        }
+
+        // hk追加：BallTypeをstageIdに変換する（企画1始まり→プログラム0始まり）
+        private int GetStageIdFromBallType(BallType ballType)
+        {
+            switch (ballType)
+            {
+                case BallType.EvolutionBall_01: return 0;
+                case BallType.EvolutionBall_02: return 1;
+                case BallType.EvolutionBall_03: return 2;
+                case BallType.EvolutionBall_04: return 3;
+                case BallType.EvolutionBall_05: return 4;
+                case BallType.EvolutionBall_06: return 5;
+                case BallType.EvolutionBall_07: return 6;
+                case BallType.EvolutionBall_08: return 7;
+                case BallType.EvolutionBall_09: return 8;
+                case BallType.EvolutionBall_10: return 9;
+                case BallType.EvolutionBall_11: return 10;
+                default: return 0;
+            }
         }
 
         // レシピ成立時にRecipeManagerから呼ばれる
         public void OnRecipeCompleted() // hk追加
         {
-            // すでにフィニッシャーが盤面にいる場合は何もしない
             if (isFinisherActive) return;
 
-            // フィニッシャーを生成する
             currentFinisher = Instantiate(
                 finisherPrefab,
                 assistantPosition.position,
@@ -84,28 +143,13 @@ namespace Watermelon.BubbleMerge
             currentFinisher = null;
         }
 
-        // 現在のボールの種類を返す
-        public BallType GetCurrentBallType() // hk追加
-        {
-            return currentBall;
-        }
+        public (Branch, BallType) GetCurrentBall() => currentBall; // hk追加
+        public (Branch, BallType) GetNextBall() => nextBall;       // hk追加
+        public (Branch, BallType) GetNextNextBall() => nextNextBall; // hk追加
 
-        // ネクストボールの種類を返す
-        public BallType GetNextBallType() // hk追加
-        {
-            return nextBall;
-        }
-
-        // ネクストネクストボールの種類を返す
-        public BallType GetNextNextBallType() // hk追加
-        {
-            return nextNextBall;
-        }
-
-        // UIの更新（次のステップで実装）
         private void UpdateUI() // hk追加
         {
-            // HKGameManagerのUI更新を呼ぶ（⑧で実装）
+            // 今後実装
         }
     }
 }
