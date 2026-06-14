@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: RecipeData
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.RecipeData
   requiredIngredients:
-  - ingredientType: 0
+  - category: 0
+    branch: 0
+    ballType: 0
     requiredCount: 2
-  - ingredientType: 0
-    requiredCount: 1
+  finisherShotLimit: 5

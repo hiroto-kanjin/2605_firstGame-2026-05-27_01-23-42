@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5db46ffba72724abfe62f404588dcc, type: 3}
   m_Name: Controls Settings
   m_EditorClassIdentifier: 
-  controlsPower: 3
+  controlsPower: 1
   controlsCurve:
     serializedVersion: 2
     m_Curve:

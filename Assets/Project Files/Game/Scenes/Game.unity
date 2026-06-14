@@ -389,7 +389,7 @@ PrefabInstance:
     - target: {fileID: 101190841430127786, guid: 33b080e358fe9614fa1d26241d1ed980,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -299.1201
+      value: -299.12012
       objectReference: {fileID: 0}
     - target: {fileID: 288259118971057853, guid: 33b080e358fe9614fa1d26241d1ed980,
         type: 3}
@@ -2268,6 +2268,7 @@ GameObject:
   - component: {fileID: 838187195}
   - component: {fileID: 838187194}
   - component: {fileID: 838187193}
+  - component: {fileID: 838187196}
   m_Layer: 0
   m_Name: CookingArea
   m_TagString: Untagged
@@ -2287,6 +2288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9c2144b47133f479d1b4b8b4fe1986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.CookingAreaManager
+  stillVelocityThreshold: 0.1
+  finisherJudgeDelay: 0.5
 --- !u!58 &838187194
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2338,6 +2341,65 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &838187196
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 838187192}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: 2bb7017bfce08474a864c4eaa2127d7c, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 5.12, y: 5.12}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &956244638
 GameObject:
   m_ObjectHideFlags: 0
@@ -2478,13 +2540,13 @@ GameObject:
   - component: {fileID: 1060784199}
   - component: {fileID: 1060784211}
   - component: {fileID: 1060784212}
-  - component: {fileID: 1060784204}
   - component: {fileID: 1060784205}
   - component: {fileID: 1060784206}
   - component: {fileID: 1060784208}
   - component: {fileID: 1060784210}
   - component: {fileID: 1060784213}
   - component: {fileID: 1060784217}
+  - component: {fileID: 1060784204}
   - component: {fileID: 1060784216}
   - component: {fileID: 1060784215}
   - component: {fileID: 1060784214}
@@ -2723,7 +2785,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e05ea9122c7b0f47aae766efb468d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.HKSupplyManager
-  finisherPrefab: {fileID: 0}
+  finisherPrefab: {fileID: 2575003353096176513, guid: c27c7e47625a09c43aaf6921e984c0bd,
+    type: 3}
+  finisherSupplyData: {fileID: 11400000, guid: da4e66d76def20c4eadde57f5a855520, type: 2}
   supplyData: {fileID: 11400000, guid: 391692cac8a59ca49842b40d4e2faddb, type: 2}
   assistantPosition: {fileID: 1133867109}
 --- !u!114 &1060784217
@@ -4349,6 +4413,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5178066047858781992}
     m_Modifications:
+    - target: {fileID: 806793568613087166, guid: f498ec5c4d8606d44b8576c76181fe5a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -329.90002
+      objectReference: {fileID: 0}
     - target: {fileID: 1006309305242686765, guid: f498ec5c4d8606d44b8576c76181fe5a,
         type: 3}
       propertyPath: m_SizeDelta.x

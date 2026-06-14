@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 namespace Watermelon.BubbleMerge
 {
     [CreateAssetMenu(fileName = "RecipeData", menuName = "HK/RecipeData")]
     public class RecipeData : ScriptableObject
     {
         public List<RecipeIngredient> requiredIngredients;
+        public int finisherShotLimit = 3; // hk追加：フィニッシャー出現後、鍋に入れるまでの残り発射回数
     }
-
     [System.Serializable]
     public class RecipeIngredient // hk追加
     {

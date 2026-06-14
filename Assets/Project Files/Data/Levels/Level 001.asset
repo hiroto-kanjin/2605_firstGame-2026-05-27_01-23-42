@@ -21,7 +21,7 @@ MonoBehaviour:
       ResultPreview: {fileID: 21300000, guid: 03828651c97bb3e4b9d243d4997cbfee, type: 3}
       Ingridients:
       - branch: 0
-        stageId: 9
+        stageId: 1
         amount: 1
     iceBubblesPerLevel: 0
     iceBubblesHealth: 0

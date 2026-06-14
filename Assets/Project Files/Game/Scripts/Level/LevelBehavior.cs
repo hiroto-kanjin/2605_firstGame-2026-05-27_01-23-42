@@ -591,16 +591,17 @@ namespace Watermelon.BubbleMerge
                     {
                         requirement.OnRequirementMet();
 
-                        if (spawnNewBubble)
-                        {
-                            while (bubbles.Count < LevelController.Level.BubblesOnTheFieldAmount && LevelController.Level.SpawnQueue.Count > 0)
-                            {
-                                if (SpawnRandomBubble(true) == null)
-                                {
-                                    SpawnRandomBubble(false);
-                                }
-                            }
-                        }
+                        // hk追加：自動スポーンを無効化（HKSupplyManagerが代わりに担当）
+                        // if (spawnNewBubble)
+                        // {
+                        //     while (bubbles.Count < LevelController.Level.BubblesOnTheFieldAmount && LevelController.Level.SpawnQueue.Count > 0)
+                        //     {
+                        //         if (SpawnRandomBubble(true) == null)
+                        //         {
+                        //             SpawnRandomBubble(false);
+                        //         }
+                        //     }
+                        // }
 
                         LevelController.OnRequirementDone(i);
                         LevelController.UpdateRequirements();
@@ -678,7 +679,9 @@ namespace Watermelon.BubbleMerge
         {
             for (int i = 0; i < bubbles.Count; i++)
             {
-                bubbles[i].RB.SetLinearDamping(BubblesPhysicsData.BubbleDragMin);
+                if (bubbles[i] == null) continue; // hk追加：破棄済みオブジェクトをスキップ
+                float multiplier = GetDragMultiplier(bubbles[i]);
+                bubbles[i].RB.SetLinearDamping(BubblesPhysicsData.BubbleDragMin * multiplier);
             }
 
             dragCase.KillActive();
@@ -687,20 +690,43 @@ namespace Watermelon.BubbleMerge
                 {
                     for (int i = 0; i < bubbles.Count; i++)
                     {
+                        if (bubbles[i] == null) continue; // hk追加：破棄済みオブジェクトをスキップ
                         if (!bubbles[i].IsMerging && (bubbles[i].BubbleSpecialEffect == null || bubbles[i].BubbleSpecialEffect.IsDragAllowed()))
                         {
-                            bubbles[i].RB.SetLinearDamping(value);
+                            float multiplier = GetDragMultiplier(bubbles[i]);
+                            bubbles[i].RB.SetLinearDamping(value * multiplier);
                         }
                     }
                 }, BubblesPhysicsData.MinDragDuration).SetCurveEasing(BubblesPhysicsData.BubbleDragCurve);
         }
 
-        public static bool HasPair()
+        // hk追加：ボールごとのDamping倍率を取得（基本値＋速度に応じたカーブ補正の加算）
+        private float GetDragMultiplier(BubbleBehavior bubble)
         {
-            return LevelController.LevelBehavior.PairAvailable();
-        }
+            BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
 
-        public Vector3 GetRandomPosition()
+            if (ballHK == null || !ballHK.enabled)
+            {
+                FinisherBall finisherBall = bubble.GetComponent<FinisherBall>();
+                if (finisherBall != null)
+                {
+                    var finisherEntry = HKSupplyManager.Instance.FinisherData.GetEntry(finisherBall.GetFinisherType());
+                    if (finisherEntry != null)
+                    {
+                        float finisherSpeed = bubble.RB.GetVelocity().magnitude;
+                        return finisherEntry.linearDamping + finisherEntry.dampingCurve.Evaluate(finisherSpeed);
+                    }
+                }
+                return 1f;
+            }
+
+            var entry = HKSupplyManager.Instance.SupplyData.GetEntry(ballHK.GetBranch(), ballHK.GetBallType());
+            if (entry == null) return 1f;
+
+            float speed = bubble.RB.GetVelocity().magnitude;
+            return entry.linearDamping + entry.dampingCurve.Evaluate(speed);
+        }
+        public Vector3 GetRandomPosition() // hk追加：引数なし版
         {
             Vector3 randomPosition = positionsList[Random.Range(0, positionsList.Count)];
             int loops = 0;
@@ -718,7 +744,6 @@ namespace Watermelon.BubbleMerge
 
             return randomPosition;
         }
-
         public Vector3 GetRandomPosition(List<Vector3> excludedPositions)
         {
             int iterations = 0;
@@ -791,14 +816,25 @@ namespace Watermelon.BubbleMerge
         {
             bubbles.Remove(bubble);
         }
-
+        public void AddBubble(BubbleBehavior bubble) // hk追加
+        {
+            bubbles.Add(bubble);
+        }
         public void OnBubblesMerged(BubbleBehavior bubble1, BubbleBehavior bubble2, Vector3 position)
         {
             if (LevelController.CreateBubbleData(new Requirement(bubble1.Data.branch, bubble1.Data.stageId + 1), out var data))
             {
                 var newBubble = SpawnBubble(data, position.xy(), true, (bubble1.RB.GetVelocity()));
 
-                CheckRequirements(newBubble);
+                // hk追加：マージ後のボールにBallBehaviorHKのデータを設定する
+                BallBehaviorHK newBallHK = newBubble.GetComponent<BallBehaviorHK>();
+                if (newBallHK != null)
+                {
+                    newBallHK.SetData(BallCategory.Evolution, data.branch, GetBallTypeFromStageId(data.stageId));
+                }
+
+                // hk追加：テンプレートのRequirements判定を無効化（HKのレシピシステムを使うため）
+                // CheckRequirements(newBubble);
 
                 OnBubbleMerged?.Invoke(newBubble);
             }
@@ -808,7 +844,8 @@ namespace Watermelon.BubbleMerge
 
                 if (newBubble != null)
                 {
-                    CheckRequirements(newBubble);
+                    // hk追加：テンプレートのRequirements判定を無効化（HKのレシピシステムを使うため）
+                    // CheckRequirements(newBubble);
                     OnBubbleMerged?.Invoke(newBubble);
                 }
             }

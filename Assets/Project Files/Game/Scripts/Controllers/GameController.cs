@@ -142,6 +142,9 @@ namespace Watermelon
             UIController.ShowPage<UIGame>();
             LevelController.LoadLevel(LevelSave.Value);
 
+            // hk追加：HKゲームロジックを再初期化する
+            HKGameManager.Instance.StartGame(RecipeManager.Instance.GetCurrentRecipe());
+
             AdsManager.ShowInterstitial(null);
         }
 

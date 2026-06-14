@@ -7,7 +7,8 @@ namespace Watermelon.BubbleMerge
         public static HKSupplyManager Instance { get; private set; }
 
         [SerializeField] private GameObject finisherPrefab;
-        [SerializeField] private BallSupplyData supplyData;
+        [SerializeField] private FinisherSupplyData finisherSupplyData; // hk追加
+        [SerializeField] private BallData supplyData;
         [SerializeField] private Transform assistantPosition;
 
         // 現在・ネクスト・ネクストネクストのボール情報（Branch + BallType）
@@ -18,6 +19,7 @@ namespace Watermelon.BubbleMerge
         private bool isFinisherActive = false;
         private GameObject currentFinisher = null;
         private BubbleBehavior currentBallObject; // hk追加
+        private int finisherShotCount; // hk追加：フィニッシャー出現後の残り発射回数
 
         private void Awake()
         {
@@ -56,6 +58,8 @@ namespace Watermelon.BubbleMerge
 
         private void OnBubbleLaunched(BubbleBehavior launchedBubble)
         {
+            Debug.Log("OnBubbleLaunched called. isFinisherActive=" + isFinisherActive + " bubble=" + launchedBubble.name); // hk追加：デバッグ用
+
             if (launchedBubble == currentBallObject)
             {
                 // hk追加：弾かれたボールは干渉可能にする
@@ -66,6 +70,22 @@ namespace Watermelon.BubbleMerge
             else
             {
                 OnFieldBallLaunched();
+            }
+
+            // hk追加：フィニッシャー出現中は、弾くたびに残り回数を減らす
+            if (isFinisherActive)
+            {
+                finisherShotCount--;
+                Debug.Log("残り発射回数: " + finisherShotCount); // hk追加：デバッグ用
+
+                if (finisherShotCount <= 0)
+                {
+                    // hk追加：回数を使い切った時点でまだフィニッシャーが盤面にあればゲームオーバー
+                    if (isFinisherActive)
+                    {
+                        HKGameManager.Instance.OnJudgementResult(false, 0);
+                    }
+                }
             }
         }
 
@@ -91,7 +111,11 @@ namespace Watermelon.BubbleMerge
             nextBall = nextNextBall;
             nextNextBall = supplyData.GetRandomBall();
 
-            SpawnCurrentBall();
+            // hk追加：フィニッシャー出現中は補充しない
+            if (!isFinisherActive)
+            {
+                SpawnCurrentBall();
+            }
 
             UpdateUI();
         }
@@ -133,7 +157,23 @@ namespace Watermelon.BubbleMerge
                 assistantPosition.position,
                 Quaternion.identity
             );
+
+            FinisherBall.FinisherType type = FinisherBall.FinisherType.Fire;
+            Texture icon = finisherSupplyData.GetIcon(type);
+            currentFinisher.GetComponent<FinisherBall>().SetData(type, icon);
+
+            // hk追加：フィニッシャーをbubblesリストに追加してActivateMinDragの対象にする
+            BubbleBehavior finisherBubble = currentFinisher.GetComponent<BubbleBehavior>();
+            if (finisherBubble != null)
+            {
+                LevelController.LevelBehavior.AddBubble(finisherBubble);
+            }
+
+            if (currentBallObject != null) currentBallObject.gameObject.SetActive(false);
             isFinisherActive = true;
+
+            finisherShotCount = RecipeManager.Instance.GetCurrentRecipe().finisherShotLimit;
+            Debug.Log("フィニッシャー出現！残り発射回数: " + finisherShotCount);
         }
 
         // フィニッシャーが鍋に入った時にCookingAreaManagerから呼ばれる
@@ -142,11 +182,54 @@ namespace Watermelon.BubbleMerge
             isFinisherActive = false;
             currentFinisher = null;
         }
+        // hk追加：フィニッシャーを破棄する（クリア・ゲームオーバー時に呼ぶ）
+        public void ClearFinisher() // hk追加
+        {
+            if (currentFinisher != null)
+            {
+                // hk追加：bubblesリストからフィニッシャーを削除してからDestroy
+                BubbleBehavior finisherBubble = currentFinisher.GetComponent<BubbleBehavior>();
+                if (finisherBubble != null)
+                {
+                    LevelController.LevelBehavior.RemoveBubble(finisherBubble);
+                }
+
+                Destroy(currentFinisher);
+                currentFinisher = null;
+            }
+            isFinisherActive = false;
+        }
+        // hk追加：レベル開始時に状態をリセットする
+        public void ResetState()
+        {
+            isFinisherActive = false;
+            finisherShotCount = 0;
+
+            if (currentFinisher != null)
+            {
+                Destroy(currentFinisher);
+                currentFinisher = null;
+            }
+
+            if (currentBallObject != null)
+            {
+                currentBallObject.gameObject.SetActive(false);
+                currentBallObject = null;
+            }
+
+            if (LevelController.LevelBehavior != null)
+            {
+                LevelController.LevelBehavior.OnBubbleLaunched -= OnBubbleLaunched;
+            }
+        }
+
 
         public (Branch, BallType) GetCurrentBall() => currentBall; // hk追加
         public (Branch, BallType) GetNextBall() => nextBall;       // hk追加
         public (Branch, BallType) GetNextNextBall() => nextNextBall; // hk追加
-
+        public bool IsFinisherActive() => isFinisherActive; // hk追加
+        public BallData SupplyData => supplyData; // hk追加
+        public FinisherSupplyData FinisherData => finisherSupplyData; // hk追加
         private void UpdateUI() // hk追加
         {
             // 今後実装

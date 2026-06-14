@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 3957912005644861032}
   - component: {fileID: 7349332004102407695}
   - component: {fileID: 7667392931469995671}
+  - component: {fileID: 3554567422226418192}
   m_Layer: 0
-  m_Name: Bubble
+  m_Name: FinisherBall
   m_TagString: Bubble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,13 +44,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2575003353096176513}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf6f2bb7630c67249a9977d10ebbbe02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleSize: 1.1
-  forceMult: 40
+  forceMult: 20
   colliderRef: {fileID: 7588119264106327301}
   attractionTrigger: {fileID: 4666644514279186004}
   graphics: {fileID: 8442908596434680307}
@@ -66,7 +67,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 500
+  m_LinearDamping: 0.1
   m_AngularDamping: 2
   m_GravityScale: 0
   m_Material: {fileID: 6200000, guid: e43ef6edb4b349341a9bb33b94820bb4, type: 2}
@@ -87,7 +88,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2575003353096176513}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 816a012833ff3d144a47991ec80b362d, type: 3}
   m_Name: 
@@ -95,6 +96,20 @@ MonoBehaviour:
   ballCategory: 0
   branch: 0
   ballType: 0
+--- !u!114 &3554567422226418192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2575003353096176513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8c084c23c4f7a42a3b19c3735bcf2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.FinisherBall
+  finisherType: 0
+  meshRenderer: {fileID: 5042381850747191444}
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,7 +275,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 16f3bf9d6ee3341468928295c3d4d580, type: 2}
+  - {fileID: 2100000, guid: 3177aa8b59b77e0428cf0e5c69f89a5f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -319,7 +334,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.3
+  m_Radius: 0.5
 --- !u!58 &4196188002366830578
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -327,7 +342,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2959827110622101554}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -363,7 +378,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2959827110622101554}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a3815e2bcddbe54eb26cf491a7f8dfe, type: 3}
   m_Name: 

@@ -77,6 +77,7 @@ namespace Watermelon.BubbleMerge
             Data = data;
 
             rb.bodyType = RigidbodyType2D.Dynamic;
+            GetComponent<BallBehaviorHK>()?.ApplyPhysicsData(rb); // hk追加：ボールごとの物理パラメータを適用
             rb.SetVelocity(startVelocity * 0.35f);
             colliderRef.enabled = true;
             colliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
@@ -111,11 +112,12 @@ namespace Watermelon.BubbleMerge
             if (collision.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE))
             {
                 BubbleBehavior bubble = collision.gameObject.GetComponent<BubbleBehavior>();
+                if(bubble == null || collision.gameObject.GetComponent<FinisherBall>() != null || GetComponent<FinisherBall>() != null) return; // hk追加：FinisherBall関連オブジェクトとの衝突を無視
 
                 if (bubbleSpecialEffect != null)
                     bubbleSpecialEffect.OnBubbleCollided(bubble);
 
-                if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble))
+                if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()) // hk追加：フィニッシャー出現後は合体しない
                 {
                     bubble.IsMerging = true;
                     IsMerging = true;

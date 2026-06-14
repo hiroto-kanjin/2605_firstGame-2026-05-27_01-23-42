@@ -24,8 +24,12 @@ namespace Watermelon.BubbleMerge
         // ゲーム開始時の初期化
         public void StartGame(RecipeData recipe) // hk追加
         {
+            Debug.Log("StartGame called"); // hk追加：デバッグ用
             currentScore = 0;
             isRecipeReady = false;
+
+            // hk追加：HKSupplyManagerの状態をリセットする
+            HKSupplyManager.Instance.ResetState();
 
             RecipeManager.Instance.SetRecipe(recipe);
             CookingAreaManager.Instance.ResetPot();
@@ -37,6 +41,7 @@ namespace Watermelon.BubbleMerge
         // 鍋の中身が変わるたびにRecipeManagerから呼ばれる
         public void OnPotContentsChanged() // hk追加
         {
+            Debug.Log("OnPotContentsChanged called, recipeReady will be checked"); // hk追加：デバッグ用
             // 鍋の中身を取得する
             var ballsInPot = CookingAreaManager.Instance.GetBallsInPot();
 
@@ -65,6 +70,9 @@ namespace Watermelon.BubbleMerge
         {
             currentScore = completionScore;
             currentRank = CompletionScoreCalculator.Instance.GetRank(completionScore);
+
+            // hk追加：判定後はフィニッシャーを破棄する
+            HKSupplyManager.Instance.ClearFinisher();
 
             if (recipeMatched)
             {

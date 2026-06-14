@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Watermelon.BubbleMerge
 {
-    [CreateAssetMenu(fileName = "BallSupplyData", menuName = "HK/BallSupplyData")]
-    public class BallSupplyData : ScriptableObject // hk追加
+    [CreateAssetMenu(fileName = "BallData", menuName = "HK/BallData")]
+    public class BallData : ScriptableObject // hk追加
     {
         [SerializeField] private List<BallSupplyEntry> entries;
 
@@ -27,6 +27,16 @@ namespace Watermelon.BubbleMerge
 
             return (entries[0].branch, entries[0].ballType);
         }
+        // hk追加：BranchとBallTypeに合うEntryを探す
+        public BallSupplyEntry GetEntry(Branch branch, BallType ballType)
+        {
+            foreach (var entry in entries)
+            {
+                if (entry.branch == branch && entry.ballType == ballType)
+                    return entry;
+            }
+            return null;
+        }
     }
 
     [System.Serializable]
@@ -36,5 +46,12 @@ namespace Watermelon.BubbleMerge
         public BallType ballType;
         [Range(0f, 100f)]
         public float spawnRate;
+
+        [Header("Physics")] // hk追加
+        public float mass = 1f;          // hk追加
+        public float linearDamping = 0.4f; // hk追加
+        [Range(0f, 1f)]
+        public float bounciness = 0.3f;  // hk追加
+        public AnimationCurve dampingCurve = AnimationCurve.Linear(0, 10, 1, 0.5f); // hk追加：速度0〜1で追加分10→0.5
     }
 }

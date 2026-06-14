@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubbleDragRange:
     firstValue: 0
-    secondValue: 10
+    secondValue: 3
   minDragDuration: 0.5
   dragTransitionDuration: 3
   force:
-    firstValue: 1
-    secondValue: 3
+    firstValue: 0.2
+    secondValue: 1
   bubbleDragCurve:
     serializedVersion: 2
     m_Curve:
