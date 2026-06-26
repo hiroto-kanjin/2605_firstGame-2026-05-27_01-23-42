@@ -97,6 +97,7 @@ namespace Watermelon.BubbleMerge
             var ballsInPot = CookingAreaManager.Instance.GetBallsInPot();
             bool recipeReady = CheckRecipe(ballsInPot);
 
+            Debug.Log($"recipeReady={recipeReady} isRecipeReady={isRecipeReady} isFinisherActive={HKSupplyManager.Instance.IsFinisherActive()}"); // hk追加：デバッグ用
             // hk追加：フィニッシャーが既に出ている場合はレシピ成立を無視する
             if (recipeReady && !isRecipeReady && !HKSupplyManager.Instance.IsFinisherActive())
             {

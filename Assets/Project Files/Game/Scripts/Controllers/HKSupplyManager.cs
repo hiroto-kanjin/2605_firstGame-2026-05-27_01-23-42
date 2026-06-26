@@ -135,12 +135,13 @@ namespace Watermelon.BubbleMerge
             CancelInvoke(nameof(SpawnCurrentBall)); // hk追加：通常ボールの生成をキャンセル
             TrajectoryController.EndDrag(); // hk追加：ドラッグを強制解除する
 
-            // hk追加：ランチャーにボールがなければ0.5秒後にフィニッシャーを生成する
-            if (currentBallObject == null)
+            // hk追加：ランチャーのボールを破棄して0.5秒後にフィニッシャーを生成する
+            if (currentBallObject != null)
             {
-                Invoke(nameof(SpawnFinisher), 0.5f);
+                currentBallObject.gameObject.SetActive(false);
+                currentBallObject = null;
             }
-            // hk追加：ランチャーにボールがあれば発射後にShiftToNextでフィニッシャーを生成する
+            Invoke(nameof(SpawnFinisher), 0.5f);
         }
 
         public void OnFinisherEnteredPot() // hk追加
