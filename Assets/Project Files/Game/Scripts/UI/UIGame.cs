@@ -9,6 +9,7 @@ namespace Watermelon
     public class UIGame : UIPage
     {
         [SerializeField] TMP_Text movesLeft;
+        [SerializeField] TMP_Text finalCount; // hk追加：ファイナルカウントダウン用テキスト
         [SerializeField] TextMeshProUGUI levelText;
 
         [SerializeField] Image requirementsResultImage;
@@ -40,6 +41,8 @@ namespace Watermelon
             LevelController.OnTurnChanged += OnTurnChanged;
 
             NotchSaveArea.RegisterRectTransform(safeAreaRectTransform);
+
+            finalCount.gameObject.SetActive(false); // hk追加：最初は非表示
         }
 
         private void OnDestroy()
@@ -51,7 +54,6 @@ namespace Watermelon
         public override void PlayHideAnimation()
         {
             UILevelNumberText.Hide(false);
-
             UIController.OnPageClosed(this);
         }
 
@@ -71,6 +73,33 @@ namespace Watermelon
         private void OnTurnChanged()
         {
             movesLeft.text = (LevelController.TurnsLimit - LevelController.Turn).ToString();
+        }
+
+        // hk追加：ゲーム開始時にUIを初期状態に戻す
+        public void ResetCountUI()
+        {
+            movesLeft.gameObject.SetActive(true);
+            finalCount.gameObject.SetActive(false);
+        }
+
+        // hk追加：通常カウントダウンを更新する
+        public void UpdateShotsRemaining(int shotsRemaining)
+        {
+            movesLeft.text = shotsRemaining.ToString();
+        }
+
+        // hk追加：ファイナルカウントダウンに切り替える
+        public void SwitchToFinalCountdown(int shotsRemaining)
+        {
+            movesLeft.gameObject.SetActive(false);
+            finalCount.gameObject.SetActive(true);
+            finalCount.text = shotsRemaining.ToString();
+        }
+
+        // hk追加：ファイナルカウントダウンを更新する
+        public void UpdateFinalCountdown(int shotsRemaining)
+        {
+            finalCount.text = shotsRemaining.ToString();
         }
 
         #region Combo
@@ -96,7 +125,7 @@ namespace Watermelon
         {
             LevelController.OnGamePopupOpened();
 
-            UILevelQuitPopUp.Show((exit)=> {
+            UILevelQuitPopUp.Show((exit) => {
 
                 if (exit)
                 {

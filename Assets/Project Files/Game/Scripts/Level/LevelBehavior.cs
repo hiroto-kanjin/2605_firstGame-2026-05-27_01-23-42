@@ -511,15 +511,19 @@ namespace Watermelon.BubbleMerge
                     Ray ray = Camera.main.ScreenPointToRay(InputController.MousePosition);
                     if (Vector3.Distance(ray.origin.SetZ(selectedBubble.transform.position.z), selectedBubble.transform.position) > 0.25f)
                     {
-                        ActivateMinDrag();
+                        // hk追加：ファイナルカウントが0の時は発射しない
+                        if (!HKGameManager.Instance.IsFinalCountZero())
+                        {
+                            ActivateMinDrag();
 
-                        selectedBubble.Launch(ray.origin.SetZ(selectedBubble.transform.position.z));
+                            selectedBubble.Launch(ray.origin.SetZ(selectedBubble.transform.position.z));
 
-                        OnBubbleLaunched?.Invoke(selectedBubble);
+                            OnBubbleLaunched?.Invoke(selectedBubble);
 
-                        selectedBubble.ColliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+                            selectedBubble.ColliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
 
-                        AudioController.PlaySound(AudioController.AudioClips.launchBubbleSound);
+                            AudioController.PlaySound(AudioController.AudioClips.launchBubbleSound);
+                        }
                     }
 
                     TrajectoryController.EndDrag();

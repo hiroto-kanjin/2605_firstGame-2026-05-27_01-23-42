@@ -7,33 +7,32 @@ namespace Watermelon.BubbleMerge
     {
         [SerializeField, LevelEditorSetting] string note;
 
-        [SerializeField, LevelEditorSetting] int bubblesOnTheFieldAmount;
+        [HideInInspector, SerializeField, LevelEditorSetting] int bubblesOnTheFieldAmount;
         public int BubblesOnTheFieldAmount => bubblesOnTheFieldAmount;
 
-        [SerializeField, LevelEditorSetting] int turnsLimit;
+        [HideInInspector, SerializeField, LevelEditorSetting] int turnsLimit;
         public int TurnsLimit => turnsLimit;
 
-        [SerializeField, LevelEditorSetting] int coinsReward = 20;
+        [HideInInspector, SerializeField, LevelEditorSetting] int coinsReward = 20;
         public int CoinsReward => (int)(coinsReward * (LevelController.IsLevelCompletedForTheFirstTime ? 1f : 0.3f));
 
-        [SerializeField, LevelEditorSetting] GeneralLevelTarget requirements = new GeneralLevelTarget();
+        [HideInInspector, SerializeField, LevelEditorSetting] GeneralLevelTarget requirements = new GeneralLevelTarget();
         public GeneralLevelTarget Requirements => requirements;
 
-        [SerializeField, LevelEditorSetting] bool canBeUsedInRandomizer = true;
+        [HideInInspector, SerializeField, LevelEditorSetting] bool canBeUsedInRandomizer = true;
         public bool CanBeUsedInRandomizer => canBeUsedInRandomizer;
 
         [SerializeField, LevelEditorSetting] ItemSave[] items;
         [SerializeField, LevelEditorSetting] LevelShapeType levelShapeType;
         [SerializeField, LevelEditorSetting] LevelBackgroundType levelBackType;
 
-        private List<BubbleSpawnData> spawnQueue;
-        public List<BubbleSpawnData> SpawnQueue => spawnQueue;
         public ItemSave[] Items => items;
-
         public int ItemsAmount => items.Length;
-
         public LevelShapeType LevelShapeType => levelShapeType;
         public LevelBackgroundType LevelBackType => levelBackType;
+
+        private List<BubbleSpawnData> spawnQueue;
+        public List<BubbleSpawnData> SpawnQueue => spawnQueue;
 
         public void Init()
         {
@@ -61,27 +60,22 @@ namespace Watermelon.BubbleMerge
 
             spawnQueue.Shuffle();
 
-            // finding all bubbles without effect
             List<BubbleSpawnData> bubblesWithoutEffects = new List<BubbleSpawnData>();
 
             for (int i = 0; i < spawnQueue.Count; i++)
             {
                 if (!spawnQueue[i].HasEffect)
-                {
                     bubblesWithoutEffects.Add(spawnQueue[i]);
-                }
             }
 
             bubblesWithoutEffects.Shuffle();
 
-            // ice bubbles initialization
             for (int i = 0; i < requirements.IceBubblesPerLevel && bubblesWithoutEffects.Count > 0; i++)
             {
                 bubblesWithoutEffects[0].iceHP = requirements.IceBubblesHealth;
                 bubblesWithoutEffects.RemoveAt(0);
             }
 
-            // box bubbles initialization
             for (int i = 0; i < requirements.BoxesPerLevel && bubblesWithoutEffects.Count > 0; i++)
             {
                 bubblesWithoutEffects[0].boxHP = requirements.BoxesHealth;
@@ -115,9 +109,7 @@ namespace Watermelon.BubbleMerge
                 if (testData.branch == data.branch)
                 {
                     similarSpawnData = testData;
-
                     spawnQueue.RemoveAt(i);
-
                     return true;
                 }
             }

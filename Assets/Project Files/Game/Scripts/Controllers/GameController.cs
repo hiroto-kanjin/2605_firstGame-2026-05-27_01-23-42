@@ -35,7 +35,6 @@ namespace Watermelon
 
             LevelSave = SaveController.GetSaveObject<SimpleIntSave>("levelSave");
 
-            // Cache components
             CacheComponent(out particlesController);
             CacheComponent(out floatingTextController);
             CacheComponent(out levelController);
@@ -58,17 +57,15 @@ namespace Watermelon
 
         private void Start()
         {
-            // Display default page
             UIController.ShowPage<UIMainMenu>();
 
             levelController.Init();
             MapLevelAbstractBehavior.OnLevelClicked += OnLevelClickedCallback;
             mapBehavior.Show();
 
-            // Move this method to the point when the game is fully loaded
             GameLoading.MarkAsReadyToHide();
 
-            if(LevelAutoRun.CheckIfNeedToAutoRunLevel())
+            if (LevelAutoRun.CheckIfNeedToAutoRunLevel())
             {
                 OnLevelStart(LevelAutoRun.GetLevelIndex());
             }
@@ -76,15 +73,15 @@ namespace Watermelon
 
         private void OnLevelClickedCallback(int value)
         {
-            if(LivesSystem.Lives > 0 || LivesSystem.InfiniteMode)
+            if (LivesSystem.Lives > 0 || LivesSystem.InfiniteMode)
             {
                 UIController.GetPage<UIMainMenu>().ShowLevelPopup(value);
             }
             else
             {
                 UIAddLivesPanel.Show((lifeRecieved) =>
-                {   
-                    if(lifeRecieved)
+                {
+                    if (lifeRecieved)
                     {
                         UIController.GetPage<UIMainMenu>().ShowLevelPopup(value);
                     }
@@ -105,8 +102,7 @@ namespace Watermelon
             UIController.HidePage<UIMainMenu>();
             UIController.ShowPage<UIGame>();
 
-            // hk追加：HKゲームロジックを開始する
-            HKGameManager.Instance.StartGame(RecipeManager.Instance.GetCurrentRecipe());
+            HKGameManager.Instance.StartGame(); // hk追加：引数不要になった
         }
 
         public static void OnLevelCompleted()
@@ -127,6 +123,8 @@ namespace Watermelon
 
             OnLevelChanged?.Invoke();
 
+            HKGameManager.Instance.StartGame(); // hk追加
+
             AdsManager.ShowInterstitial(null);
         }
 
@@ -142,8 +140,7 @@ namespace Watermelon
             UIController.ShowPage<UIGame>();
             LevelController.LoadLevel(LevelSave.Value);
 
-            // hk追加：HKゲームロジックを再初期化する
-            HKGameManager.Instance.StartGame(RecipeManager.Instance.GetCurrentRecipe());
+            HKGameManager.Instance.StartGame(); // hk追加
 
             AdsManager.ShowInterstitial(null);
         }
@@ -166,20 +163,17 @@ namespace Watermelon
             if (unboxedComponent != null)
             {
                 component = (T)unboxedComponent;
-
                 return true;
             }
 
             Debug.LogError(string.Format("Scripts Holder doesn't have {0} script added to it", typeof(T)));
 
             component = null;
-
             return false;
         }
         #endregion
 
         #region Dev
-
         public static void OnLevelManuallyChanged()
         {
             OnLevelChanged?.Invoke();

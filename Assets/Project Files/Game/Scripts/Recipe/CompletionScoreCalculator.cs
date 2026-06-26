@@ -7,18 +7,17 @@ namespace Watermelon.BubbleMerge
     {
         public static CompletionScoreCalculator Instance { get; private set; }
 
-        // 減点値（インスペクターで調整可能）
-        [SerializeField] private int penaltyExtraEvolutionBall = 20;  // レシピ外の進化ボール
-        [SerializeField] private int penaltyExtraSpecialBall = 15;    // レシピ外の特殊ボール
-        [SerializeField] private int penaltyNuisanceBall = 5;         // お邪魔ボール
+        [SerializeField] private int penaltyExtraEvolutionBall = 20;
+        [SerializeField] private int penaltyExtraSpecialBall = 15;
+        [SerializeField] private int penaltyNuisanceBall = 5;
 
         private void Awake()
         {
             Instance = this;
         }
 
-        // 完成度を計算して返す
-        public int Calculate(List<BallBehaviorHK> ballsInPot, RecipeData recipe) // hk追加
+        // hk追加：RecipeDataではなくList<RecipeIngredient>を受け取る
+        public int Calculate(List<BallBehaviorHK> ballsInPot, List<RecipeIngredient> ingredients)
         {
             int score = 100;
 
@@ -27,22 +26,18 @@ namespace Watermelon.BubbleMerge
                 BallCategory category = ball.GetBallCategory();
                 BallType type = ball.GetBallType();
 
-                // お邪魔ボールの場合
                 if (category == BallCategory.Nuisance)
                 {
                     score -= penaltyNuisanceBall;
                     continue;
                 }
 
-                // レシピに含まれているか確認する
-                if (!IsInRecipe(ball.GetBranch(), type, recipe))
+                if (!IsInRecipe(ball.GetBranch(), type, ingredients))
                 {
-                    // 進化ボールの場合
                     if (category == BallCategory.Evolution)
                     {
                         score -= penaltyExtraEvolutionBall;
                     }
-                    // 特殊ボールの場合
                     else if (category == BallCategory.Special)
                     {
                         score -= penaltyExtraSpecialBall;
@@ -53,10 +48,9 @@ namespace Watermelon.BubbleMerge
             return score;
         }
 
-        // レシピに含まれている食材かどうか確認する
-        private bool IsInRecipe(Branch branch, BallType type, RecipeData recipe) // hk追加
+        private bool IsInRecipe(Branch branch, BallType type, List<RecipeIngredient> ingredients) // hk追加
         {
-            foreach (RecipeIngredient ingredient in recipe.requiredIngredients)
+            foreach (RecipeIngredient ingredient in ingredients)
             {
                 if (ingredient.branch == branch && ingredient.ballType == type)
                     return true;
@@ -64,7 +58,6 @@ namespace Watermelon.BubbleMerge
             return false;
         }
 
-        // 完成度からランクを返す
         public CompletionRank GetRank(int score) // hk追加
         {
             if (score == 100) return CompletionRank.Perfect;
@@ -75,13 +68,12 @@ namespace Watermelon.BubbleMerge
         }
     }
 
-    // 完成度ランクの定義
     public enum CompletionRank // hk追加
     {
-        Perfect,   // 100点
-        Great,     // 80〜99点
-        Good,      // 60〜79点
-        Bad,       // 40点以下
-        Terrible   // マイナス（ゲテモノ料理）
+        Perfect,
+        Great,
+        Good,
+        Bad,
+        Terrible
     }
 }

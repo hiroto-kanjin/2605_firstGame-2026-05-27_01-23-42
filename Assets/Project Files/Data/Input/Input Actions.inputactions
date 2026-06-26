@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "Input Actions",
     "maps": [
         {
@@ -81,7 +82,25 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LauncherMoveLeft",
+                    "type": "Button",
+                    "id": "25dfedfb-002d-42fb-9a0b-05cb6a61cdf3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LauncherMoveRight",
+                    "type": "Button",
+                    "id": "f45ef3c2-4b29-43fb-8a6f-30f9fd1f21ab",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -470,6 +489,28 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "34ee2e58-5162-4ffa-9124-f8a8e42fbd5f",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "LauncherMoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a7fc5eeb-1968-4ce5-adf5-8a4f99f0173f",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "LauncherMoveRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

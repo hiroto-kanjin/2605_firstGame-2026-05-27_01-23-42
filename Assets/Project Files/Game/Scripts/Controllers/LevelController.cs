@@ -271,24 +271,14 @@ namespace Watermelon.BubbleMerge
 
         public void TurnMade(BubbleBehavior bubble)
         {
-            Turn++;
-
-            if (turn >= turnsLimit)
-            {
-                LevelBehavior.OnTapHappened += Tapped;
-                gameOverCase = Tween.DelayedCall(2f, Tapped);
-            }
+            // hk追加：カウント管理はHKGameManagerに移譲
         }
 
         TweenCase gameOverCase;
 
         private void Tapped()
         {
-            gameOverCase.KillActive();
-
-            LevelBehavior.OnTapHappened -= Tapped;
-
-            LevelFail();
+            // hk追加：カウント管理はHKGameManagerに移譲
         }
 
         public void BubbleSelected(BubbleBehavior bubble)
