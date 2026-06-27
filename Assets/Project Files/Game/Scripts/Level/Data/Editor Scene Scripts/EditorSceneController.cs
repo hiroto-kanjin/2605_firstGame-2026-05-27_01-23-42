@@ -63,6 +63,38 @@ namespace Watermelon.BubbleMerge
             HandleTeleportIfNessesary(gameObject, tempItemSave.Type);
             SelectGameObject(gameObject);
         }
+        // hk追加：お邪魔ボールをシーンに配置する
+public void SpawnNuisanceBall(GameObject prefab, Vector3 defaultPosition, NuisanceBallType nuisanceType)
+{
+    GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+    gameObject.transform.SetParent(container.transform);
+    gameObject.transform.position = defaultPosition;
+    gameObject.transform.rotation = Quaternion.identity;
+    gameObject.name = "NuisanceBall_" + nuisanceType + " (el # " + container.transform.childCount + ")";
+
+    SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
+    savableItemHK.Category = PlacementCategory.Nuisance;
+    savableItemHK.TypeIndex = (int)nuisanceType;
+
+    SelectGameObject(gameObject);
+}
+
+// hk追加：SpecialEffectをシーンに配置する
+public void SpawnSpecialEffect(GameObject prefab, Vector3 defaultPosition, SpecialEffectType effectType)
+{
+    GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+    gameObject.transform.SetParent(container.transform);
+    gameObject.transform.position = defaultPosition;
+    gameObject.transform.rotation = Quaternion.identity;
+    gameObject.name = "SpecialEffect_" + effectType + " (el # " + container.transform.childCount + ")";
+
+    SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
+    savableItemHK.Category = PlacementCategory.SpecialEffect;
+    savableItemHK.TypeIndex = (int)effectType;
+
+    SelectGameObject(gameObject);
+}
+
 
         private void HandleTeleportIfNessesary(GameObject gameObject, Item type)
         {
@@ -136,6 +168,48 @@ namespace Watermelon.BubbleMerge
 
             return result.ToArray();
         }
+
+        // hk追加：お邪魔ボールの配置データを取得する
+public NuisanceBallSaveHK[] GetNuisanceBallPlacements()
+{
+    SavableItemHK[] savableItems = container.GetComponentsInChildren<SavableItemHK>();
+    List<NuisanceBallSaveHK> result = new List<NuisanceBallSaveHK>();
+
+    for (int i = 0; i < savableItems.Length; i++)
+    {
+        if (savableItems[i].Category == PlacementCategory.Nuisance)
+        {
+            result.Add(new NuisanceBallSaveHK()
+            {
+                type = (NuisanceBallType)savableItems[i].TypeIndex,
+                position = savableItems[i].transform.position
+            });
+        }
+    }
+
+    return result.ToArray();
+}
+
+// hk追加：SpecialEffectの配置データを取得する
+public SpecialEffectSaveHK[] GetSpecialEffectPlacements()
+{
+    SavableItemHK[] savableItems = container.GetComponentsInChildren<SavableItemHK>();
+    List<SpecialEffectSaveHK> result = new List<SpecialEffectSaveHK>();
+
+    for (int i = 0; i < savableItems.Length; i++)
+    {
+        if (savableItems[i].Category == PlacementCategory.SpecialEffect)
+        {
+            result.Add(new SpecialEffectSaveHK()
+            {
+                type = (SpecialEffectType)savableItems[i].TypeIndex,
+                position = savableItems[i].transform.position
+            });
+        }
+    }
+
+    return result.ToArray();
+}
 
         private ItemSave HandleParse(SavableItem savableItem)
         {

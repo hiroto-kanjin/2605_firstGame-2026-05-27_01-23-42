@@ -23,6 +23,16 @@ namespace Watermelon.BubbleMerge
         public bool CanBeUsedInRandomizer => canBeUsedInRandomizer;
 
         [SerializeField, LevelEditorSetting] ItemSave[] items;
+        [SerializeField, LevelEditorSetting] bool nuisanceBallsRandom = true; // hk追加
+        [SerializeField, LevelEditorSetting] NuisanceBallSaveHK[] nuisanceBallPlacements = new NuisanceBallSaveHK[0]; // hk追加
+        [SerializeField, LevelEditorSetting] bool specialEffectsRandom = true; // hk追加
+        [SerializeField, LevelEditorSetting] SpecialEffectSaveHK[] specialEffectPlacements = new SpecialEffectSaveHK[0]; // hk追加
+
+        public bool NuisanceBallsRandom => nuisanceBallsRandom; // hk追加
+        public NuisanceBallSaveHK[] NuisanceBallPlacements => nuisanceBallPlacements; // hk追加
+        public bool SpecialEffectsRandom => specialEffectsRandom; // hk追加
+        public SpecialEffectSaveHK[] SpecialEffectPlacements => specialEffectPlacements; // hk追加
+
         [SerializeField, LevelEditorSetting] LevelShapeType levelShapeType;
         [SerializeField, LevelEditorSetting] LevelBackgroundType levelBackType;
 

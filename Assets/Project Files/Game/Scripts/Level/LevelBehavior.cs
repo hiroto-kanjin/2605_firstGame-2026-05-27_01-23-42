@@ -106,24 +106,7 @@ namespace Watermelon.BubbleMerge
 
             for (int i = 0; i < levelItems.Length; i++)
             {
-                // hk追加：お邪魔ボールはSpawnNuisanceBallHKで生成する
-                if (levelItems[i].Type >= Item.NuisanceBall_0 && levelItems[i].Type <= Item.NuisanceBall_4)
-                {
-                    int nuisanceIndex = (int)levelItems[i].Type - 10;
-                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry(nuisanceIndex);
-                    if (entry == null) continue;
 
-                    BubbleBehavior bubble = SpawnNuisanceBallHK(entry.icon, levelItems[i].Position);
-                    if (bubble != null)
-                    {
-                        BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
-                        if (ballHK != null)
-                        {
-                            ballHK.SetData(BallCategory.Nuisance, nuisanceIndex);
-                        }
-                    }
-                    continue;
-                }
 
                 newItem = Instantiate(database.GetItem(levelItems[i].Type).Prefab, levelItems[i].Position, Quaternion.Euler(levelItems[i].Rotation));
                 newItem.transform.localScale = levelItems[i].Scale;
@@ -352,6 +335,53 @@ namespace Watermelon.BubbleMerge
                 return SpawnBubble(spawnData, data, position, false, Vector2.zero);
             }
             return null;
+        }
+
+        // hk追加：Level.assetのお邪魔ボール配置データをもとにスポーンする
+        public void SpawnNuisanceBallsFromLevelHK()
+        {
+            Level level = LevelController.Level;
+            if (level == null) return;
+
+            if (level.NuisanceBallsRandom)
+            {
+                // ランダム配置
+                foreach (NuisanceBallSaveHK save in level.NuisanceBallPlacements)
+                {
+                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry((int)save.type);
+                    if (entry == null) continue;
+
+                    Vector3 position = LevelController.LevelBehavior.GetRandomPosition();
+                    BubbleBehavior bubble = LevelController.LevelBehavior.SpawnNuisanceBallHK(entry.icon, position);
+                    if (bubble != null)
+                    {
+                        BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
+                        if (ballHK != null)
+                        {
+                            ballHK.SetData(BallCategory.Nuisance, (int)save.type);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // 手動配置
+                foreach (NuisanceBallSaveHK save in level.NuisanceBallPlacements)
+                {
+                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry((int)save.type);
+                    if (entry == null) continue;
+
+                    BubbleBehavior bubble = LevelController.LevelBehavior.SpawnNuisanceBallHK(entry.icon, save.position);
+                    if (bubble != null)
+                    {
+                        BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
+                        if (ballHK != null)
+                        {
+                            ballHK.SetData(BallCategory.Nuisance, (int)save.type);
+                        }
+                    }
+                }
+            }
         }
 
         // hk追加：HKSupplyManagerからボールを生成するための公開メソッド

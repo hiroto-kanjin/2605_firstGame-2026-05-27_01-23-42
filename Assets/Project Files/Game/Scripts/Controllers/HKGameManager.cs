@@ -42,7 +42,7 @@ namespace Watermelon.BubbleMerge
             UIController.GetPage<Watermelon.UIGame>().ResetCountUI();
             UIController.GetPage<Watermelon.UIGame>().UpdateShotsRemaining(shotsRemaining);
             RecipeDisplayUI.Instance.SetupRecipe(currentLevel.requiredIngredients); // hk追加：レシピUIを初期化する
-            NuisanceBallSpawner.Instance.SpawnNuisanceBalls(); // hk追加：お邪魔ボールを配置する
+            LevelController.LevelBehavior.SpawnNuisanceBallsFromLevelHK(); // hk追加：お邪魔ボールを配置する
         }
 
         public void OnShotFired() // hk追加
