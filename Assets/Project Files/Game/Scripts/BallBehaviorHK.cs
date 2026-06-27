@@ -5,72 +5,87 @@ namespace Watermelon.BubbleMerge
     public class BallBehaviorHK : MonoBehaviour // hk追加
     {
         [SerializeField] private BallCategory ballCategory; // hk追加
-        [SerializeField] private Branch branch; // hk追加：進化ボールの種類（Vegetables等）
-        [SerializeField] private BallType ballType; // hk追加
-        private BallSupplyEntry physicsEntry; // hk追加：キャッシュ用
+        [SerializeField] private Branch branch; // hk追加：進化ボールのみ使用
+        [SerializeField] private BallType ballType; // hk追加：進化ボールのみ使用
+        [SerializeField] private int ballIndex = 0; // hk追加：特殊・お邪魔ボールのインデックス
+        private EvolutionBallEntry physicsEntry; // hk追加：キャッシュ用
         private Rigidbody2D cachedRb; // hk追加
 
-        public BallCategory GetBallCategory() // hk追加
-        {
-            return ballCategory;
-        }
+        public BallCategory GetBallCategory() => ballCategory; // hk追加
+        public Branch GetBranch() => branch; // hk追加
+        public BallType GetBallType() => ballType; // hk追加
+        public int GetBallIndex() => ballIndex; // hk追加
 
-        public Branch GetBranch() // hk追加
-        {
-            return branch;
-        }
-
-        public BallType GetBallType() // hk追加
-        {
-            return ballType;
-        }
-        // hk追加：外部から値を設定するためのメソッド
-        public void SetData(BallCategory category, Branch branch, BallType type)
+        public void SetData(BallCategory category, Branch branch, BallType type) // hk追加：進化ボール用
         {
             ballCategory = category;
             this.branch = branch;
             ballType = type;
         }
-        public void ApplyPhysicsData(Rigidbody2D rb)
+
+        public void SetData(BallCategory category, int index) // hk追加：特殊・お邪魔ボール用
         {
-            Debug.Log("ApplyPhysicsData called: " + ballType); // hk追加：デバッグ用
-            var entry = HKSupplyManager.Instance.SupplyData.GetEntry(branch, ballType);
-            if (entry == null) return;
+            ballCategory = category;
+            ballIndex = index;
+        }
 
-            //entry.dampingCurve = new AnimationCurve(
-            //    new Keyframe(0f, 20f),
-            //    new Keyframe(1f, 0f)
-            //); // hk追加：一時的に強制設定（速度0〜1でブレーキ強弱）
+        public void ApplyPhysicsData(Rigidbody2D rb) // hk追加
+        {
+            Debug.Log("ApplyPhysicsData called: " + ballCategory);
 
-            rb.mass = entry.mass;
-            rb.linearDamping = entry.linearDamping;
-            Debug.Log($"Set linearDamping to {entry.linearDamping}, actual rb.linearDamping = {rb.linearDamping}"); // hk追加：デバッグ用
+            var ballData = HKSupplyManager.Instance.SupplyData;
+            float mass = 1f;
+            float linearDamping = 25f;
+            float bounciness = 0.3f;
+            AnimationCurve dampingCurve = null;
+
+            if (ballCategory == BallCategory.Evolution)
+            {
+                var entry = ballData.GetEntry(branch, ballType);
+                if (entry == null) return;
+                mass = entry.mass;
+                linearDamping = entry.linearDamping;
+                bounciness = entry.bounciness;
+                dampingCurve = entry.dampingCurve;
+                physicsEntry = entry;
+            }
+            else if (ballCategory == BallCategory.Special)
+            {
+                var entry = ballData.GetSpecialEntry(ballIndex);
+                if (entry == null) return;
+                mass = entry.mass;
+                linearDamping = entry.linearDamping;
+                bounciness = entry.bounciness;
+                dampingCurve = entry.dampingCurve;
+            }
+            else if (ballCategory == BallCategory.Nuisance)
+            {
+                var entry = ballData.GetNuisanceEntry(ballIndex);
+                if (entry == null) return;
+                mass = entry.mass;
+                linearDamping = entry.linearDamping;
+                bounciness = entry.bounciness;
+                dampingCurve = entry.dampingCurve;
+            }
+
+            rb.mass = mass;
+            rb.linearDamping = linearDamping;
+            Debug.Log($"Set linearDamping to {linearDamping}, actual rb.linearDamping = {rb.linearDamping}");
 
             if (rb.sharedMaterial != null)
             {
                 var mat = new PhysicsMaterial2D(rb.sharedMaterial.name + "_Instance");
                 mat.friction = rb.sharedMaterial.friction;
-                mat.bounciness = entry.bounciness;
+                mat.bounciness = bounciness;
                 rb.sharedMaterial = mat;
             }
 
-            physicsEntry = entry; // hk追加
-            cachedRb = rb; // hk追加
+            cachedRb = rb;
         }
-        private void Update() // hk追加
-        {
-            //if (physicsEntry == null || cachedRb == null) return;
 
-            //float speed = cachedRb.linearVelocity.magnitude;
-            //cachedRb.linearDamping = physicsEntry.dampingCurve.Evaluate(speed);
+        private void Update() { } // hk追加
 
-            //if (speed < 0.05f) // hk追加：一定以下の速度になったら強制停止
-            //    cachedRb.linearVelocity = Vector2.zero;
-
-            //Debug.Log($"speed={speed}, damping={cachedRb.linearDamping}"); // hk追加：デバッグ用
-        }
-        // hk追加：このボールが無効化された時に鍋から削除する
-        private void OnDisable()
+        private void OnDisable() // hk追加
         {
             if (CookingAreaManager.Instance != null)
             {
@@ -86,7 +101,7 @@ namespace Watermelon.BubbleMerge
         Nuisance
     }
 
-    public enum BallType // hk追加
+    public enum BallType // hk追加：進化ボールのみ
     {
         EvolutionBall_01,
         EvolutionBall_02,

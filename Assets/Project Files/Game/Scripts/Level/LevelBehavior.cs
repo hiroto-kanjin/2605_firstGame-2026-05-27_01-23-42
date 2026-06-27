@@ -323,6 +323,18 @@ namespace Watermelon.BubbleMerge
             return bombItem.GetComponent<BombBehavior>();
         }
 
+        // hk追加：お邪魔・特殊ボールを生成するための公開メソッド
+        public BubbleBehavior SpawnNuisanceBallHK(Sprite icon, Vector3 position)
+        {
+            BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.Vegetables, stageId = 0 };
+            if (LevelController.CreateRandomBubbleData(spawnData, out var data))
+            {
+                data.icon = icon; // hk追加：アイコンを上書きする
+                return SpawnBubble(spawnData, data, position, false, Vector2.zero);
+            }
+            return null;
+        }
+
         // hk追加：HKSupplyManagerからボールを生成するための公開メソッド
         public BubbleBehavior SpawnBallHK(Branch branch, int stageId, Vector3 position)
         {

@@ -7,9 +7,9 @@ namespace Watermelon.BubbleMerge
     {
         public static HKGameManager Instance { get; private set; }
 
-        [SerializeField] private StageDatabase stageDatabase; // hk追加
+        [SerializeField] private GameLevelDatabase gameLevelDatabase; // hk追加
 
-        private StageData currentStage; // hk追加
+        private GameLevelData currentLevel; // hk追加
         private int currentScore = 0; // hk追加
         private CompletionRank currentRank; // hk追加
         private bool isRecipeReady = false; // hk追加
@@ -26,14 +26,14 @@ namespace Watermelon.BubbleMerge
         {
             Debug.Log("StartGame called");
 
-            currentStage = stageDatabase.GetStage(GameController.LevelID);
-            if (currentStage == null) return;
+            currentLevel = gameLevelDatabase.GetLevel(GameController.LevelID);
+            if (currentLevel == null) return;
 
             currentScore = 0;
             isRecipeReady = false;
             isGameEnded = false;
             isFinalCountZero = false;
-            shotsRemaining = currentStage.turnsLimit;
+            shotsRemaining = currentLevel.turnsLimit;
 
             HKSupplyManager.Instance.ResetState();
             CookingAreaManager.Instance.ResetPot();
@@ -41,7 +41,8 @@ namespace Watermelon.BubbleMerge
 
             UIController.GetPage<Watermelon.UIGame>().ResetCountUI();
             UIController.GetPage<Watermelon.UIGame>().UpdateShotsRemaining(shotsRemaining);
-            RecipeDisplayUI.Instance.SetupRecipe(currentStage.requiredIngredients); // hk追加：レシピUIを初期化する
+            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.requiredIngredients); // hk追加：レシピUIを初期化する
+            NuisanceBallSpawner.Instance.SpawnNuisanceBalls(); // hk追加：お邪魔ボールを配置する
         }
 
         public void OnShotFired() // hk追加
@@ -83,7 +84,7 @@ namespace Watermelon.BubbleMerge
         public void OnFinisherSpawned() // hk追加：フィニッシャーがランチャーに出た時に呼ばれる
         {
             isRecipeReady = true;
-            shotsRemaining = currentStage.finisherShotLimit;
+            shotsRemaining = currentLevel.finisherShotLimit;
             isFinalCountZero = false;
             Debug.Log("フィニッシャー出現！残りショット数: " + shotsRemaining);
 
@@ -115,7 +116,7 @@ namespace Watermelon.BubbleMerge
         {
             var potContents = CountBalls(ballsInPot);
 
-            foreach (RecipeIngredient ingredient in currentStage.requiredIngredients)
+            foreach (RecipeIngredient ingredient in currentLevel.requiredIngredients)
             {
                 var key = (ingredient.branch, ingredient.ballType);
                 if (!potContents.ContainsKey(key) || potContents[key] < ingredient.requiredCount)
@@ -163,7 +164,7 @@ namespace Watermelon.BubbleMerge
         }
 
         public bool IsFinalCountZero() => isFinalCountZero; // hk追加
-        public StageData GetCurrentStage() => currentStage; // hk追加
+        public GameLevelData GetCurrentLevel() => currentLevel; // hk追加
         public int GetCurrentScore() => currentScore; // hk追加
         public CompletionRank GetCurrentRank() => currentRank; // hk追加
         public bool IsRecipeReady() => isRecipeReady; // hk追加

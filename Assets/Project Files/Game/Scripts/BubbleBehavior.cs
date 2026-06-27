@@ -117,7 +117,9 @@ namespace Watermelon.BubbleMerge
                 if (bubbleSpecialEffect != null)
                     bubbleSpecialEffect.OnBubbleCollided(bubble);
 
-                if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()) // hk追加：フィニッシャー出現後は合体しない
+
+                if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()
+                    && !IsNuisance() && !bubble.IsNuisance()) // hk追加：お邪魔ボールは合成しない
                 {
                     bubble.IsMerging = true;
                     IsMerging = true;
@@ -365,6 +367,11 @@ namespace Watermelon.BubbleMerge
         private void PrintData()
         {
             Debug.Log(Data.ObjectToString());
+        }
+        public bool IsNuisance() // hk追加：お邪魔ボールかどうか
+        {
+            BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
+            return ballHK != null && ballHK.GetBallCategory() == BallCategory.Nuisance;
         }
     }
 

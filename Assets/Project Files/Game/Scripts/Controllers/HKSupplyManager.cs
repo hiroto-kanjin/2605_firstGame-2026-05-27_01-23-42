@@ -8,15 +8,15 @@ namespace Watermelon.BubbleMerge
 
         [SerializeField] private GameObject finisherPrefab;
         [SerializeField] private FinisherSupplyData finisherSupplyData; // hk追加
-        [SerializeField] private BallData supplyData;
+        [SerializeField] private BallData ballData; // hk追加：物理パラメータ用
         [SerializeField] private Transform launcherPosition;
 
         private (Branch branch, BallType ballType) currentBall;   // hk追加
         private (Branch branch, BallType ballType) nextBall;      // hk追加
         private (Branch branch, BallType ballType) nextNextBall;  // hk追加
 
-        private bool isFinisherActive = false; // hk追加
-        private bool isRecipeReady = false; // hk追加：レシピ成立フラグ
+        private bool isFinisherActive = false;
+        private bool isRecipeReady = false;
         private GameObject currentFinisher = null;
         private BubbleBehavior currentBallObject; // hk追加
 
@@ -27,9 +27,10 @@ namespace Watermelon.BubbleMerge
 
         public void StartSupply()
         {
-            currentBall = supplyData.GetRandomBall();
-            nextBall = supplyData.GetRandomBall();
-            nextNextBall = supplyData.GetRandomBall();
+            var stage = HKGameManager.Instance.GetCurrentLevel();
+            currentBall = stage.GetRandomBall(); // hk追加：GameLevelDataから供給確率を読む
+            nextBall = stage.GetRandomBall();
+            nextNextBall = stage.GetRandomBall();
 
             SpawnCurrentBall();
             LevelController.LevelBehavior.OnBubbleLaunched += OnBubbleLaunched;
@@ -37,7 +38,7 @@ namespace Watermelon.BubbleMerge
             UpdateUI();
         }
 
-        private void SpawnCurrentBall() // hk追加：通常ボールをランチャーに生成する
+        private void SpawnCurrentBall()
         {
             currentBallObject = LevelController.LevelBehavior.SpawnBallHK(
                 currentBall.branch,
@@ -51,7 +52,7 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        private void SpawnFinisher() // hk追加：フィニッシャーをランチャーに生成する
+        private void SpawnFinisher()
         {
             isRecipeReady = false;
             isFinisherActive = true;
@@ -74,13 +75,12 @@ namespace Watermelon.BubbleMerge
                 LevelController.LevelBehavior.AddBubble(finisherBubble);
             }
 
-            // hk追加：フィニッシャーがランチャーに出た時点でカウントダウン開始を通知する
             HKGameManager.Instance.OnFinisherSpawned();
 
             Debug.Log("フィニッシャー出現！");
         }
 
-        private void ShiftToNext() // hk追加：次のボールまたはフィニッシャーを0.5秒後に生成する
+        private void ShiftToNext()
         {
             if (isRecipeReady)
             {
@@ -88,9 +88,10 @@ namespace Watermelon.BubbleMerge
             }
             else
             {
+                var stage = HKGameManager.Instance.GetCurrentLevel(); // hk追加：GameLevelDataから供給確率を読む
                 currentBall = nextBall;
                 nextBall = nextNextBall;
-                nextNextBall = supplyData.GetRandomBall();
+                nextNextBall = stage.GetRandomBall();
                 Invoke(nameof(SpawnCurrentBall), 0.5f);
             }
             UpdateUI();
@@ -100,18 +101,16 @@ namespace Watermelon.BubbleMerge
         {
             Debug.Log("OnBubbleLaunched called. isFinisherActive=" + isFinisherActive + " bubble=" + launchedBubble.name);
 
-            HKGameManager.Instance.OnShotFired(); // hk追加
+            HKGameManager.Instance.OnShotFired();
 
             if (isFinisherActive)
             {
-                // hk追加：フィニッシャーが発射されたら何も生成しない
                 launchedBubble.transform.SetParent(null);
                 return;
             }
 
             if (launchedBubble == currentBallObject)
             {
-                // hk追加：ランチャーのボールが発射された場合
                 launchedBubble.transform.SetParent(null);
                 launchedBubble.EnablePhysics();
                 currentBallObject = null;
@@ -119,7 +118,6 @@ namespace Watermelon.BubbleMerge
             }
             else
             {
-                // hk追加：盤面のボールが発射された場合、ランチャーのボールを破棄して次へ
                 if (currentBallObject != null)
                 {
                     currentBallObject.gameObject.SetActive(false);
@@ -129,13 +127,12 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        public void OnRecipeCompleted() // hk追加：レシピ成立時に呼ばれる
+        public void OnRecipeCompleted()
         {
             isRecipeReady = true;
-            CancelInvoke(nameof(SpawnCurrentBall)); // hk追加：通常ボールの生成をキャンセル
-            TrajectoryController.EndDrag(); // hk追加：ドラッグを強制解除する
+            CancelInvoke(nameof(SpawnCurrentBall));
+            TrajectoryController.EndDrag();
 
-            // hk追加：ランチャーのボールを破棄して0.5秒後にフィニッシャーを生成する
             if (currentBallObject != null)
             {
                 currentBallObject.gameObject.SetActive(false);
@@ -144,13 +141,13 @@ namespace Watermelon.BubbleMerge
             Invoke(nameof(SpawnFinisher), 0.5f);
         }
 
-        public void OnFinisherEnteredPot() // hk追加
+        public void OnFinisherEnteredPot()
         {
             isFinisherActive = false;
             currentFinisher = null;
         }
 
-        public void ClearFinisher() // hk追加
+        public void ClearFinisher()
         {
             if (currentFinisher != null)
             {
@@ -216,12 +213,8 @@ namespace Watermelon.BubbleMerge
         public (Branch, BallType) GetNextBall() => nextBall;       // hk追加
         public (Branch, BallType) GetNextNextBall() => nextNextBall; // hk追加
         public bool IsFinisherActive() => isFinisherActive; // hk追加
-        public BallData SupplyData => supplyData; // hk追加
+        public BallData SupplyData => ballData; // hk追加：物理パラメータ用
         public FinisherSupplyData FinisherData => finisherSupplyData; // hk追加
-
-        private void UpdateUI() // hk追加
-        {
-            // 今後実装
-        }
+        public void UpdateUI() { } // hk追加：今後実装
     }
 }
