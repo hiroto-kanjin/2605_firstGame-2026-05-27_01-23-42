@@ -2851,7 +2851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cee1fdd2f01db544bb74b7753be45e0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.RecipeManager
-  currentRecipe: {fileID: 11400000, guid: ec128836dec88a4469de053338ff1460, type: 2}
 --- !u!114 &1060784216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3159,51 +3158,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 381072905}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1518607113
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1518607115}
-  - component: {fileID: 1518607114}
-  m_Layer: 0
-  m_Name: NuisanceBallSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1518607114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1518607113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b37f52ef65f3a64b8944d9fd42605fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.NuisanceBallSpawner
---- !u!4 &1518607115
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1518607113}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1629310407}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1590212527 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8144312109211464343, guid: 630270ec1771d224abec866ff92b1f4c,
@@ -3374,51 +3328,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1595558699}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1629310406
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1629310407}
-  - component: {fileID: 1629310408}
-  m_Layer: 0
-  m_Name: ww
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1629310407
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629310406}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.73, y: -2.76, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1518607115}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1629310408
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629310406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fc64bbce21d4d74782ffe52edf25c2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.NuisanceMarker
-  nuisanceIndex: 0
 --- !u!1001 &1695866681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5057,6 +4966,5 @@ SceneRoots:
   - {fileID: 5178066047858781992}
   - {fileID: 1060784197}
   - {fileID: 1133867109}
-  - {fileID: 1518607115}
   - {fileID: 838187195}
   - {fileID: 4215481136693214211}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
   m_Name: Level 001
   m_EditorClassIdentifier: 
-  note: Base + x2 BounceZone + x2 Teleport
+  note: 'Base + x2 BounceZone + x2 Teleport + x1 Bomb + x2 Ice(2hp) + x10 Box(17hp) '
   bubblesOnTheFieldAmount: 20
   turnsLimit: 30
   coinsReward: 200
@@ -23,11 +23,12 @@ MonoBehaviour:
       - branch: 0
         stageId: 1
         amount: 1
-    iceBubblesPerLevel: 0
-    iceBubblesHealth: 0
-    boxesPerLevel: 0
-    boxesHealth: 0
-    bombsData: []
+    iceBubblesPerLevel: 2
+    iceBubblesHealth: 2
+    boxesPerLevel: 10
+    boxesHealth: 17
+    bombsData:
+    - movesToSpawn: 25
   canBeUsedInRandomizer: 0
   items:
   - type: 0

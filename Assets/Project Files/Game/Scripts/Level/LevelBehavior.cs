@@ -106,6 +106,25 @@ namespace Watermelon.BubbleMerge
 
             for (int i = 0; i < levelItems.Length; i++)
             {
+                // hk追加：お邪魔ボールはSpawnNuisanceBallHKで生成する
+                if (levelItems[i].Type >= Item.NuisanceBall_0 && levelItems[i].Type <= Item.NuisanceBall_4)
+                {
+                    int nuisanceIndex = (int)levelItems[i].Type - 10;
+                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry(nuisanceIndex);
+                    if (entry == null) continue;
+
+                    BubbleBehavior bubble = SpawnNuisanceBallHK(entry.icon, levelItems[i].Position);
+                    if (bubble != null)
+                    {
+                        BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
+                        if (ballHK != null)
+                        {
+                            ballHK.SetData(BallCategory.Nuisance, nuisanceIndex);
+                        }
+                    }
+                    continue;
+                }
+
                 newItem = Instantiate(database.GetItem(levelItems[i].Type).Prefab, levelItems[i].Position, Quaternion.Euler(levelItems[i].Rotation));
                 newItem.transform.localScale = levelItems[i].Scale;
 

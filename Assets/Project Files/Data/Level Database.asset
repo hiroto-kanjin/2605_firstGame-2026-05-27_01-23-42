@@ -55,6 +55,21 @@ MonoBehaviour:
     prefab: {fileID: 5959963247313959557, guid: 64fed99a9702e3746838cdc6c7f2206b,
       type: 3}
     editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
+  - type: 10
+    prefab: {fileID: 0}
+    editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
+  - type: 11
+    prefab: {fileID: 0}
+    editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
+  - type: 12
+    prefab: {fileID: 0}
+    editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
+  - type: 13
+    prefab: {fileID: 0}
+    editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
+  - type: 14
+    prefab: {fileID: 0}
+    editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
   levelShapes:
   - type: 0
     prefab: {fileID: 5363470372480083075, guid: ed1d99712b1c9e54488bec1f5479ae5d,
