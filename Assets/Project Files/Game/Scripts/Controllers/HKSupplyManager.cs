@@ -54,6 +54,7 @@ namespace Watermelon.BubbleMerge
 
         private void SpawnFinisher()
         {
+            if (currentFinisher != null) return; // hk追加：既にフィニッシャーがいる場合はスキップ
             isRecipeReady = false;
             isFinisherActive = true;
 
@@ -151,6 +152,24 @@ namespace Watermelon.BubbleMerge
         {
             if (currentFinisher != null)
             {
+                FinisherBall finisherBall = currentFinisher.GetComponent<FinisherBall>();
+                if (finisherBall != null)
+                {
+                    foreach (var ball in finisherBall.GetAttachedBalls())
+                    {
+                        if (ball != null)
+                        {
+                            ball.transform.SetParent(LevelController.LevelBehavior.transform); // hk追加：プールの親に戻す
+                            BubbleBehavior bubble = ball.GetComponent<BubbleBehavior>();
+                            if (bubble != null)
+                            {
+                                LevelController.LevelBehavior.RemoveBubble(bubble);
+                                bubble.gameObject.SetActive(false);
+                            }
+                        }
+                    }
+                }
+
                 BubbleBehavior finisherBubble = currentFinisher.GetComponent<BubbleBehavior>();
                 if (finisherBubble != null)
                 {
@@ -171,7 +190,26 @@ namespace Watermelon.BubbleMerge
 
             CancelInvoke(nameof(SpawnCurrentBall));
             CancelInvoke(nameof(SpawnFinisher));
-
+            // hk追加：くっついたボールのSpringJoint2Dを削除する
+            if (currentFinisher != null)
+            {
+                FinisherBall finisherBall = currentFinisher.GetComponent<FinisherBall>();
+                if (finisherBall != null)
+                {
+                    foreach (var ball in finisherBall.GetAttachedBalls())
+                    {
+                        if (ball != null)
+                        {
+                            SpringJoint2D joint = ball.GetComponent<SpringJoint2D>();
+                            if (joint != null) Destroy(joint);
+                            ball.bodyType = RigidbodyType2D.Dynamic;
+                            ball.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+                            Collider2D col = ball.GetComponent<Collider2D>();
+                            if (col != null) col.enabled = true;
+                        }
+                    }
+                }
+            }
             if (currentFinisher != null)
             {
                 Destroy(currentFinisher);

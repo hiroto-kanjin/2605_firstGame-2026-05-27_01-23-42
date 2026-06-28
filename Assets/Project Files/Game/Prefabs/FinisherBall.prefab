@@ -96,6 +96,7 @@ MonoBehaviour:
   ballCategory: 0
   branch: 0
   ballType: 0
+  ballIndex: 0
 --- !u!114 &3554567422226418192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,6 +111,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.FinisherBall
   finisherType: 0
   meshRenderer: {fileID: 5042381850747191444}
+  springFrequency: 1
+  springDamping: 0.1
+  groupSize: 1
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0

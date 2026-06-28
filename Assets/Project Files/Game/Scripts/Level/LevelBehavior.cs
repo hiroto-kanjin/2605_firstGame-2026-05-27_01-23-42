@@ -210,6 +210,7 @@ namespace Watermelon.BubbleMerge
 
             bubbles.ForEach((bubble) =>
             {
+                if (bubble == null) return; // hk追加：破棄済みオブジェクトをスキップ
                 bubble.RB.simulated = true;
                 bubble.DisableEffect();
                 bubble.transform.SetParent(transform);
@@ -543,11 +544,13 @@ namespace Watermelon.BubbleMerge
                 var ray = Camera.main.ScreenPointToRay(InputController.MousePosition);
 
                 RaycastHit2D hit = Physics2D.Raycast(ray.origin.SetZ(0), Vector2.zero, 100, ~PhysicsHelper.LAYER_BUBBLE);
-
+                if (hit.collider != null)
+                    Debug.Log("Hit: " + hit.collider.gameObject.name + " Layer: " + hit.collider.gameObject.layer); // hk追加：デバッグ用
                 if (hit.collider != null && hit.transform.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE))
                 {
-                    BubbleBehavior tempBubble = hit.transform.gameObject.GetComponent<BubbleBehavior>();
-                    if (tempBubble.IsActive())
+                    BubbleBehavior tempBubble = hit.transform.GetComponentInParent<BubbleBehavior>(); // hk追加：親も含めて検索
+                    Debug.Log("tempBubble: " + (tempBubble == null ? "null" : tempBubble.name)); // hk追加：デバッグ用
+                    if (tempBubble.IsActive() && !tempBubble.IsNuisance() && (!HKSupplyManager.Instance.IsFinisherActive() || tempBubble.GetComponent<FinisherBall>() != null)) // hk追加：フィニッシャー中はフィニッシャー以外選択不可
                     {
                         selectedBubble = tempBubble;
 

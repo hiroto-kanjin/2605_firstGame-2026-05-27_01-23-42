@@ -111,12 +111,22 @@ namespace Watermelon.BubbleMerge
         {
             if (collision.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE))
             {
+                // hk追加：フィニッシャーにぶつかったらくっつく
+                FinisherBall finisherBall = collision.gameObject.GetComponent<FinisherBall>();
+                if (finisherBall != null)
+                {
+                    if (!IsNuisance()) // hk追加：お邪魔ボールはくっつかない
+                    {
+                        finisherBall.AttachBall(rb);
+                    }
+                    return;
+                }
+
                 BubbleBehavior bubble = collision.gameObject.GetComponent<BubbleBehavior>();
-                if(bubble == null || collision.gameObject.GetComponent<FinisherBall>() != null || GetComponent<FinisherBall>() != null) return; // hk追加：FinisherBall関連オブジェクトとの衝突を無視
+                if (bubble == null || GetComponent<FinisherBall>() != null) return; // hk追加：自分がフィニッシャーなら何もしない
 
                 if (bubbleSpecialEffect != null)
                     bubbleSpecialEffect.OnBubbleCollided(bubble);
-
 
                 if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()
                     && !IsNuisance() && !bubble.IsNuisance()) // hk追加：お邪魔ボールは合成しない
@@ -297,7 +307,6 @@ namespace Watermelon.BubbleMerge
             rb.bodyType = RigidbodyType2D.Kinematic;
             colliderRef.enabled = false;
 
-
             completeTaskMoveXTweenCase = transform.DOMoveX(targetPosition.x, moveTime).SetEasing(Ease.Type.SineInOut);
             transform.DOMoveZ(targetPosition.z, moveTime).SetEasing(Ease.Type.SineInOut);
             transform.DOMoveY(targetPosition.y + 2f, moveTime * 0.5f).SetEasing(Ease.Type.SineIn).OnComplete(() =>
@@ -368,6 +377,7 @@ namespace Watermelon.BubbleMerge
         {
             Debug.Log(Data.ObjectToString());
         }
+
         public bool IsNuisance() // hk追加：お邪魔ボールかどうか
         {
             BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();

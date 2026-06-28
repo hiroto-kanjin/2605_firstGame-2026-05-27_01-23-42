@@ -19,13 +19,16 @@ MonoBehaviour:
     requiredIngredients:
     - category: 0
       branch: 0
-      ballType: 3
+      ballType: 2
       requiredCount: 1
-    finisherShotLimit: 3
+    finisherShotLimit: 60
     ballSupplyRates:
     - branch: 0
       ballType: 0
-      spawnRate: 0
+      spawnRate: 60
+    - branch: 0
+      ballType: 1
+      spawnRate: 40
     useNuisanceBall: 1
     nuisanceBranch: 5
     nuisanceBallType: 13

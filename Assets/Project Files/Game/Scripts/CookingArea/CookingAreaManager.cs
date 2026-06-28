@@ -114,7 +114,13 @@ namespace Watermelon.BubbleMerge
                 Debug.Log("フィニッシャーが鍋から出ているため判定スキップ");
                 yield break;
             }
-
+            // hk追加：デバッグモードでクリア判定が無効の場合はスキップ
+            if (DebugUIManager.Instance != null && DebugUIManager.Instance.IsClearJudgeDisabled)
+            {
+                Debug.Log("デバッグモード：クリア判定スキップ");
+                finisherJudgeCoroutine = null;
+                yield break;
+            }
             var ballsInPotSnapshot = new List<BallBehaviorHK>(ballsInPot);
             bool recipeMatched = HKGameManager.Instance.IsRecipeReady();
             int completionScore = CompletionScoreCalculator.Instance.Calculate(

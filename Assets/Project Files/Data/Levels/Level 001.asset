@@ -32,20 +32,8 @@ MonoBehaviour:
   canBeUsedInRandomizer: 0
   items: []
   nuisanceBallsRandom: 0
-  nuisanceBallPlacements:
-  - type: 0
-    position: {x: -1.98, y: 0, z: 0}
-  - type: 0
-    position: {x: 1.81, y: 0, z: 0}
+  nuisanceBallPlacements: []
   specialEffectsRandom: 0
-  specialEffectPlacements:
-  - type: 0
-    position: {x: 0, y: 2.41, z: 0}
-  - type: 1
-    position: {x: -1, y: 0.69, z: 0}
-  - type: 1
-    position: {x: 1.17, y: 1.14, z: 0}
-  - type: 0
-    position: {x: 0, y: 0, z: 0}
+  specialEffectPlacements: []
   levelShapeType: 0
   levelBackType: 0

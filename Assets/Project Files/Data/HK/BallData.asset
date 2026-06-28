@@ -76,7 +76,7 @@ MonoBehaviour:
       m_RotationOrder: 0
   nuisanceEntries:
   - entryName: ojama001
-    icon: {fileID: 21300000, guid: d47d0b8d240c71e4ab06f0488aadcd97, type: 3}
+    icon: {fileID: 21300000, guid: 947a39c514f0ec94a9a0bf405a51ddf8, type: 3}
     mass: 80
     linearDamping: 20
     bounciness: 0.119

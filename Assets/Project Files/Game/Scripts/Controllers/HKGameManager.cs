@@ -8,6 +8,7 @@ namespace Watermelon.BubbleMerge
         public static HKGameManager Instance { get; private set; }
 
         [SerializeField] private GameLevelDatabase gameLevelDatabase; // hk追加
+        [SerializeField] private float resultDelaySeconds = 1.5f; // hk追加：結果画面表示までの遅延秒数
 
         private GameLevelData currentLevel; // hk追加
         private int currentScore = 0; // hk追加
@@ -154,12 +155,12 @@ namespace Watermelon.BubbleMerge
             if (recipeMatched)
             {
                 Debug.Log($"クリア！完成度：{currentScore}点　ランク：{currentRank}");
-                GameController.OnLevelCompleted();
+                Tween.DelayedCall(resultDelaySeconds, () => GameController.OnLevelCompleted()); // hk追加
             }
             else
             {
                 Debug.Log($"ゲームオーバー　完成度：{currentScore}点");
-                GameController.OnLevelFailed();
+                Tween.DelayedCall(resultDelaySeconds, () => GameController.OnLevelFailed()); // hk追加
             }
         }
 
