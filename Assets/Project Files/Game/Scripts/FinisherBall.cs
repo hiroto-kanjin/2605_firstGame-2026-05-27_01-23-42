@@ -19,13 +19,15 @@ namespace Watermelon.BubbleMerge
         [SerializeField] private MeshRenderer meshRenderer;
 
         [Header("くっつき設定")]
-        [SerializeField] private float springFrequency = 5f; // hk追加：バネの強さ
-        [SerializeField] private float springDamping = 0.5f; // hk追加：減衰
+        [SerializeField] private bool useDistanceJoint = false; // hk追加：true=DistanceJoint2D, false=SpringJoint2D
+        [SerializeField] private float springFrequency = 5f; // hk追加：バネの強さ（SpringJoint2D用）
+        [SerializeField] private float springDamping = 0.5f; // hk追加：減衰（SpringJoint2D用）
         [SerializeField] private float attachDistance = 0.5f; // hk追加：くっつく距離
         [SerializeField] private int groupSize = 5; // hk追加：何個ごとに固定するか
 
         private List<Rigidbody2D> attachedBalls = new List<Rigidbody2D>();
-        private List<SpringJoint2D> joints = new List<SpringJoint2D>();
+        private List<SpringJoint2D> springJoints = new List<SpringJoint2D>(); // hk追加
+        private List<DistanceJoint2D> distanceJoints = new List<DistanceJoint2D>(); // hk追加
 
         public static FinisherBall CurrentInstance { get; private set; } // hk追加
 
@@ -72,13 +74,23 @@ namespace Watermelon.BubbleMerge
             ballRb.bodyType = RigidbodyType2D.Dynamic;
             ballRb.mass = 0.01f;
 
-            SpringJoint2D joint = ballRb.gameObject.AddComponent<SpringJoint2D>();
-            joint.connectedBody = GetComponent<Rigidbody2D>();
-            joint.autoConfigureDistance = false;
-            joint.distance = attachDistance;
-            joint.frequency = springFrequency;
-            joint.dampingRatio = springDamping;
-            joints.Add(joint);
+            // hk追加：両方のJointを追加し、useDistanceJointで排他的に有効化する
+            SpringJoint2D springJoint = ballRb.gameObject.AddComponent<SpringJoint2D>();
+            springJoint.connectedBody = GetComponent<Rigidbody2D>();
+            springJoint.autoConfigureDistance = false;
+            springJoint.distance = attachDistance;
+            springJoint.frequency = springFrequency;
+            springJoint.dampingRatio = springDamping;
+            springJoint.enabled = !useDistanceJoint;
+            springJoints.Add(springJoint);
+
+            DistanceJoint2D distanceJoint = ballRb.gameObject.AddComponent<DistanceJoint2D>();
+            distanceJoint.connectedBody = GetComponent<Rigidbody2D>();
+            distanceJoint.autoConfigureDistance = false;
+            distanceJoint.distance = attachDistance;
+            distanceJoint.maxDistanceOnly = false;
+            distanceJoint.enabled = useDistanceJoint;
+            distanceJoints.Add(distanceJoint);
 
             Debug.Log("AttachBall called: " + ballRb.name);
 
@@ -95,11 +107,17 @@ namespace Watermelon.BubbleMerge
             {
                 if (attachedBalls[i] == null) continue;
 
-                if (i < joints.Count && joints[i] != null)
+                if (i < springJoints.Count && springJoints[i] != null)
                 {
                     attachedBalls[i].SetVelocity(Vector2.zero);
-                    Destroy(joints[i]);
-                    joints[i] = null;
+                    Destroy(springJoints[i]);
+                    springJoints[i] = null;
+                }
+
+                if (i < distanceJoints.Count && distanceJoints[i] != null)
+                {
+                    Destroy(distanceJoints[i]);
+                    distanceJoints[i] = null;
                 }
 
                 attachedBalls[i].bodyType = RigidbodyType2D.Kinematic;
@@ -121,8 +139,11 @@ namespace Watermelon.BubbleMerge
             {
                 if (ball == null) continue;
 
-                SpringJoint2D joint = ball.GetComponent<SpringJoint2D>();
-                if (joint != null) Destroy(joint);
+                SpringJoint2D sJoint = ball.GetComponent<SpringJoint2D>();
+                if (sJoint != null) Destroy(sJoint);
+
+                DistanceJoint2D dJoint = ball.GetComponent<DistanceJoint2D>();
+                if (dJoint != null) Destroy(dJoint);
 
                 ball.bodyType = RigidbodyType2D.Dynamic;
                 ball.mass = 1f; // hk追加：質量を元に戻す
@@ -139,21 +160,37 @@ namespace Watermelon.BubbleMerge
             }
 
             attachedBalls.Clear();
-            joints.Clear();
+            springJoints.Clear();
+            distanceJoints.Clear();
         }
 
 #if UNITY_EDITOR
-        // hk追加：デバッグ用リアルタイムパラメータ更新
+        // hk追加：デバッグ用リアルタイムパラメータ更新（SpringJoint2D用）
         public void UpdateJointParams(float frequency, float damping)
         {
             springFrequency = frequency;
             springDamping = damping;
 
-            for (int i = 0; i < joints.Count; i++)
+            for (int i = 0; i < springJoints.Count; i++)
             {
-                if (joints[i] == null) continue;
-                joints[i].frequency = frequency;
-                joints[i].dampingRatio = damping;
+                if (springJoints[i] == null) continue;
+                springJoints[i].frequency = frequency;
+                springJoints[i].dampingRatio = damping;
+            }
+        }
+
+        // hk追加：デバッグ用リアルタイム切り替え（SpringJoint2D ⇔ DistanceJoint2D）
+        public void SetUseDistanceJoint(bool value)
+        {
+            useDistanceJoint = value;
+
+            for (int i = 0; i < attachedBalls.Count; i++)
+            {
+                if (i < springJoints.Count && springJoints[i] != null)
+                    springJoints[i].enabled = !value;
+
+                if (i < distanceJoints.Count && distanceJoints[i] != null)
+                    distanceJoints[i].enabled = value;
             }
         }
 #endif

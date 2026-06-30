@@ -111,9 +111,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.FinisherBall
   finisherType: 0
   meshRenderer: {fileID: 5042381850747191444}
-  springFrequency: 1
-  springDamping: 0.1
-  groupSize: 1
+  useDistanceJoint: 0
+  springFrequency: 2
+  springDamping: 0.02
+  attachDistance: 0.6
+  groupSize: 2
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0
