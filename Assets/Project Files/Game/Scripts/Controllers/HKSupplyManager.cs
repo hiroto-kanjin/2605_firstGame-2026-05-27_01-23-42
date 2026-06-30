@@ -55,6 +55,7 @@ namespace Watermelon.BubbleMerge
         private void SpawnFinisher()
         {
             if (currentFinisher != null) return; // hk追加：既にフィニッシャーがいる場合はスキップ
+
             isRecipeReady = false;
             isFinisherActive = true;
 
@@ -148,6 +149,7 @@ namespace Watermelon.BubbleMerge
             currentFinisher = null;
         }
 
+        // hk追加：くっついたボールの後処理をFinisherBallに一元化して呼ぶだけにする
         public void ClearFinisher()
         {
             if (currentFinisher != null)
@@ -155,19 +157,7 @@ namespace Watermelon.BubbleMerge
                 FinisherBall finisherBall = currentFinisher.GetComponent<FinisherBall>();
                 if (finisherBall != null)
                 {
-                    foreach (var ball in finisherBall.GetAttachedBalls())
-                    {
-                        if (ball != null)
-                        {
-                            ball.transform.SetParent(LevelController.LevelBehavior.transform); // hk追加：プールの親に戻す
-                            BubbleBehavior bubble = ball.GetComponent<BubbleBehavior>();
-                            if (bubble != null)
-                            {
-                                LevelController.LevelBehavior.RemoveBubble(bubble);
-                                bubble.gameObject.SetActive(false);
-                            }
-                        }
-                    }
+                    finisherBall.DetachAllBalls(LevelController.LevelBehavior.transform);
                 }
 
                 BubbleBehavior finisherBubble = currentFinisher.GetComponent<BubbleBehavior>();
@@ -183,6 +173,7 @@ namespace Watermelon.BubbleMerge
             isRecipeReady = false;
         }
 
+        // hk追加：くっついたボールの後処理をFinisherBallに一元化して呼ぶだけにする
         public void ResetState()
         {
             isFinisherActive = false;
@@ -190,28 +181,15 @@ namespace Watermelon.BubbleMerge
 
             CancelInvoke(nameof(SpawnCurrentBall));
             CancelInvoke(nameof(SpawnFinisher));
-            // hk追加：くっついたボールのSpringJoint2Dを削除する
+
             if (currentFinisher != null)
             {
                 FinisherBall finisherBall = currentFinisher.GetComponent<FinisherBall>();
                 if (finisherBall != null)
                 {
-                    foreach (var ball in finisherBall.GetAttachedBalls())
-                    {
-                        if (ball != null)
-                        {
-                            SpringJoint2D joint = ball.GetComponent<SpringJoint2D>();
-                            if (joint != null) Destroy(joint);
-                            ball.bodyType = RigidbodyType2D.Dynamic;
-                            ball.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
-                            Collider2D col = ball.GetComponent<Collider2D>();
-                            if (col != null) col.enabled = true;
-                        }
-                    }
+                    finisherBall.DetachAllBalls(LevelController.LevelBehavior.transform);
                 }
-            }
-            if (currentFinisher != null)
-            {
+
                 Destroy(currentFinisher);
                 currentFinisher = null;
             }

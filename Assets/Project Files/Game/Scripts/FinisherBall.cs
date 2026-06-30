@@ -21,6 +21,7 @@ namespace Watermelon.BubbleMerge
         [Header("くっつき設定")]
         [SerializeField] private float springFrequency = 5f; // hk追加：バネの強さ
         [SerializeField] private float springDamping = 0.5f; // hk追加：減衰
+        [SerializeField] private float attachDistance = 0.5f; // hk追加：くっつく距離
         [SerializeField] private int groupSize = 5; // hk追加：何個ごとに固定するか
 
         private List<Rigidbody2D> attachedBalls = new List<Rigidbody2D>();
@@ -38,6 +39,8 @@ namespace Watermelon.BubbleMerge
             if (CurrentInstance == this) CurrentInstance = null; // hk追加
         }
 
+        public FinisherType GetFinisherType() => finisherType;
+
         public void SetData(FinisherType type, Texture icon)
         {
             finisherType = type;
@@ -47,18 +50,20 @@ namespace Watermelon.BubbleMerge
             meshRenderer.SetPropertyBlock(propertyBlock);
         }
 
-        public void AttachBall(Rigidbody2D ballRb) // hk追加
+        // hk追加：ボールをフィニッシャーにくっつける
+        public void AttachBall(Rigidbody2D ballRb)
         {
             if (attachedBalls.Contains(ballRb)) return;
 
             attachedBalls.Add(ballRb);
 
-            foreach (Collider2D col in ballRb.GetComponentsInChildren<Collider2D>(true))
+            BubbleBehavior bubbleBehavior = ballRb.GetComponent<BubbleBehavior>();
+            if (bubbleBehavior != null)
             {
-                col.enabled = false;
+                bubbleBehavior.DisableForFinisher(); // hk追加：BubbleBehavior側に集約した無効化処理を呼ぶ
             }
 
-            ballRb.gameObject.tag = "Untagged";
+            ballRb.gameObject.layer = PhysicsHelper.LAYER_IGNORE_RAYCAST; // hk追加：レイキャストを無視
             foreach (Transform child in ballRb.transform)
             {
                 child.gameObject.tag = "Untagged";
@@ -66,13 +71,11 @@ namespace Watermelon.BubbleMerge
 
             ballRb.bodyType = RigidbodyType2D.Dynamic;
             ballRb.mass = 0.01f;
-            ballRb.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
             SpringJoint2D joint = ballRb.gameObject.AddComponent<SpringJoint2D>();
             joint.connectedBody = GetComponent<Rigidbody2D>();
             joint.autoConfigureDistance = false;
-            joint.distance = 0.9f;
-            Debug.Log("joint.distance set to: " + joint.distance); // hk追加：デバッグ用
+            joint.distance = attachDistance;
             joint.frequency = springFrequency;
             joint.dampingRatio = springDamping;
             joints.Add(joint);
@@ -85,7 +88,8 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        private void FreezeGroup(int from, int to) // hk追加
+        // hk追加：指定範囲のボールをKinematicにしてフィニッシャーの子オブジェクトにする
+        private void FreezeGroup(int from, int to)
         {
             for (int i = from; i <= to; i++)
             {
@@ -100,16 +104,51 @@ namespace Watermelon.BubbleMerge
 
                 attachedBalls[i].bodyType = RigidbodyType2D.Kinematic;
                 attachedBalls[i].transform.SetParent(transform);
-                Vector2 randomOffset = Random.insideUnitCircle.normalized * 0.5f;
+
+                Vector2 randomOffset = Random.insideUnitCircle.normalized * attachDistance; // hk追加：固定時にフィニッシャー周辺のランダムな位置へ
                 attachedBalls[i].transform.position = (Vector2)transform.position + randomOffset;
+                foreach (Transform child in attachedBalls[i].transform) // hk追加：固定後も子オブジェクトのタグを確実にUntaggedにする
+                {
+                    child.gameObject.tag = "Untagged";
+                }
             }
         }
 
+        // hk追加：くっついた全てのボールを元の状態に戻し、リストをクリアする（ClearFinisher・ResetState共通で呼ぶ）
+        public void DetachAllBalls(Transform returnParent)
+        {
+            foreach (Rigidbody2D ball in attachedBalls)
+            {
+                if (ball == null) continue;
+
+                SpringJoint2D joint = ball.GetComponent<SpringJoint2D>();
+                if (joint != null) Destroy(joint);
+
+                ball.bodyType = RigidbodyType2D.Dynamic;
+                ball.mass = 1f; // hk追加：質量を元に戻す
+                ball.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+                ball.transform.SetParent(returnParent);
+
+                BubbleBehavior bubbleBehavior = ball.GetComponent<BubbleBehavior>();
+                if (bubbleBehavior != null)
+                {
+                    bubbleBehavior.RestoreFromFinisher(); // hk追加：BubbleBehavior側に集約した復元処理を呼ぶ
+                    LevelController.LevelBehavior.RemoveBubble(bubbleBehavior);
+                    bubbleBehavior.gameObject.SetActive(false);
+                }
+            }
+
+            attachedBalls.Clear();
+            joints.Clear();
+        }
+
 #if UNITY_EDITOR
-        public void UpdateJointParams(float frequency, float damping) // hk追加：デバッグ用リアルタイムパラメータ更新
+        // hk追加：デバッグ用リアルタイムパラメータ更新
+        public void UpdateJointParams(float frequency, float damping)
         {
             springFrequency = frequency;
             springDamping = damping;
+
             for (int i = 0; i < joints.Count; i++)
             {
                 if (joints[i] == null) continue;
@@ -119,7 +158,6 @@ namespace Watermelon.BubbleMerge
         }
 #endif
 
-        public FinisherType GetFinisherType() => finisherType; // hk追加
         public List<Rigidbody2D> GetAttachedBalls() => attachedBalls; // hk追加
     }
 }

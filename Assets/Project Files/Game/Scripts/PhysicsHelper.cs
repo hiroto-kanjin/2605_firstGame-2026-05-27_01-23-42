@@ -12,6 +12,7 @@ namespace Watermelon
         public static readonly int LAYER_BUBBLE_MERGING = LayerMask.NameToLayer("BubbleMerging");
         public static readonly int LAYER_WALL = LayerMask.NameToLayer("Wall");
         public static readonly int LAYER_MAGNET = LayerMask.NameToLayer("Magnet");
+        public static readonly int LAYER_IGNORE_RAYCAST = LayerMask.NameToLayer("Ignore Raycast"); // hk追加
 
         public const string TAG_PLAYER = "Player";
         public const string TAG_BUBBLE = "Bubble";

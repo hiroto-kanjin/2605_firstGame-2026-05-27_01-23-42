@@ -74,6 +74,11 @@ namespace Watermelon.BubbleMerge
         {
             DisableEffect();
 
+            // hk追加：フィニッシャー等で一時変更された状態を必ず元に戻す（出現時の最終防衛ライン）
+            gameObject.tag = PhysicsHelper.TAG_BUBBLE;
+            gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+            transform.SetParent(LevelController.LevelBehavior.transform);
+
             Data = data;
 
             rb.bodyType = RigidbodyType2D.Dynamic;
@@ -376,6 +381,25 @@ namespace Watermelon.BubbleMerge
         private void PrintData()
         {
             Debug.Log(Data.ObjectToString());
+        }
+        // hk追加：フィニッシャーにくっつくときに物理判定を無効化する
+        public void DisableForFinisher()
+        {
+            colliderRef.enabled = false;
+            attractionTrigger.enabled = false;
+            foreach (Collider2D col in GetComponentsInChildren<Collider2D>(true)) // hk追加：子も含めて全コライダーを無効化
+            {
+                col.enabled = false;
+            }
+            gameObject.tag = "Untagged";
+        }
+
+        // hk追加：フィニッシャーから離すときに物理判定を元に戻す
+        public void RestoreFromFinisher()
+        {
+            colliderRef.enabled = true;
+            attractionTrigger.enabled = true;
+            gameObject.tag = PhysicsHelper.TAG_BUBBLE;
         }
 
         public bool IsNuisance() // hk追加：お邪魔ボールかどうか
