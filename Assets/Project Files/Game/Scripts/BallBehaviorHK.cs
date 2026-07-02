@@ -117,7 +117,14 @@ namespace Watermelon.BubbleMerge
 
         SpecialBall_001,
         SpecialBall_002,
+        SpecialBall_003,
+        SpecialBall_004,
+        SpecialBall_005,
 
-        NuisanceBall_001
+        NuisanceBall_001,
+        NuisanceBall_002,
+        NuisanceBall_003,
+        NuisanceBall_004,
+
     }
 }

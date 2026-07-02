@@ -329,7 +329,7 @@ namespace Watermelon.BubbleMerge
         // hk追加：お邪魔・特殊ボールを生成するための公開メソッド
         public BubbleBehavior SpawnNuisanceBallHK(Sprite icon, Vector3 position)
         {
-            BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.Vegetables, stageId = 0 };
+            BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.kinoko, stageId = 0 };
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
                 data.icon = icon; // hk追加：アイコンを上書きする
@@ -429,6 +429,10 @@ namespace Watermelon.BubbleMerge
                 case 10: return BallType.EvolutionBall_11;
                 default: return BallType.EvolutionBall_01;
             }
+        }
+        public BallType GetBallTypeFromStageIdPublic(int stageId) // hk追加：他クラスから呼べる公開版
+        {
+            return GetBallTypeFromStageId(stageId);
         }
 
         public BubbleBehavior SpawnRandomBubble(bool checkAvailable, bool checkAmount = true)

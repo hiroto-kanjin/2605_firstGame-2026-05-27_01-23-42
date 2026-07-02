@@ -3,7 +3,7 @@
     [System.Serializable]
     public enum Branch
     {
-        Vegetables = 0,
+        kinoko = 0,
         Bones = 1,
         Clover = 2,
         Crystal_Blue = 3,

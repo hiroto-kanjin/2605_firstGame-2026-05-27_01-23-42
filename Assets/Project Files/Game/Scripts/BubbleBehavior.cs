@@ -135,7 +135,7 @@ namespace Watermelon.BubbleMerge
                     bubbleSpecialEffect.OnBubbleCollided(bubble);
 
                 if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()
-                    && !IsNuisance() && !bubble.IsNuisance()) // hk追加：お邪魔ボールは合成しない
+                    && !IsNuisance() && !bubble.IsNuisance() && IsNextStageAllowed()) // hk追加：BallDataに次の段階が実在する場合のみ進化する
                 {
                     bubble.IsMerging = true;
                     IsMerging = true;
@@ -251,6 +251,14 @@ namespace Watermelon.BubbleMerge
                 return false;
 
             return true;
+        }
+
+        // hk修正：Levelの数値ではなく、BallDataに次の段階のデータが実在するかで判定する
+        public bool IsNextStageAllowed()
+        {
+            BallType nextBallType = LevelController.LevelBehavior.GetBallTypeFromStageIdPublic(Data.stageId + 1);
+            var ballData = HKSupplyManager.Instance.SupplyData;
+            return ballData.GetEntry(Data.branch, nextBallType) != null;
         }
 
         public void StartMergin(BubbleBehavior mergingBubble)
