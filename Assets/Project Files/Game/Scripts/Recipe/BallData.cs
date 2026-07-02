@@ -43,17 +43,12 @@ namespace Watermelon.BubbleMerge
     [System.Serializable]
     public class EvolutionBallEntry // hk追加：進化ボール
     {
-        public string entryName; // 追加：インスペクター上で見分けるための名前
-
+        public string entryName;
         public Branch branch;
         public BallType ballType;
 
-        [Header("Physics")]
-        public float mass = 1f;
-        public float linearDamping = 25f;
-        [Range(0f, 1f)]
-        public float bounciness = 0.3f;
-        public AnimationCurve dampingCurve = AnimationCurve.Linear(0, 10, 1, 0.5f);
+        [Header("Physics Pattern")]
+        public BubblesPhysicsData physicsPattern; // hk修正：個別数値の代わりに、使用するパターンを選ぶ
     }
 
     [System.Serializable]
@@ -61,14 +56,10 @@ namespace Watermelon.BubbleMerge
     {
         public string entryName;
         public Sprite icon;
-        public float size = 1f; // hk追加：表示サイズ（EvolutionStage.sizeと同じ基準）
+        public float size = 1f;
 
-        [Header("Physics")]
-        public float mass = 1f;
-        public float linearDamping = 25f;
-        [Range(0f, 1f)]
-        public float bounciness = 0.3f;
-        public AnimationCurve dampingCurve = AnimationCurve.Linear(0, 10, 1, 0.5f);
+        [Header("Physics Pattern")]
+        public BubblesPhysicsData physicsPattern; // hk修正：個別数値の代わりに、使用するパターンを選ぶ
     }
 
     [System.Serializable]
@@ -76,13 +67,9 @@ namespace Watermelon.BubbleMerge
     {
         public string entryName;
         public Sprite icon;
-        public float size = 1f; // hk追加：表示サイズ（EvolutionStage.sizeと同じ基準）
+        public float size = 1f;
 
-        [Header("Physics")]
-        public float mass = 1f;
-        public float linearDamping = 25f;
-        [Range(0f, 1f)]
-        public float bounciness = 0f;
-        public AnimationCurve dampingCurve = AnimationCurve.Linear(0, 10, 1, 0.5f);
+        [Header("Physics Pattern")]
+        public BubblesPhysicsData physicsPattern; // hk修正：個別数値の代わりに、使用するパターンを選ぶ
     }
 }

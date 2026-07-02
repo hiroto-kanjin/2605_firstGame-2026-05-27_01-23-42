@@ -8,7 +8,6 @@ namespace Watermelon.BubbleMerge
         [SerializeField] private Branch branch; // hk追加：進化ボールのみ使用
         [SerializeField] private BallType ballType; // hk追加：進化ボールのみ使用
         [SerializeField] private int ballIndex = 0; // hk追加：特殊・お邪魔ボールのインデックス
-        private EvolutionBallEntry physicsEntry; // hk追加：キャッシュ用
         private Rigidbody2D cachedRb; // hk追加
 
         public BallCategory GetBallCategory() => ballCategory; // hk追加
@@ -29,61 +28,51 @@ namespace Watermelon.BubbleMerge
             ballIndex = index;
         }
 
-        public void ApplyPhysicsData(Rigidbody2D rb) // hk追加
+        // hk追加：このボールが使うBubblesPhysicsDataを取得する（3種類共通の窓口）
+        public BubblesPhysicsData GetPhysicsPattern()
         {
-            Debug.Log("ApplyPhysicsData called: " + ballCategory);
-
             var ballData = HKSupplyManager.Instance.SupplyData;
-            float mass = 1f;
-            float linearDamping = 25f;
-            float bounciness = 0.3f;
-            AnimationCurve dampingCurve = null;
 
             if (ballCategory == BallCategory.Evolution)
             {
                 var entry = ballData.GetEntry(branch, ballType);
-                if (entry == null) return;
-                mass = entry.mass;
-                linearDamping = entry.linearDamping;
-                bounciness = entry.bounciness;
-                dampingCurve = entry.dampingCurve;
-                physicsEntry = entry;
+                if (entry == null) return null;
+                return entry.physicsPattern;
             }
             else if (ballCategory == BallCategory.Special)
             {
                 var entry = ballData.GetSpecialEntry(ballIndex);
-                if (entry == null) return;
-                mass = entry.mass;
-                linearDamping = entry.linearDamping;
-                bounciness = entry.bounciness;
-                dampingCurve = entry.dampingCurve;
+                if (entry == null) return null;
+                return entry.physicsPattern;
             }
             else if (ballCategory == BallCategory.Nuisance)
             {
                 var entry = ballData.GetNuisanceEntry(ballIndex);
-                if (entry == null) return;
-                mass = entry.mass;
-                linearDamping = entry.linearDamping;
-                bounciness = entry.bounciness;
-                dampingCurve = entry.dampingCurve;
+                if (entry == null) return null;
+                return entry.physicsPattern;
             }
 
-            rb.mass = mass;
-            rb.linearDamping = linearDamping;
-            Debug.Log($"Set linearDamping to {linearDamping}, actual rb.linearDamping = {rb.linearDamping}");
+            return null;
+        }
+
+        public void ApplyPhysicsData(Rigidbody2D rb) // hk修正：BubblesPhysicsDataから値を取得するように変更
+        {
+            BubblesPhysicsData pattern = GetPhysicsPattern();
+            if (pattern == null) return;
+
+            rb.mass = pattern.Mass;
+            rb.linearDamping = pattern.LinearDamping;
 
             if (rb.sharedMaterial != null)
             {
                 var mat = new PhysicsMaterial2D(rb.sharedMaterial.name + "_Instance");
                 mat.friction = rb.sharedMaterial.friction;
-                mat.bounciness = bounciness;
+                mat.bounciness = pattern.Bounciness;
                 rb.sharedMaterial = mat;
             }
 
             cachedRb = rb;
         }
-
-        private void Update() { } // hk追加
 
         private void OnDisable() // hk追加
         {
@@ -120,11 +109,12 @@ namespace Watermelon.BubbleMerge
         SpecialBall_003,
         SpecialBall_004,
         SpecialBall_005,
+        SpecialBall_006,
 
         NuisanceBall_001,
         NuisanceBall_002,
         NuisanceBall_003,
         NuisanceBall_004,
-
+        NuisanceBall_005
     }
 }

@@ -13,6 +13,7 @@ namespace Watermelon.BubbleMerge
         private PoolGeneric<BubbleBehavior> bubblesPool;
 
         private List<BubbleBehavior> bubbles = new List<BubbleBehavior>();
+        private Dictionary<BubbleBehavior, Coroutine> dragCoroutines = new Dictionary<BubbleBehavior, Coroutine>(); // hk追加：ボールごとのDrag処理を管理
 
         private List<GameObject> items = new List<GameObject>();
         private List<BombData> bombData = new List<BombData>();
@@ -286,7 +287,12 @@ namespace Watermelon.BubbleMerge
 
             for (int i = 0; i < bubbles.Count; i++)
             {
-                bubbles[i].RB.SetLinearDamping(BubblesPhysicsData.BubbleDragMax);
+                BallBehaviorHK ballHK = bubbles[i].GetComponent<BallBehaviorHK>();
+                BubblesPhysicsData pattern = ballHK != null ? ballHK.GetPhysicsPattern() : null;
+                if (pattern != null)
+                {
+                    bubbles[i].RB.SetLinearDamping(pattern.BubbleDragMax);
+                }
             }
 
             highlightedPair.ActivateWithDelay(HighlightedPair.HIGHLIGHT_DELAY);
@@ -619,11 +625,17 @@ namespace Watermelon.BubbleMerge
 
                     var direction = (selectedBubble.transform.position - currentPosition).xy();
 
-                    var t = ControlsData.ControlsCurve.Evaluate(Mathf.Clamp01(Mathf.InverseLerp(0, BubblesPhysicsData.ForceMax, direction.magnitude * ControlsData.ControlsPower)));
+                    BallBehaviorHK ballHK = selectedBubble.GetComponent<BallBehaviorHK>();
+                    BubblesPhysicsData pattern = ballHK != null ? ballHK.GetPhysicsPattern() : null;
 
-                    TrajectoryController.Drag(selectedBubble.transform.position, selectedBubble.transform.position - currentPosition, t);
+                    if (pattern != null)
+                    {
+                        var t = ControlsData.ControlsCurve.Evaluate(Mathf.Clamp01(Mathf.InverseLerp(0, pattern.VisualDragMax, direction.magnitude * ControlsData.ControlsPower)));
 
-                    selectedBubble.SetTargetSquish(currentPosition);
+                        TrajectoryController.Drag(selectedBubble.transform.position, selectedBubble.transform.position - currentPosition, t);
+
+                        selectedBubble.SetTargetSquish(currentPosition);
+                    }
                 }
             }
 
@@ -758,29 +770,68 @@ namespace Watermelon.BubbleMerge
             return new BubblesPair() { bubbleBehavior1 = firstBubbleBehavior, bubbleBehavior2 = secondBubbleBehavior };
         }
 
+
         public void ActivateMinDrag()
         {
             for (int i = 0; i < bubbles.Count; i++)
             {
                 if (bubbles[i] == null) continue; // hk追加：破棄済みオブジェクトをスキップ
+
+                BubblesPhysicsData pattern = GetBubblePhysicsPattern(bubbles[i]);
+                if (pattern == null) continue;
+
+                // hk追加：同じボールに対して前の処理がまだ動いていたら、先に止める
+                if (dragCoroutines.TryGetValue(bubbles[i], out Coroutine existingCoroutine))
+                {
+                    if (existingCoroutine != null)
+                        StopCoroutine(existingCoroutine);
+                    dragCoroutines.Remove(bubbles[i]);
+                }
+
                 float multiplier = GetDragMultiplier(bubbles[i]);
-                bubbles[i].RB.SetLinearDamping(BubblesPhysicsData.BubbleDragMin * multiplier);
+                bubbles[i].RB.SetLinearDamping(pattern.BubbleDragMin * multiplier);
+
+                Coroutine newCoroutine = StartCoroutine(DragTransitionCoroutine(bubbles[i], pattern));
+                dragCoroutines[bubbles[i]] = newCoroutine;
+            }
+        }
+
+        // hk追加：ボールごとに、そのボール専用の設定で抵抗を時間経過させる
+        private IEnumerator DragTransitionCoroutine(BubbleBehavior bubble, BubblesPhysicsData pattern)
+        {
+            yield return new WaitForSeconds(pattern.MinDragDuration);
+
+            float elapsed = 0f;
+            while (elapsed < pattern.DragTransitionDuration)
+            {
+                if (bubble == null)
+                {
+                    dragCoroutines.Remove(bubble);
+                    yield break;
+                }
+
+                elapsed += Time.deltaTime;
+                float t = pattern.BubbleDragCurve.Evaluate(elapsed / pattern.DragTransitionDuration);
+                float value = Mathf.Lerp(pattern.BubbleDragMin, pattern.BubbleDragMax, t);
+
+                if (!bubble.IsMerging && (bubble.BubbleSpecialEffect == null || bubble.BubbleSpecialEffect.IsDragAllowed()))
+                {
+                    float multiplier = GetDragMultiplier(bubble);
+                    bubble.RB.SetLinearDamping(value * multiplier);
+                }
+
+                yield return null;
             }
 
-            dragCase.KillActive();
-            dragCase = Tween.DoFloat(BubblesPhysicsData.BubbleDragMin, BubblesPhysicsData.BubbleDragMax, BubblesPhysicsData.DragTransitionDuration,
-                (value) =>
-                {
-                    for (int i = 0; i < bubbles.Count; i++)
-                    {
-                        if (bubbles[i] == null) continue; // hk追加：破棄済みオブジェクトをスキップ
-                        if (!bubbles[i].IsMerging && (bubbles[i].BubbleSpecialEffect == null || bubbles[i].BubbleSpecialEffect.IsDragAllowed()))
-                        {
-                            float multiplier = GetDragMultiplier(bubbles[i]);
-                            bubbles[i].RB.SetLinearDamping(value * multiplier);
-                        }
-                    }
-                }, BubblesPhysicsData.MinDragDuration).SetCurveEasing(BubblesPhysicsData.BubbleDragCurve);
+            dragCoroutines.Remove(bubble); // hk追加：処理が正常に終わったら記録から消す
+        }
+
+        // hk追加：ボールが使うBubblesPhysicsDataを取得する共通の窓口
+        private BubblesPhysicsData GetBubblePhysicsPattern(BubbleBehavior bubble)
+        {
+            BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
+            if (ballHK == null) return null;
+            return ballHK.GetPhysicsPattern();
         }
 
         // hk追加：ボールごとのDamping倍率を取得（基本値＋速度に応じたカーブ補正の加算）
@@ -803,12 +854,14 @@ namespace Watermelon.BubbleMerge
                 return 1f;
             }
 
-            var entry = HKSupplyManager.Instance.SupplyData.GetEntry(ballHK.GetBranch(), ballHK.GetBallType());
-            if (entry == null) return 1f;
+            BubblesPhysicsData pattern = ballHK.GetPhysicsPattern();
+            if (pattern == null) return 1f;
 
             float speed = bubble.RB.GetVelocity().magnitude;
-            return entry.linearDamping + entry.dampingCurve.Evaluate(speed);
+            return pattern.LinearDamping + pattern.DampingCurve.Evaluate(speed);
         }
+
+       
         public Vector3 GetRandomPosition() // hk追加：引数なし版
         {
             Vector3 randomPosition = positionsList[Random.Range(0, positionsList.Count)];

@@ -347,7 +347,7 @@ namespace Watermelon.BubbleMerge
 
         public static void ResetAttractionSettings()
         {
-            SetAttractionSettings(BubblesPhysicsData.DefaultAttractionSettings);
+            SetAttractionSettings(instance.bubblesPhysicsData.AttractionSettings);
         }
 
         public static void OnGamePopupOpened()

@@ -5,8 +5,6 @@ namespace Watermelon.BubbleMerge
     [CreateAssetMenu(fileName = "Bubble Physics Data", menuName = "Data/Bubble Physics Data")]
     public class BubblesPhysicsData : ScriptableObject
     {
-        private static BubblesPhysicsData instance;
-
         [SerializeField] DuoFloat bubbleDragRange;
         [SerializeField] float minDragDuration = 0.5f;
         [SerializeField] float dragTransitionDuration = 1f;
@@ -14,23 +12,37 @@ namespace Watermelon.BubbleMerge
         [SerializeField] AnimationCurve bubbleDragCurve;
         [SerializeField] AttractionSettings attractionSettings;
 
-        public static float BubbleDragMin => instance.bubbleDragRange.firstValue;
-        public static float BubbleDragMax => instance.bubbleDragRange.secondValue;
+        [Header("Ball Physics (hk追加：ボールの性格を決める項目)")]
+        [SerializeField] float mass = 1f;
+        [SerializeField] float linearDamping = 1f;
+        [Range(0f, 1f)]
+        [SerializeField] float bounciness = 0.3f;
+        [SerializeField] AnimationCurve dampingCurve = AnimationCurve.Linear(0, 10, 1, 0.5f);
+        [SerializeField] float visualDragMax = 3f; // hk追加：見た目上の引っ張り判定の基準値（実際の力の強さとは別）
 
-        public static float MinDragDuration => instance.minDragDuration;
-        public static float DragTransitionDuration => instance.dragTransitionDuration;
+        // hk修正：static(共通の1個だけ)をやめて、このアセット自身の値を返すようにする
+        public float BubbleDragMin => bubbleDragRange.firstValue;
+        public float BubbleDragMax => bubbleDragRange.secondValue;
 
-        public static float ForceMin => instance.force.firstValue;
-        public static float ForceMax => instance.force.secondValue;
+        public float MinDragDuration => minDragDuration;
+        public float DragTransitionDuration => dragTransitionDuration;
 
-        public static AnimationCurve BubbleDragCurve => instance.bubbleDragCurve;
+        public float ForceMin => force.firstValue;
+        public float ForceMax => force.secondValue;
 
-        public static AttractionSettings DefaultAttractionSettings => instance.attractionSettings;
+        public AnimationCurve BubbleDragCurve => bubbleDragCurve;
 
+        public AttractionSettings AttractionSettings => attractionSettings;
+
+        public float Mass => mass;
+        public float LinearDamping => linearDamping;
+        public float Bounciness => bounciness;
+        public AnimationCurve DampingCurve => dampingCurve;
+        public float VisualDragMax => visualDragMax; // hk追加
+
+        // hk修正：ゲーム開始時に「基準となる1個」を全体設定として引き継ぐためだけに残す
         public void Init()
         {
-            instance = this;
-
             LevelController.SetAttractionSettings(attractionSettings);
         }
     }

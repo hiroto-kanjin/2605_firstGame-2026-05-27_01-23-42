@@ -53,10 +53,20 @@ namespace Watermelon.BubbleMerge
             Vector3 directionVector = transform.position - startPosition;
             directionVector.z = 0;
 
-            float magnitude = Mathf.Clamp(directionVector.magnitude * ControlsData.ControlsPower, BubblesPhysicsData.ForceMin, BubblesPhysicsData.ForceMax);
-            magnitude *= ControlsData.ControlsCurve.Evaluate(magnitude / BubblesPhysicsData.ForceMax);
+            BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
+            BubblesPhysicsData pattern = ballHK != null ? ballHK.GetPhysicsPattern() : null;
+            if (pattern == null) return;
+
+            // hk修正：まず「どれくらい引っ張ったか」を0〜1の割合で求める（Visual Drag Maxが基準）
+            float pullRatio = Mathf.Clamp01(directionVector.magnitude * ControlsData.ControlsPower / pattern.VisualDragMax);
+
+            // hk修正：その割合をカーブに当てはめて、0〜1の補正値を得る
+            float curveValue = ControlsData.ControlsCurve.Evaluate(pullRatio);
+
+            // hk修正：補正値を、Forceの範囲（実際の力の強さ）に当てはめる。ここでもう縮小しない
+            float magnitude = Mathf.Lerp(pattern.ForceMin, pattern.ForceMax, curveValue);
+
             rb.AddForce(directionVector.normalized * magnitude * forceMult, ForceMode2D.Impulse);
-            Debug.Log($"Launch: magnitude={magnitude}, mass={rb.mass}, linearDamping={rb.linearDamping}, resultVelocity={rb.linearVelocity}");
             graphics.SetTargetSquish(directionVector.xy().normalized, 0);
         }
 
@@ -65,9 +75,13 @@ namespace Watermelon.BubbleMerge
             if (bubbleSpecialEffect != null)
                 return;
 
+            BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
+            BubblesPhysicsData pattern = ballHK != null ? ballHK.GetPhysicsPattern() : null;
+            if (pattern == null) return;
+
             var direction = (transform.position - touchWorldPos).xy();
 
-            var t = ControlsData.ControlsCurve.Evaluate(Mathf.Clamp01(Mathf.InverseLerp(0, BubblesPhysicsData.ForceMax, direction.magnitude * ControlsData.ControlsPower)));
+            var t = ControlsData.ControlsCurve.Evaluate(Mathf.Clamp01(Mathf.InverseLerp(0, pattern.VisualDragMax, direction.magnitude * ControlsData.ControlsPower)));
             graphics.SetTargetSquish(direction.normalized, t);
         }
 
@@ -88,7 +102,12 @@ namespace Watermelon.BubbleMerge
             colliderRef.enabled = true;
             colliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
 
-            OnAttractionSettingsChanged(LevelController.ActiveAttractionSettings);
+            BallBehaviorHK ballHKForAttraction = GetComponent<BallBehaviorHK>();
+            BubblesPhysicsData attractionPattern = ballHKForAttraction != null ? ballHKForAttraction.GetPhysicsPattern() : null;
+            if (attractionPattern != null)
+            {
+                OnAttractionSettingsChanged(attractionPattern.AttractionSettings);
+            }
 
             // for test
             if (startVelocity != Vector2.zero)
@@ -204,7 +223,11 @@ namespace Watermelon.BubbleMerge
 
             if (name.Equals(collision.gameObject.transform.parent.name))
             {
-                AttractionSettings attractionSettings = LevelController.ActiveAttractionSettings;
+                BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
+                BubblesPhysicsData pattern = ballHK != null ? ballHK.GetPhysicsPattern() : null;
+                if (pattern == null) return;
+
+                AttractionSettings attractionSettings = pattern.AttractionSettings;
 
                 Transform other = collision.gameObject.transform.parent;
                 float distance = Vector3.Magnitude(transform.position - other.position);

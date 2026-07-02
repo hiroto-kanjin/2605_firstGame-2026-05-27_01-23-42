@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleSize: 1.1
-  forceMult: 80
+  forceMult: 2
   colliderRef: {fileID: 7588119264106327301}
   attractionTrigger: {fileID: 4666644514279186004}
   graphics: {fileID: 8442908596434680307}
