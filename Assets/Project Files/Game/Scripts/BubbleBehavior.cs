@@ -134,6 +134,8 @@ namespace Watermelon.BubbleMerge
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            bool didMerge = false; // hk追加：今回のぶつかりで合体したかどうかの目印
+
             if (collision.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE))
             {
                 // hk追加：フィニッシャーにぶつかったらくっつく
@@ -156,16 +158,18 @@ namespace Watermelon.BubbleMerge
                 if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()
                     && !IsNuisance() && !bubble.IsNuisance() && IsNextStageAllowed()) // hk追加：BallDataに次の段階が実在する場合のみ進化する
                 {
+                    didMerge = true; // hk追加：合体することが決まった目印
+
                     bubble.IsMerging = true;
                     IsMerging = true;
 
                     MergingPartner = bubble;
                     bubble.MergingPartner = this;
 
-                    var velocity = (bubble.RB.GetVelocity() + RB.GetVelocity()) / 2;
+                    // hk修正：合体決定の瞬間、跳ね返りによる動きを両方ともゼロにする（バウンド防止）
                     bubble.RB.SetVelocity(Vector3.zero);
                     bubble.DisablePhysics();
-                    RB.SetVelocity(velocity);
+                    RB.SetVelocity(Vector3.zero);
                     bubble.graphics.DoMerge(transform);
 
                     graphics.DoMerge(bubble.transform, () =>
@@ -210,6 +214,12 @@ namespace Watermelon.BubbleMerge
             }
 
             AudioController.PlaySound(AudioController.AudioClips.bubbleHitSound);
+
+            // hk追加：合体しなかった場合、本来の跳ね返りやすさに戻す
+            if (!didMerge)
+            {
+                GetComponent<BallBehaviorHK>()?.RestoreBounciness(rb);
+            }
 
             // hk追加：質量差による過剰な吹き飛びを抑える
             BallBehaviorHK ballHKForLimit = GetComponent<BallBehaviorHK>();

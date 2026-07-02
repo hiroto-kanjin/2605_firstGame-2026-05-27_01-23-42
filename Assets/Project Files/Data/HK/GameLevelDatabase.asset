@@ -33,15 +33,6 @@ MonoBehaviour:
     - branch: 0
       ballType: 1
       spawnRate: 50
-    - branch: 0
-      ballType: 2
-      spawnRate: 50
-    - branch: 0
-      ballType: 3
-      spawnRate: 50
-    - branch: 0
-      ballType: 4
-      spawnRate: 50
     nuisanceSpawnEvents:
     - triggerShot: 0
       count: 0

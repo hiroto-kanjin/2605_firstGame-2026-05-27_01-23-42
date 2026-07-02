@@ -13,19 +13,52 @@ MonoBehaviour:
   m_Name: Bubble Physics Data_bounce
   m_EditorClassIdentifier: 
   bubbleDragRange:
-    firstValue: 0.1
-    secondValue: 10
-  minDragDuration: 0.8
-  dragTransitionDuration: 3
+    firstValue: 0
+    secondValue: 0.6
+  minDragDuration: 0.5
+  dragTransitionDuration: 1
   force:
-    firstValue: 0.5
-    secondValue: 2
+    firstValue: 2
+    secondValue: 15
   bubbleDragCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.14761734
-      value: 0.31951904
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  attractionSettings:
+    AttractionEnabled: 1
+    MaxAtrDistance: 0.1
+    MinMaxAttractionForce:
+      firstValue: 0.1
+      secondValue: 0.5
+  mass: 2
+  linearDamping: 0.1
+  bounciness: 1
+  dampingCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
       inSlope: 2
       outSlope: 2
       tangentMode: 0
@@ -44,9 +77,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  attractionSettings:
-    AttractionEnabled: 1
-    MaxAtrDistance: 0.1
-    MinMaxAttractionForce:
-      firstValue: 0.1
-      secondValue: 0.5
+  visualDragMax: 2
+  maxCollisionSpeed: 15

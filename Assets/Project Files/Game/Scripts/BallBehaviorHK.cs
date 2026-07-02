@@ -73,6 +73,21 @@ namespace Watermelon.BubbleMerge
 
             cachedRb = rb;
         }
+        // hk追加：合体しなかった場合に、本来の跳ね返りやすさを反映する
+        public void RestoreBounciness(Rigidbody2D rb)
+        {
+            BubblesPhysicsData pattern = GetPhysicsPattern();
+            if (pattern == null) return;
+
+            if (rb.sharedMaterial != null)
+            {
+                var mat = new PhysicsMaterial2D(rb.sharedMaterial.name + "_Instance");
+                mat.friction = rb.sharedMaterial.friction;
+                mat.bounciness = pattern.Bounciness;
+                rb.sharedMaterial = mat;
+            }
+        }
+
 
         private void OnDisable() // hk追加
         {

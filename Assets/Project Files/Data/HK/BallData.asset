@@ -13,239 +13,41 @@ MonoBehaviour:
   m_Name: BallData
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.BallSupplyData
   evolutionEntries:
-  - entryName: "\u30AD\u30CE\u30B3"
+  - entryName: "\u30DE\u30C3\u30B7\u30E5\u30EB\u30FC\u30E0"
     branch: 0
     ballType: 0
-    mass: 5
-    linearDamping: 1.2
-    bounciness: 0.507
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 11400000, guid: e2761765e029b124ab3d0a7ad15b84a1, type: 2}
   - entryName: "\u305F\u307E\u306D\u304E"
     branch: 0
     ballType: 1
-    mass: 15
-    linearDamping: 1.7
-    bounciness: 0.507
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
   - entryName: "\u30D4\u30FC\u30DE\u30F3"
     branch: 0
     ballType: 2
-    mass: 15
-    linearDamping: 3
-    bounciness: 0.507
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 11400000, guid: 17ecfc5415cde82498adb05238edaec6, type: 2}
   - entryName: "\u30CA\u30B9"
     branch: 0
     ballType: 3
-    mass: 30
-    linearDamping: 3
-    bounciness: 0.507
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 11400000, guid: 70d619039443b5c4f89c8d3eaf1dc123, type: 2}
   - entryName: "\u5C0F\u9EA6"
     branch: 0
     ballType: 4
-    mass: 5
-    linearDamping: 0.8
-    bounciness: 0.071
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 11400000, guid: 6288cd01c1c1b0c4fac8dca2f18f2701, type: 2}
   - entryName: "\u30C8\u30DE\u30C8"
     branch: 0
     ballType: 5
-    mass: 15
-    linearDamping: 0.8
-    bounciness: 0.071
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 1
-        outSlope: 1
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 11400000, guid: 20c501240a605a541ba6c359da5f85f8, type: 2}
   specialEntries:
   - entryName: 
     icon: {fileID: 0}
     size: 1
-    mass: 0
-    linearDamping: 0
-    bounciness: 0
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 0}
   - entryName: 
     icon: {fileID: 0}
     size: 1
-    mass: 0
-    linearDamping: 0
-    bounciness: 0
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 0}
   nuisanceEntries:
   - entryName: ojama001
     icon: {fileID: 21300000, guid: 947a39c514f0ec94a9a0bf405a51ddf8, type: 3}
     size: 1
-    mass: 80
-    linearDamping: 20
-    bounciness: 0.119
-    dampingCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 0
+    physicsPattern: {fileID: 0}

@@ -13,22 +13,64 @@ MonoBehaviour:
   m_Name: Bubble Physics Data_feather
   m_EditorClassIdentifier: 
   bubbleDragRange:
-    firstValue: 0.1
-    secondValue: 10
-  minDragDuration: 0.8
-  dragTransitionDuration: 3
+    firstValue: 0
+    secondValue: 0.01
+  minDragDuration: 3
+  dragTransitionDuration: 1
   force:
-    firstValue: 0.5
-    secondValue: 2
+    firstValue: 0.1
+    secondValue: 0.5
   bubbleDragCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.14761734
-      value: 0.31951904
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
+      time: -0.028366089
+      value: 0.9320221
+      inSlope: 0.026620865
+      outSlope: 0.026620865
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.67608327
+      value: 0.95077515
+      inSlope: 0.08929424
+      outSlope: 0.08929424
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.15196761
+      outSlope: 0.15196761
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  attractionSettings:
+    AttractionEnabled: 1
+    MaxAtrDistance: 10
+    MinMaxAttractionForce:
+      firstValue: 0.1
+      secondValue: 20
+  mass: 0.1
+  linearDamping: 0.1
+  bounciness: 0
+  dampingCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -37,16 +79,12 @@ MonoBehaviour:
       value: 1
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  attractionSettings:
-    AttractionEnabled: 1
-    MaxAtrDistance: 0.1
-    MinMaxAttractionForce:
-      firstValue: 0.1
-      secondValue: 0.5
+  visualDragMax: 3
+  maxCollisionSpeed: 6
