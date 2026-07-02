@@ -19,6 +19,7 @@ namespace Watermelon.BubbleMerge
         [SerializeField] float bounciness = 0.3f;
         [SerializeField] AnimationCurve dampingCurve = AnimationCurve.Linear(0, 10, 1, 0.5f);
         [SerializeField] float visualDragMax = 3f; // hk追加：見た目上の引っ張り判定の基準値（実際の力の強さとは別）
+        [SerializeField] float maxCollisionSpeed = 15f; // hk追加：衝突直後の速度上限
 
         // hk修正：static(共通の1個だけ)をやめて、このアセット自身の値を返すようにする
         public float BubbleDragMin => bubbleDragRange.firstValue;
@@ -38,7 +39,8 @@ namespace Watermelon.BubbleMerge
         public float LinearDamping => linearDamping;
         public float Bounciness => bounciness;
         public AnimationCurve DampingCurve => dampingCurve;
-        public float VisualDragMax => visualDragMax; // hk追加
+        public float VisualDragMax => visualDragMax;
+        public float MaxCollisionSpeed => maxCollisionSpeed; // hk追加
 
         // hk修正：ゲーム開始時に「基準となる1個」を全体設定として引き継ぐためだけに残す
         public void Init()

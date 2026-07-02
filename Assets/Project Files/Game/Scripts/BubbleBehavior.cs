@@ -210,40 +210,13 @@ namespace Watermelon.BubbleMerge
             }
 
             AudioController.PlaySound(AudioController.AudioClips.bubbleHitSound);
-        }
 
-        private void OnTriggerStay2D(Collider2D collision)
-        {
-            if (!isMagnetActive)
-                return;
-            if (IsMerging)
-                return;
-            if (collision.gameObject.layer != PhysicsHelper.LAYER_MAGNET)
-                return;
-
-            if (name.Equals(collision.gameObject.transform.parent.name))
+            // hk追加：質量差による過剰な吹き飛びを抑える
+            BallBehaviorHK ballHKForLimit = GetComponent<BallBehaviorHK>();
+            BubblesPhysicsData patternForLimit = ballHKForLimit != null ? ballHKForLimit.GetPhysicsPattern() : null;
+            if (patternForLimit != null && rb.linearVelocity.magnitude > patternForLimit.MaxCollisionSpeed)
             {
-                BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
-                BubblesPhysicsData pattern = ballHK != null ? ballHK.GetPhysicsPattern() : null;
-                if (pattern == null) return;
-
-                AttractionSettings attractionSettings = pattern.AttractionSettings;
-
-                Transform other = collision.gameObject.transform.parent;
-                float distance = Vector3.Magnitude(transform.position - other.position);
-
-                if (distance <= attractionSettings.MaxAtrDistance)
-                {
-                    BubbleBehavior bubbleBehavior = other.GetComponent<BubbleBehavior>();
-                    if (bubbleBehavior.IsMagnetActive)
-                    {
-                        float force = attractionSettings.MinMaxAttractionForce.Lerp((attractionSettings.MaxAtrDistance - distance) / attractionSettings.MaxAtrDistance);
-
-                        rb.AddForce((other.position - transform.position).normalized * force * Time.fixedDeltaTime, ForceMode2D.Impulse);
-
-                        bubbleBehavior.rb.AddForce((transform.position - other.position).normalized * force * Time.fixedDeltaTime, ForceMode2D.Impulse);
-                    }
-                }
+                rb.linearVelocity = rb.linearVelocity.normalized * patternForLimit.MaxCollisionSpeed;
             }
         }
 

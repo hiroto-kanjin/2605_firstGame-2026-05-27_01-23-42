@@ -50,7 +50,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleSize: 1.1
-  forceMult: 20
+  forceMult: 80
   colliderRef: {fileID: 7588119264106327301}
   attractionTrigger: {fileID: 4666644514279186004}
   graphics: {fileID: 8442908596434680307}
@@ -66,7 +66,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 20
   m_LinearDamping: 0.1
   m_AngularDamping: 2
   m_GravityScale: 0
@@ -115,7 +115,7 @@ MonoBehaviour:
   springFrequency: 2
   springDamping: 0.02
   attachDistance: 0.6
-  groupSize: 2
+  groupSize: 1
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0
