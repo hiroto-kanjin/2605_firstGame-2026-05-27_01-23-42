@@ -51,8 +51,9 @@ namespace Watermelon.BubbleMerge
         private EnumObjectsList itemsEnumObjectsList;
         private EnumObjectsList levelShapesEnumObjectsList;
         private EnumObjectsList levelSBackgroundsEnumObjectsList;
-        private const string NUISANCE_TAB_NAME = "Nuisance"; // hk追加
+        private const string BALLS_TAB_NAME = "Balls"; // hk追加
         private const string EFFECTS_TAB_NAME = "Effects"; // hk追加
+        private Branch hkSelectedBranch; // hk追加：Ballsタブで選択中のBranch
 
         //TabHandler
         private TabHandler tabHandler;
@@ -164,7 +165,7 @@ namespace Watermelon.BubbleMerge
         protected override void InitializeVariables()
         {
             Serializer.Init();
-            
+
             enumCompiling = false;
             itemsEnumObjectsList = new EnumObjectsList(itemsSerializedProperty, TYPE_PROPERTY_PATH, PREFAB_PROPERTY_PATH, ITEM_ENUM_FILE_PATH, OnBeforeEnumFileupdateCallback);
             itemsEnumObjectsList.EnableTextureField(EDITOR_TEXTURE_PROPERTY_PATH);
@@ -179,7 +180,7 @@ namespace Watermelon.BubbleMerge
             tabHandler.AddTab(new TabHandler.Tab(LEVEL_SHAPES_TAB_NAME, levelShapesEnumObjectsList.DisplayTab));
             tabHandler.AddTab(new TabHandler.Tab(LEVEL_BACKGROUNDS_TAB_NAME, levelSBackgroundsEnumObjectsList.DisplayTab));
             tabHandler.AddTab(new TabHandler.Tab(EDITOR_TAB_NAME, DisplayPropertiesTab));
-            tabHandler.AddTab(new TabHandler.Tab(NUISANCE_TAB_NAME, DisplayNuisanceTab)); // hk追加
+            tabHandler.AddTab(new TabHandler.Tab(BALLS_TAB_NAME, DisplayBallsTab)); // hk追加
             tabHandler.AddTab(new TabHandler.Tab(EFFECTS_TAB_NAME, DisplayEffectsTab)); // hk追加
 
             newLevelIndex = -1;
@@ -225,7 +226,7 @@ namespace Watermelon.BubbleMerge
             {
                 if ((levelsSerializedProperty.arraySize > 0) && PlayerPrefs.HasKey(PREFS_LEVEL))
                 {
-                    int levelIndex = Mathf.Clamp(PlayerPrefs.GetInt(PREFS_LEVEL, 0),0, levelsSerializedProperty.arraySize - 1);
+                    int levelIndex = Mathf.Clamp(PlayerPrefs.GetInt(PREFS_LEVEL, 0), 0, levelsSerializedProperty.arraySize - 1);
                     levelsHandler.CustomList.SelectedIndex = levelIndex;
                     levelsHandler.OpenLevel(levelIndex);
                 }
@@ -318,8 +319,8 @@ namespace Watermelon.BubbleMerge
             EditorGUILayout.EndVertical();
         }
 
-        // hk追加：お邪魔ボール配置タブの表示
-        private void DisplayNuisanceTab()
+        // hk追加：ボール配置タブの表示（お邪魔・進化・特殊ボールをまとめて管理）
+        private void DisplayBallsTab()
         {
             if (selectedLevelRepresentation == null || selectedLevelRepresentation.NullLevel)
             {
@@ -327,60 +328,94 @@ namespace Watermelon.BubbleMerge
                 return;
             }
 
-            EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(selectedLevelRepresentation.nuisanceBallsRandomProperty);
-            EditorGUILayout.Space();
+            BallData ballData = AssetDatabase.LoadAssetAtPath<BallData>("Assets/Project Files/Data/HK/BallData.asset");
+            GameObject bubblePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Project Files/Game/Prefabs/Bubble.prefab");
 
-            if (!selectedLevelRepresentation.nuisanceBallsRandomProperty.boolValue)
+            if (ballData == null)
             {
-                BallData ballData = AssetDatabase.LoadAssetAtPath<BallData>("Assets/Project Files/Data/HK/BallData.asset");
-                GameObject bubblePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Project Files/Game/Prefabs/Bubble.prefab");
-
-                if (ballData == null)
-                {
-                    EditorGUILayout.HelpBox("BallData.asset が見つかりません。", MessageType.Error);
-                    return;
-                }
-
-                if (bubblePrefab == null)
-                {
-                    EditorGUILayout.HelpBox("Bubble.prefab が見つかりません。", MessageType.Error);
-                    return;
-                }
-
-                EditorGUILayout.LabelField("配置するお邪魔ボールを選んでください。");
-                EditorGUILayout.Space();
-
-                for (int i = 0; i < 5; i++)
-                {
-                    NuisanceBallEntry entry = ballData.GetNuisanceEntry(i);
-                    if (entry == null) continue;
-
-                    string label = string.IsNullOrEmpty(entry.entryName) ? "NuisanceBall_" + i : entry.entryName;
-
-                    if (GUILayout.Button(label))
-                    {
-                        EditorSceneController.Instance.SpawnNuisanceBall(bubblePrefab, Vector3.zero, (NuisanceBallType)i);
-
-                        int newIndex = selectedLevelRepresentation.nuisanceBallPlacementsProperty.arraySize;
-                        selectedLevelRepresentation.nuisanceBallPlacementsProperty.arraySize++;
-                        SerializedProperty newElement = selectedLevelRepresentation.nuisanceBallPlacementsProperty.GetArrayElementAtIndex(newIndex);
-                        newElement.FindPropertyRelative("type").intValue = i;
-                        newElement.FindPropertyRelative("position").vector3Value = Vector3.zero;
-                        selectedLevelRepresentation.ApplyChanges();
-                    }
-                }
-
-                EditorGUILayout.Space();
-
-                if (GUILayout.Button("Save Nuisance Placements"))
-                {
-                    selectedLevelRepresentation.SaveNuisancePlacements(EditorSceneController.Instance.GetNuisanceBallPlacements());
-                    selectedLevelRepresentation.ApplyChanges();
-                }
+                EditorGUILayout.HelpBox("BallData.asset が見つかりません。", MessageType.Error);
+                return;
             }
 
-            EditorGUILayout.PropertyField(selectedLevelRepresentation.nuisanceBallPlacementsProperty, true);
+            if (bubblePrefab == null)
+            {
+                EditorGUILayout.HelpBox("Bubble.prefab が見つかりません。", MessageType.Error);
+                return;
+            }
+
+            EditorGUILayout.Space();
+
+            // ── お邪魔ボール ──
+            EditorGUILayout.LabelField("── お邪魔ボール ──", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            for (int i = 0; i < 5; i++)
+            {
+                NuisanceBallEntry entry = ballData.GetNuisanceEntry(i);
+                if (entry == null) continue;
+                string label = string.IsNullOrEmpty(entry.entryName) ? "NuisanceBall_" + i : entry.entryName;
+                if (GUILayout.Button(label))
+                {
+                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Nuisance, 0, i, Vector3.zero);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            // ── 進化ボール ──
+            EditorGUILayout.LabelField("── 進化ボール ──", EditorStyles.boldLabel);
+            hkSelectedBranch = (Branch)EditorGUILayout.EnumPopup("系統", hkSelectedBranch);
+            EditorGUILayout.BeginHorizontal();
+            for (int level = 0; level <= 10; level++)
+            {
+                if (GUILayout.Button("Lv" + (level + 1)))
+                {
+                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Evolution, (int)hkSelectedBranch, level, Vector3.zero);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            // ── 特殊ボール ──
+            EditorGUILayout.LabelField("── 特殊ボール ──", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            for (int i = 0; i < 5; i++)
+            {
+                SpecialBallEntry entry = ballData.GetSpecialEntry(i);
+                if (entry == null) continue;
+                string label = string.IsNullOrEmpty(entry.entryName) ? "SpecialBall_" + i : entry.entryName;
+                if (GUILayout.Button(label))
+                {
+                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Special, 0, i, Vector3.zero);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Save Ball Placements"))
+            {
+                selectedLevelRepresentation.SaveBallPlacements(EditorSceneController.Instance.GetBallPlacements());
+                selectedLevelRepresentation.ApplyChanges();
+            }
+
+            EditorGUILayout.PropertyField(selectedLevelRepresentation.ballPlacementsProperty, true);
+        }
+
+        // hk追加：ボールをシーンに配置してプロパティにも仮登録するヘルパー
+        private void HKSpawnAndRegisterBall(GameObject prefab, BallCategory category, int branchIndex, int ballLevelIndex, Vector3 position)
+        {
+            EditorSceneController.Instance.SpawnBallPlacement(prefab, position, category, branchIndex, ballLevelIndex);
+
+            int newIndex = selectedLevelRepresentation.ballPlacementsProperty.arraySize;
+            selectedLevelRepresentation.ballPlacementsProperty.arraySize++;
+            SerializedProperty newElement = selectedLevelRepresentation.ballPlacementsProperty.GetArrayElementAtIndex(newIndex);
+            newElement.FindPropertyRelative("category").intValue = (int)category;
+            newElement.FindPropertyRelative("branchIndex").intValue = branchIndex;
+            newElement.FindPropertyRelative("ballLevelIndex").intValue = ballLevelIndex;
+            newElement.FindPropertyRelative("position").vector3Value = position;
+            selectedLevelRepresentation.ApplyChanges();
         }
 
         // hk追加：SpecialEffect配置タブの表示
@@ -810,24 +845,26 @@ namespace Watermelon.BubbleMerge
             LoadLevelShape();
             LoadLevelBackground();
             LoadLevelItems();
-            LoadNuisanceBalls(); // hk追加
+            LoadBallPlacements(); // hk追加
             LoadSpecialEffects(); // hk追加
             EditorSceneController.Instance.RegisterLevelState();
         }
-        // hk追加：お邪魔ボールをシーンに復元する
-        private void LoadNuisanceBalls()
+        // hk追加：配置ボールをシーンに復元する
+        private void LoadBallPlacements()
         {
-            if (selectedLevelRepresentation.nuisanceBallsRandomProperty.boolValue) return;
+            if (selectedLevelRepresentation.ballPlacementsProperty.arraySize == 0) return;
 
             GameObject bubblePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Project Files/Game/Prefabs/Bubble.prefab");
             if (bubblePrefab == null) return;
 
-            for (int i = 0; i < selectedLevelRepresentation.nuisanceBallPlacementsProperty.arraySize; i++)
+            for (int i = 0; i < selectedLevelRepresentation.ballPlacementsProperty.arraySize; i++)
             {
-                SerializedProperty element = selectedLevelRepresentation.nuisanceBallPlacementsProperty.GetArrayElementAtIndex(i);
-                NuisanceBallType type = (NuisanceBallType)element.FindPropertyRelative("type").intValue;
+                SerializedProperty element = selectedLevelRepresentation.ballPlacementsProperty.GetArrayElementAtIndex(i);
+                BallCategory category = (BallCategory)element.FindPropertyRelative("category").intValue;
+                int branchIndex = element.FindPropertyRelative("branchIndex").intValue;
+                int ballLevelIndex = element.FindPropertyRelative("ballLevelIndex").intValue;
                 Vector3 position = element.FindPropertyRelative("position").vector3Value;
-                EditorSceneController.Instance.SpawnNuisanceBall(bubblePrefab, position, type);
+                EditorSceneController.Instance.SpawnBallPlacement(bubblePrefab, position, category, branchIndex, ballLevelIndex);
             }
         }
 
@@ -1129,8 +1166,7 @@ namespace Watermelon.BubbleMerge
             private const string AMOUNT_PROPERTY_NAME = "amount";
             private const string MOVES_TO_SPAWN_PROPERTY = "movesToSpawn";
             private const string BOMBS_LIST_HEADER = "Bombs";
-            private const string NUISANCE_BALLS_RANDOM_PROPERTY_NAME = "nuisanceBallsRandom"; // hk追加
-            private const string NUISANCE_BALL_PLACEMENTS_PROPERTY_NAME = "nuisanceBallPlacements"; // hk追加
+            private const string BALL_PLACEMENTS_PROPERTY_NAME = "ballPlacements"; // hk追加
             private const string SPECIAL_EFFECTS_RANDOM_PROPERTY_NAME = "specialEffectsRandom"; // hk追加
             private const string SPECIAL_EFFECT_PLACEMENTS_PROPERTY_NAME = "specialEffectPlacements"; // hk追加
             public SerializedProperty noteProperty;
@@ -1143,8 +1179,7 @@ namespace Watermelon.BubbleMerge
             public SerializedProperty itemsProperty;
             public SerializedProperty levelShapeTypeProperty;
             public SerializedProperty levelBackTypeProperty;
-            public SerializedProperty nuisanceBallsRandomProperty; // hk追加
-            public SerializedProperty nuisanceBallPlacementsProperty; // hk追加
+            public SerializedProperty ballPlacementsProperty; // hk追加
             public SerializedProperty specialEffectsRandomProperty; // hk追加
             public SerializedProperty specialEffectPlacementsProperty; // hk追加
 
@@ -1172,15 +1207,14 @@ namespace Watermelon.BubbleMerge
                 itemsProperty = serializedLevelObject.FindProperty(ITEMS_PROPERTY_NAME);
                 levelShapeTypeProperty = serializedLevelObject.FindProperty(LEVEL_SHAPE_TYPE_PROPERTY_NAME);
                 levelBackTypeProperty = serializedLevelObject.FindProperty(LEVEL_BACK_TYPE_PROPERTY_NAME);
-                nuisanceBallsRandomProperty = serializedLevelObject.FindProperty(NUISANCE_BALLS_RANDOM_PROPERTY_NAME); // hk追加
-                nuisanceBallPlacementsProperty = serializedLevelObject.FindProperty(NUISANCE_BALL_PLACEMENTS_PROPERTY_NAME); // hk追加
+                ballPlacementsProperty = serializedLevelObject.FindProperty(BALL_PLACEMENTS_PROPERTY_NAME); // hk追加
                 specialEffectsRandomProperty = serializedLevelObject.FindProperty(SPECIAL_EFFECTS_RANDOM_PROPERTY_NAME); // hk追加
                 specialEffectPlacementsProperty = serializedLevelObject.FindProperty(SPECIAL_EFFECT_PLACEMENTS_PROPERTY_NAME); // hk追加
 
                 InitBombsList();
             }
 
-            
+
 
             public override void Clear()
             {
@@ -1428,7 +1462,7 @@ namespace Watermelon.BubbleMerge
 
             private void InitBombsList()
             {
-                bombsList = new ReorderableList(serializedLevelObject,requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME),true,true,true,true);
+                bombsList = new ReorderableList(serializedLevelObject, requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME), true, true, true, true);
                 bombsList.drawElementCallback += BombsDrawElementCallback;
                 bombsList.drawHeaderCallback += BombsDrawHeaderCallback;
                 bombsList.elementHeight = EditorGUIUtility.singleLineHeight;
@@ -1444,14 +1478,16 @@ namespace Watermelon.BubbleMerge
                 EditorGUI.PropertyField(rect, requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).GetArrayElementAtIndex(index).FindPropertyRelative(MOVES_TO_SPAWN_PROPERTY));
             }
 
-            // hk追加：お邪魔ボール配置を保存する
-            public void SaveNuisancePlacements(NuisanceBallSaveHK[] placements)
+            // hk追加：ボール配置を保存する
+            public void SaveBallPlacements(BallPlacementHK[] placements)
             {
-                nuisanceBallPlacementsProperty.arraySize = placements.Length;
+                ballPlacementsProperty.arraySize = placements.Length;
                 for (int i = 0; i < placements.Length; i++)
                 {
-                    SerializedProperty element = nuisanceBallPlacementsProperty.GetArrayElementAtIndex(i);
-                    element.FindPropertyRelative("type").intValue = (int)placements[i].type;
+                    SerializedProperty element = ballPlacementsProperty.GetArrayElementAtIndex(i);
+                    element.FindPropertyRelative("category").intValue = (int)placements[i].category;
+                    element.FindPropertyRelative("branchIndex").intValue = placements[i].branchIndex;
+                    element.FindPropertyRelative("ballLevelIndex").intValue = placements[i].ballLevelIndex;
                     element.FindPropertyRelative("position").vector3Value = placements[i].position;
                 }
             }

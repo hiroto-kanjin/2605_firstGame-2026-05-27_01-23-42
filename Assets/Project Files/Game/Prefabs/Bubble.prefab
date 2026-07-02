@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubbleSize: 1.1
-  forceMult: 40
+  forceMult: 80
   colliderRef: {fileID: 7588119264106327301}
   attractionTrigger: {fileID: 4666644514279186004}
   graphics: {fileID: 8442908596434680307}
@@ -95,6 +95,7 @@ MonoBehaviour:
   ballCategory: 0
   branch: 0
   ballType: 0
+  ballIndex: 0
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0

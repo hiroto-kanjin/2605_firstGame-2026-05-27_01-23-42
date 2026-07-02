@@ -56,6 +56,7 @@ namespace Watermelon.BubbleMerge
             float magnitude = Mathf.Clamp(directionVector.magnitude * ControlsData.ControlsPower, BubblesPhysicsData.ForceMin, BubblesPhysicsData.ForceMax);
             magnitude *= ControlsData.ControlsCurve.Evaluate(magnitude / BubblesPhysicsData.ForceMax);
             rb.AddForce(directionVector.normalized * magnitude * forceMult, ForceMode2D.Impulse);
+            Debug.Log($"Launch: magnitude={magnitude}, mass={rb.mass}, linearDamping={rb.linearDamping}, resultVelocity={rb.linearVelocity}");
             graphics.SetTargetSquish(directionVector.xy().normalized, 0);
         }
 

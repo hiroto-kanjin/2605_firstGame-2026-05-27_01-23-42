@@ -13,7 +13,7 @@ namespace Watermelon.BubbleMerge
 
 #if UNITY_EDITOR
         private static EditorSceneController instance;
-        
+
 
         public static EditorSceneController Instance { get => instance; }
 
@@ -63,42 +63,171 @@ namespace Watermelon.BubbleMerge
             HandleTeleportIfNessesary(gameObject, tempItemSave.Type);
             SelectGameObject(gameObject);
         }
-        // hk追加：お邪魔ボールをシーンに配置する
-public void SpawnNuisanceBall(GameObject prefab, Vector3 defaultPosition, NuisanceBallType nuisanceType)
-{
-    GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-    gameObject.transform.SetParent(container.transform);
-    gameObject.transform.position = defaultPosition;
-    gameObject.transform.rotation = Quaternion.identity;
-    gameObject.name = "NuisanceBall_" + nuisanceType + " (el # " + container.transform.childCount + ")";
 
-    SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
-    savableItemHK.Category = PlacementCategory.Nuisance;
-    savableItemHK.TypeIndex = (int)nuisanceType;
+        // hk追加：配置ボール（お邪魔・進化・特殊）をシーンに配置する
+        public void SpawnBallPlacement(GameObject prefab, Vector3 position, BallCategory category, int branchIndex, int ballLevelIndex)
+        {
+            GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            gameObject.transform.SetParent(container.transform);
+            gameObject.transform.position = position;
+            gameObject.transform.rotation = Quaternion.identity;
+            gameObject.name = category + "_B" + branchIndex + "_L" + ballLevelIndex + " (el # " + container.transform.childCount + ")";
 
-    SelectGameObject(gameObject);
-}
+            SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
+            savableItemHK.Category = BallCategoryToPlacementCategory(category);
+            savableItemHK.TypeIndex = ballLevelIndex;
+            savableItemHK.BranchIndex = branchIndex;
 
-// hk追加：SpecialEffectをシーンに配置する
-public void SpawnSpecialEffect(GameObject prefab, Vector3 defaultPosition, SpecialEffectType effectType)
-{
-    GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-    gameObject.transform.SetParent(container.transform);
-    gameObject.transform.position = defaultPosition;
-    gameObject.transform.rotation = Quaternion.identity;
-    gameObject.name = "SpecialEffect_" + effectType + " (el # " + container.transform.childCount + ")";
+            // hk追加：エディター上でボールの見た目を表示する（子オブジェクトに分離してPrefabの構造を壊さない）
+            Sprite sprite = GetEditorSpriteForBall(category, branchIndex, ballLevelIndex, out float size);
+            if (sprite != null)
+            {
+                GameObject spriteHolder = new GameObject("HK_EditorSprite");
+                spriteHolder.transform.SetParent(gameObject.transform);
+                spriteHolder.transform.localPosition = Vector3.zero;
+                spriteHolder.transform.localRotation = Quaternion.identity;
 
-    SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
-    savableItemHK.Category = PlacementCategory.SpecialEffect;
-    savableItemHK.TypeIndex = (int)effectType;
+                float displaySize = size / sprite.pixelsPerUnit * 10f;
+                spriteHolder.transform.localScale = Vector3.one * displaySize;
 
-    SelectGameObject(gameObject);
-}
+                SpriteRenderer sr = spriteHolder.AddComponent<SpriteRenderer>();
+                sr.sprite = sprite;
+                sr.sortingOrder = 10;
+            }
 
+            SelectGameObject(gameObject);
+        }
+
+        // hk追加：エディター表示用のスプライトとサイズをカテゴリに応じて取得する
+        private Sprite GetEditorSpriteForBall(BallCategory category, int branchIndex, int ballLevelIndex, out float size)
+        {
+            size = 1f;
+
+            if (category == BallCategory.Evolution)
+            {
+                // エディターはLevelControllerが未初期化のためAssetDatabaseから直接取得する
+                string[] guids = AssetDatabase.FindAssets("t:LevelDatabase");
+                if (guids.Length == 0) return null;
+
+                LevelDatabase levelDatabase = AssetDatabase.LoadAssetAtPath<LevelDatabase>(AssetDatabase.GUIDToAssetPath(guids[0]));
+                if (levelDatabase == null) return null;
+
+                EvolutionBranch branch = levelDatabase.GetBranch((Branch)branchIndex);
+                if (branch == null) return null;
+                if (ballLevelIndex < 0 || ballLevelIndex >= branch.stages.Length) return null;
+
+                size = branch.stages[ballLevelIndex].size;
+                return branch.stages[ballLevelIndex].icon;
+            }
+
+            BallData ballData = AssetDatabase.LoadAssetAtPath<BallData>("Assets/Project Files/Data/HK/BallData.asset");
+            if (ballData == null) return null;
+
+            if (category == BallCategory.Nuisance)
+            {
+                NuisanceBallEntry entry = ballData.GetNuisanceEntry(ballLevelIndex);
+                if (entry == null) return null;
+                size = entry.size;
+                return entry.icon;
+            }
+
+            if (category == BallCategory.Special)
+            {
+                SpecialBallEntry entry = ballData.GetSpecialEntry(ballLevelIndex);
+                if (entry == null) return null;
+                size = entry.size;
+                return entry.icon;
+            }
+
+            return null;
+        }
+
+        // hk追加：BallCategoryをPlacementCategoryに変換する
+        private PlacementCategory BallCategoryToPlacementCategory(BallCategory category)
+        {
+            switch (category)
+            {
+                case BallCategory.Nuisance: return PlacementCategory.Nuisance;
+                case BallCategory.Evolution: return PlacementCategory.Evolution;
+                case BallCategory.Special: return PlacementCategory.Special;
+                default:
+                    Debug.LogWarning("BallCategoryToPlacementCategory: 未対応のカテゴリ " + category);
+                    return PlacementCategory.Nuisance;
+            }
+        }
+
+        // hk追加：配置ボールの配置データを取得する
+        public BallPlacementHK[] GetBallPlacements()
+        {
+            SavableItemHK[] savableItems = container.GetComponentsInChildren<SavableItemHK>();
+            List<BallPlacementHK> result = new List<BallPlacementHK>();
+
+            for (int i = 0; i < savableItems.Length; i++)
+            {
+                PlacementCategory pc = savableItems[i].Category;
+                if (pc == PlacementCategory.SpecialEffect) continue; // エフェクトは除外
+
+                BallCategory ballCategory;
+                switch (pc)
+                {
+                    case PlacementCategory.Nuisance: ballCategory = BallCategory.Nuisance; break;
+                    case PlacementCategory.Evolution: ballCategory = BallCategory.Evolution; break;
+                    case PlacementCategory.Special: ballCategory = BallCategory.Special; break;
+                    default: continue;
+                }
+
+                result.Add(new BallPlacementHK()
+                {
+                    category = ballCategory,
+                    branchIndex = savableItems[i].BranchIndex,
+                    ballLevelIndex = savableItems[i].TypeIndex,
+                    position = savableItems[i].transform.position
+                });
+            }
+
+            return result.ToArray();
+        }
+
+        // hk追加：SpecialEffectをシーンに配置する
+        public void SpawnSpecialEffect(GameObject prefab, Vector3 defaultPosition, SpecialEffectType effectType)
+        {
+            GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            gameObject.transform.SetParent(container.transform);
+            gameObject.transform.position = defaultPosition;
+            gameObject.transform.rotation = Quaternion.identity;
+            gameObject.name = "SpecialEffect_" + effectType + " (el # " + container.transform.childCount + ")";
+
+            SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
+            savableItemHK.Category = PlacementCategory.SpecialEffect;
+            savableItemHK.TypeIndex = (int)effectType;
+
+            SelectGameObject(gameObject);
+        }
+
+        // hk追加：SpecialEffectの配置データを取得する
+        public SpecialEffectSaveHK[] GetSpecialEffectPlacements()
+        {
+            SavableItemHK[] savableItems = container.GetComponentsInChildren<SavableItemHK>();
+            List<SpecialEffectSaveHK> result = new List<SpecialEffectSaveHK>();
+
+            for (int i = 0; i < savableItems.Length; i++)
+            {
+                if (savableItems[i].Category == PlacementCategory.SpecialEffect)
+                {
+                    result.Add(new SpecialEffectSaveHK()
+                    {
+                        type = (SpecialEffectType)savableItems[i].TypeIndex,
+                        position = savableItems[i].transform.position
+                    });
+                }
+            }
+
+            return result.ToArray();
+        }
 
         private void HandleTeleportIfNessesary(GameObject gameObject, Item type)
         {
-            if(type != Item.Teleport)
+            if (type != Item.Teleport)
             {
                 return;
             }
@@ -145,7 +274,7 @@ public void SpawnSpecialEffect(GameObject prefab, Vector3 defaultPosition, Speci
 
         public void Clear()
         {
-            if(container == null)
+            if (container == null)
             {
                 return;
             }
@@ -169,48 +298,6 @@ public void SpawnSpecialEffect(GameObject prefab, Vector3 defaultPosition, Speci
             return result.ToArray();
         }
 
-        // hk追加：お邪魔ボールの配置データを取得する
-public NuisanceBallSaveHK[] GetNuisanceBallPlacements()
-{
-    SavableItemHK[] savableItems = container.GetComponentsInChildren<SavableItemHK>();
-    List<NuisanceBallSaveHK> result = new List<NuisanceBallSaveHK>();
-
-    for (int i = 0; i < savableItems.Length; i++)
-    {
-        if (savableItems[i].Category == PlacementCategory.Nuisance)
-        {
-            result.Add(new NuisanceBallSaveHK()
-            {
-                type = (NuisanceBallType)savableItems[i].TypeIndex,
-                position = savableItems[i].transform.position
-            });
-        }
-    }
-
-    return result.ToArray();
-}
-
-// hk追加：SpecialEffectの配置データを取得する
-public SpecialEffectSaveHK[] GetSpecialEffectPlacements()
-{
-    SavableItemHK[] savableItems = container.GetComponentsInChildren<SavableItemHK>();
-    List<SpecialEffectSaveHK> result = new List<SpecialEffectSaveHK>();
-
-    for (int i = 0; i < savableItems.Length; i++)
-    {
-        if (savableItems[i].Category == PlacementCategory.SpecialEffect)
-        {
-            result.Add(new SpecialEffectSaveHK()
-            {
-                type = (SpecialEffectType)savableItems[i].TypeIndex,
-                position = savableItems[i].transform.position
-            });
-        }
-    }
-
-    return result.ToArray();
-}
-
         private ItemSave HandleParse(SavableItem savableItem)
         {
             return new ItemSave(savableItem.Item, savableItem.gameObject.transform.position, savableItem.gameObject.transform.rotation.eulerAngles, savableItem.gameObject.transform.localScale);
@@ -229,7 +316,7 @@ public SpecialEffectSaveHK[] GetSpecialEffectPlacements()
                 return true;
             }
 
-            if(container == null)
+            if (container == null)
             {
                 return false;
             }

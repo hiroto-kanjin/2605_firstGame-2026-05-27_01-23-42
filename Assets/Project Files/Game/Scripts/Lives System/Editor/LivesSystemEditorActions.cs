@@ -117,5 +117,24 @@ namespace Watermelon
 
             Debug.Log("DisableInfiniteMode action performed");
         }
+        [MenuItem("Actions/Lives System/Reload Max Lives From Config")]
+        private static void ReloadMaxLivesFromConfig()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.LogWarning("Action works only in play mode!");
+
+                return;
+            }
+
+            int maxLivesCount = LivesSystem.Data.MaxLivesCount;
+
+            if (LivesSystem.RemoteConfigData != null)
+                maxLivesCount = LivesSystem.RemoteConfigData.maxCount;
+
+            LivesSystem.OverrideMaxLivesCount(maxLivesCount, true);
+
+            Debug.Log("MaxLivesCount reloaded from config: " + maxLivesCount);
+        }
     }
 }

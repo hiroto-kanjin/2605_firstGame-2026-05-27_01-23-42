@@ -15,7 +15,7 @@ namespace Watermelon.BubbleMerge
         [Header("お邪魔ボール")]
         [SerializeField] private List<NuisanceBallEntry> nuisanceEntries = new List<NuisanceBallEntry>();
 
-        public EvolutionBallEntry GetEntry(Branch branch, BallType ballType) // hk追加
+        public EvolutionBallEntry GetEntry(Branch branch, BallType ballType)
         {
             foreach (var entry in evolutionEntries)
             {
@@ -25,14 +25,14 @@ namespace Watermelon.BubbleMerge
             return null;
         }
 
-        public SpecialBallEntry GetSpecialEntry(int index) // hk追加
+        public SpecialBallEntry GetSpecialEntry(int index)
         {
             if (index < specialEntries.Count)
                 return specialEntries[index];
             return null;
         }
 
-        public NuisanceBallEntry GetNuisanceEntry(int index) // hk追加
+        public NuisanceBallEntry GetNuisanceEntry(int index)
         {
             if (index < nuisanceEntries.Count)
                 return nuisanceEntries[index];
@@ -43,6 +43,8 @@ namespace Watermelon.BubbleMerge
     [System.Serializable]
     public class EvolutionBallEntry // hk追加：進化ボール
     {
+        public string entryName; // 追加：インスペクター上で見分けるための名前
+
         public Branch branch;
         public BallType ballType;
 
@@ -57,8 +59,9 @@ namespace Watermelon.BubbleMerge
     [System.Serializable]
     public class SpecialBallEntry // hk追加：特殊ボール
     {
-        public string entryName; // hk追加：識別用名前
-        public Sprite icon; // hk追加：見た目
+        public string entryName;
+        public Sprite icon;
+        public float size = 1f; // hk追加：表示サイズ（EvolutionStage.sizeと同じ基準）
 
         [Header("Physics")]
         public float mass = 1f;
@@ -71,8 +74,9 @@ namespace Watermelon.BubbleMerge
     [System.Serializable]
     public class NuisanceBallEntry // hk追加：お邪魔ボール
     {
-        public string entryName; // hk追加：識別用名前
-        public Sprite icon; // hk追加：見た目
+        public string entryName;
+        public Sprite icon;
+        public float size = 1f; // hk追加：表示サイズ（EvolutionStage.sizeと同じ基準）
 
         [Header("Physics")]
         public float mass = 1f;

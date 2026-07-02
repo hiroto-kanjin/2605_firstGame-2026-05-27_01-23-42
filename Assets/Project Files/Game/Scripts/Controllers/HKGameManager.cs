@@ -42,8 +42,8 @@ namespace Watermelon.BubbleMerge
 
             UIController.GetPage<Watermelon.UIGame>().ResetCountUI();
             UIController.GetPage<Watermelon.UIGame>().UpdateShotsRemaining(shotsRemaining);
-            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.requiredIngredients); // hk追加：レシピUIを初期化する
-            LevelController.LevelBehavior.SpawnNuisanceBallsFromLevelHK(); // hk追加：お邪魔ボールを配置する
+            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.requiredIngredients);
+            LevelController.LevelBehavior.SpawnBallPlacementsHK(); // hk追加：配置ボールを配置する
         }
 
         public void OnShotFired() // hk追加
@@ -60,7 +60,7 @@ namespace Watermelon.BubbleMerge
                 if (shotsRemaining <= 0)
                 {
                     isFinalCountZero = true;
-                    Tween.DelayedCall(0.5f, () => // hk追加：0.5秒後にゲームオーバー判定
+                    Tween.DelayedCall(0.5f, () =>
                     {
                         if (!isGameEnded)
                         {
@@ -99,8 +99,7 @@ namespace Watermelon.BubbleMerge
             var ballsInPot = CookingAreaManager.Instance.GetBallsInPot();
             bool recipeReady = CheckRecipe(ballsInPot);
 
-            Debug.Log($"recipeReady={recipeReady} isRecipeReady={isRecipeReady} isFinisherActive={HKSupplyManager.Instance.IsFinisherActive()}"); // hk追加：デバッグ用
-            // hk追加：フィニッシャーが既に出ている場合はレシピ成立を無視する
+            Debug.Log($"recipeReady={recipeReady} isRecipeReady={isRecipeReady} isFinisherActive={HKSupplyManager.Instance.IsFinisherActive()}");
             if (recipeReady && !isRecipeReady && !HKSupplyManager.Instance.IsFinisherActive())
             {
                 HKSupplyManager.Instance.OnRecipeCompleted();
@@ -155,12 +154,12 @@ namespace Watermelon.BubbleMerge
             if (recipeMatched)
             {
                 Debug.Log($"クリア！完成度：{currentScore}点　ランク：{currentRank}");
-                Tween.DelayedCall(resultDelaySeconds, () => GameController.OnLevelCompleted()); // hk追加
+                Tween.DelayedCall(resultDelaySeconds, () => GameController.OnLevelCompleted());
             }
             else
             {
                 Debug.Log($"ゲームオーバー　完成度：{currentScore}点");
-                Tween.DelayedCall(resultDelaySeconds, () => GameController.OnLevelFailed()); // hk追加
+                Tween.DelayedCall(resultDelaySeconds, () => GameController.OnLevelFailed());
             }
         }
 

@@ -338,48 +338,52 @@ namespace Watermelon.BubbleMerge
             return null;
         }
 
-        // hk追加：Level.assetのお邪魔ボール配置データをもとにスポーンする
-        public void SpawnNuisanceBallsFromLevelHK()
+        // hk追加：ゲーム開始時に手動配置ボールをスポーンする（Level.BallPlacementsを使用）
+        public void SpawnBallPlacementsHK()
         {
             Level level = LevelController.Level;
             if (level == null) return;
 
-            if (level.NuisanceBallsRandom)
+            foreach (BallPlacementHK placement in level.BallPlacements)
             {
-                // ランダム配置
-                foreach (NuisanceBallSaveHK save in level.NuisanceBallPlacements)
+                if (placement.category == BallCategory.Nuisance)
                 {
-                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry((int)save.type);
+                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry(placement.ballLevelIndex);
                     if (entry == null) continue;
 
-                    Vector3 position = LevelController.LevelBehavior.GetRandomPosition();
-                    BubbleBehavior bubble = LevelController.LevelBehavior.SpawnNuisanceBallHK(entry.icon, position);
+                    BubbleBehavior bubble = SpawnNuisanceBallHK(entry.icon, placement.position);
                     if (bubble != null)
                     {
                         BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
                         if (ballHK != null)
-                        {
-                            ballHK.SetData(BallCategory.Nuisance, (int)save.type);
-                        }
+                            ballHK.SetData(BallCategory.Nuisance, placement.ballLevelIndex);
                     }
                 }
+                // Evolution・Special は今後ここに追加
             }
-            else
-            {
-                // 手動配置
-                foreach (NuisanceBallSaveHK save in level.NuisanceBallPlacements)
-                {
-                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry((int)save.type);
-                    if (entry == null) continue;
+        }
 
-                    BubbleBehavior bubble = LevelController.LevelBehavior.SpawnNuisanceBallHK(entry.icon, save.position);
+        // hk追加：指定ショット数に対応するお邪魔ボール出現イベントを処理する（GameLevelDataを使用）
+        public void TrySpawnNuisanceEventsHK(int currentShot)
+        {
+            GameLevelData gameLevelData = HKGameManager.Instance.GetCurrentLevel(); // hk追加
+            if (gameLevelData == null) return;
+
+            List<NuisanceSpawnEvent> events = gameLevelData.GetEventsForShot(currentShot);
+            foreach (NuisanceSpawnEvent spawnEvent in events)
+            {
+                NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry((int)spawnEvent.ballType);
+                if (entry == null) continue;
+
+                for (int i = 0; i < spawnEvent.count; i++)
+                {
+                    Vector3 position = GetRandomPosition();
+                    BubbleBehavior bubble = SpawnNuisanceBallHK(entry.icon, position);
                     if (bubble != null)
                     {
                         BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
                         if (ballHK != null)
-                        {
-                            ballHK.SetData(BallCategory.Nuisance, (int)save.type);
-                        }
+                            ballHK.SetData(BallCategory.Nuisance, (int)spawnEvent.ballType);
                     }
                 }
             }
@@ -396,14 +400,9 @@ namespace Watermelon.BubbleMerge
 
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero);
-
-                // hk追加：BallBehaviorHKに値を設定する
-                BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
-                if (ballHK != null)
-                {
-                    ballHK.SetData(BallCategory.Evolution, branch, GetBallTypeFromStageId(stageId));
-                }
+                // hk修正：ボールの種類(SetData)をInitより前に確定させ、正しい物理データを適用させる
+                BallType ballType = GetBallTypeFromStageId(stageId);
+                BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Evolution, branch, ballType);
 
                 return bubble;
             }
@@ -492,11 +491,23 @@ namespace Watermelon.BubbleMerge
             smallest.SwapData(secondSmallest.Data);
         }
 
-        private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity)
+        // hk修正：category/ballBranch/ballTypeを追加。渡された場合、Initより前にSetDataを呼び、正しい物理データを適用させる
+        private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity, BallCategory? category = null, Branch ballBranch = default, BallType ballType = default)
         {
             BubbleBehavior bubble = bubblesPool.GetPooledComponent();
             bubble.transform.SetParent(transform);
             bubble.transform.position = position;
+
+            // hk修正：Initより前にSetDataを呼ぶ（プールから使い回した古いデータのままInitされるのを防ぐ）
+            if (category.HasValue)
+            {
+                BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
+                if (ballHK != null)
+                {
+                    ballHK.SetData(category.Value, ballBranch, ballType);
+                }
+            }
+
             bubble.Init(data, quickAppearance, startVelocity);
 
             if (IsActiveBubbleExists())
@@ -892,14 +903,10 @@ namespace Watermelon.BubbleMerge
         {
             if (LevelController.CreateBubbleData(new Requirement(bubble1.Data.branch, bubble1.Data.stageId + 1), out var data))
             {
-                var newBubble = SpawnBubble(data, position.xy(), true, (bubble1.RB.GetVelocity()));
-
-                // hk追加：マージ後のボールにBallBehaviorHKのデータを設定する
-                BallBehaviorHK newBallHK = newBubble.GetComponent<BallBehaviorHK>();
-                if (newBallHK != null)
-                {
-                    newBallHK.SetData(BallCategory.Evolution, data.branch, GetBallTypeFromStageId(data.stageId));
-                }
+                // hk修正：ボールの種類(SetData)をInitより前に確定させ、正しい物理データを適用させる
+                BallType ballType = GetBallTypeFromStageId(data.stageId);
+                BubbleSpawnData spawnData = new BubbleSpawnData() { branch = data.branch, stageId = data.stageId };
+                var newBubble = SpawnBubble(spawnData, data, position, true, (bubble1.RB.GetVelocity()), BallCategory.Evolution, data.branch, ballType);
 
                 // hk追加：テンプレートのRequirements判定を無効化（HKのレシピシステムを使うため）
                 // CheckRequirements(newBubble);

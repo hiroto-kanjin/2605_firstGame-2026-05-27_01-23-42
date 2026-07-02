@@ -14,24 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.StageDatabase
   levels:
   - levelName: 001
-    turnsLimit: 30
+    turnsLimit: 1000
     coinsReward: 20
     requiredIngredients:
     - category: 0
       branch: 0
       ballType: 2
       requiredCount: 1
+    - category: 0
+      branch: 0
+      ballType: 10
+      requiredCount: 1
     finisherShotLimit: 60
     ballSupplyRates:
     - branch: 0
       ballType: 0
-      spawnRate: 60
+      spawnRate: 50
     - branch: 0
       ballType: 1
-      spawnRate: 40
-    useNuisanceBall: 1
-    nuisanceBranch: 5
-    nuisanceBallType: 13
+      spawnRate: 50
+    - branch: 0
+      ballType: 2
+      spawnRate: 50
+    - branch: 0
+      ballType: 3
+      spawnRate: 50
+    - branch: 0
+      ballType: 4
+      spawnRate: 50
+    nuisanceSpawnEvents:
+    - triggerShot: 0
+      count: 0
+      ballType: 0
     completionImages:
     - rank: 0
       image: {fileID: 0}

@@ -5,7 +5,7 @@
     {
         public override string Key => "lives";
 
-        public int maxCount = 5;
+        public int maxCount = 500;
         public int resetTime = 1200;
 
         public string currency = "Coins";
