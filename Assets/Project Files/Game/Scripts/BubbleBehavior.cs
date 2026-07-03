@@ -93,6 +93,7 @@ namespace Watermelon.BubbleMerge
             gameObject.tag = PhysicsHelper.TAG_BUBBLE;
             gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
             transform.SetParent(LevelController.LevelBehavior.transform);
+            //graphics.transform.localPosition = Vector3.zero; // hk追加：見た目の位置ズレをリセット
 
             Data = data;
 
@@ -227,6 +228,16 @@ namespace Watermelon.BubbleMerge
             if (patternForLimit != null && rb.linearVelocity.magnitude > patternForLimit.MaxCollisionSpeed)
             {
                 rb.linearVelocity = rb.linearVelocity.normalized * patternForLimit.MaxCollisionSpeed;
+            }
+            // hk追加：ぶつかった時の見た目の重なり演出
+            if (patternForLimit != null)
+            {
+                graphics.MoveTowardsOnCollision(
+                    rb.linearVelocity.normalized,
+                    rb.linearVelocity.magnitude,
+                    patternForLimit.SquishOnCollisionMaxDistance,
+                    patternForLimit.SquishOnCollisionSensitivity
+                );
             }
         }
 

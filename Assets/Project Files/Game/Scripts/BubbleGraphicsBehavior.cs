@@ -28,6 +28,8 @@ namespace Watermelon.BubbleMerge
 
         private Coroutine squishCoroutine;
         private Coroutine mergeCoroutine;
+        private Vector3 collisionOffset = Vector3.zero;
+        private TweenCase collisionOffsetTween;
 
         private TeleportBehavior teleport;
 
@@ -78,6 +80,18 @@ namespace Watermelon.BubbleMerge
             var point = new Vector3(contact.point.x, contact.point.y, transform.position.z);
 
             squishCoroutine = StartCoroutine(SquishCoroutine(transform.position - point, contact.normalImpulse));
+        }
+        // hk追加：ぶつかった瞬間、進行方向に見た目の位置だけを一瞬近づける演出
+        public void MoveTowardsOnCollision(Vector2 direction, float speed, float maxDistance, float sensitivity)
+        {
+            collisionOffsetTween.KillActive();
+
+            float distance = Mathf.Min(speed * sensitivity, maxDistance);
+            collisionOffset = direction.normalized * distance;
+
+            transform.localPosition = collisionOffset;
+
+            collisionOffsetTween = transform.DOLocalMove(Vector3.zero, 0.2f).SetEasing(Ease.Type.SineOut);
         }
 
         private IEnumerator SquishCoroutine(Vector2 point, float impulse)
