@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf6f2bb7630c67249a9977d10ebbbe02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bubbleSize: 1.1
+  bubbleSize: 1
   forceMult: 2
   colliderRef: {fileID: 7588119264106327301}
   attractionTrigger: {fileID: 4666644514279186004}
@@ -320,7 +320,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.3
+  m_Radius: 0.28
 --- !u!58 &4196188002366830578
 CircleCollider2D:
   m_ObjectHideFlags: 0

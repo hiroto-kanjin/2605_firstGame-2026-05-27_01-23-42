@@ -23,7 +23,7 @@ MonoBehaviour:
       requiredCount: 1
     - category: 0
       branch: 0
-      ballType: 10
+      ballType: 5
       requiredCount: 1
     finisherShotLimit: 60
     ballSupplyRates:

@@ -10,6 +10,8 @@ namespace Watermelon.BubbleMerge
         [SerializeField] private FinisherSupplyData finisherSupplyData; // hk追加
         [SerializeField] private BallData ballData; // hk追加：物理パラメータ用
         [SerializeField] private Transform launcherPosition;
+        [SerializeField] BubblesPhysicsData baseSquishPhysicsData; // hk追加：質量比較の基準となるBubblesPhysicsData（Unity画面でBubble Physics Data_baseを設定する）
+        public BubblesPhysicsData BaseSquishPhysicsData => baseSquishPhysicsData; // hk追加
 
         private (Branch branch, BallType ballType) currentBall;   // hk追加
         private (Branch branch, BallType ballType) nextBall;      // hk追加

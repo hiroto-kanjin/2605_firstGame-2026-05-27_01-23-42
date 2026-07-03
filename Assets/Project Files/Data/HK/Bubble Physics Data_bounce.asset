@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubbleDragRange:
     firstValue: 0
-    secondValue: 0.6
+    secondValue: 1
   minDragDuration: 0.5
   dragTransitionDuration: 1
   force:
@@ -79,3 +79,5 @@ MonoBehaviour:
     m_RotationOrder: 4
   visualDragMax: 2
   maxCollisionSpeed: 15
+  squishOnCollisionMaxDistance: 0.1
+  squishOnCollisionSensitivity: 1

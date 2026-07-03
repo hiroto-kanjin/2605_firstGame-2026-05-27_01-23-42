@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubbleDragRange:
     firstValue: 0
-    secondValue: 0.01
-  minDragDuration: 3
+    secondValue: 0
+  minDragDuration: 10
   dragTransitionDuration: 1
   force:
     firstValue: 0.1
-    secondValue: 0.5
+    secondValue: 5
   bubbleDragCurve:
     serializedVersion: 2
     m_Curve:
@@ -55,7 +55,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   attractionSettings:
     AttractionEnabled: 1
-    MaxAtrDistance: 10
+    MaxAtrDistance: 0.1
     MinMaxAttractionForce:
       firstValue: 0.1
       secondValue: 20
@@ -86,5 +86,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  visualDragMax: 3
+  visualDragMax: 1
   maxCollisionSpeed: 6
+  squishOnCollisionMaxDistance: 0.1
+  squishOnCollisionSensitivity: 0.5

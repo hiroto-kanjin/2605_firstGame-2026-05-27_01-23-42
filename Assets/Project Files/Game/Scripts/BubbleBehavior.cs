@@ -136,6 +136,7 @@ namespace Watermelon.BubbleMerge
         private void OnCollisionEnter2D(Collision2D collision)
         {
             bool didMerge = false; // hk追加：今回のぶつかりで合体したかどうかの目印
+            Vector2 velocityBeforeCollision = rb.linearVelocity; // hk追加：ぶつかる前の速度（向きも強さも）を保存
 
             if (collision.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE))
             {
@@ -216,12 +217,6 @@ namespace Watermelon.BubbleMerge
 
             AudioController.PlaySound(AudioController.AudioClips.bubbleHitSound);
 
-            // hk追加：合体しなかった場合、本来の跳ね返りやすさに戻す
-            if (!didMerge)
-            {
-                GetComponent<BallBehaviorHK>()?.RestoreBounciness(rb);
-            }
-
             // hk追加：質量差による過剰な吹き飛びを抑える
             BallBehaviorHK ballHKForLimit = GetComponent<BallBehaviorHK>();
             BubblesPhysicsData patternForLimit = ballHKForLimit != null ? ballHKForLimit.GetPhysicsPattern() : null;
@@ -229,12 +224,21 @@ namespace Watermelon.BubbleMerge
             {
                 rb.linearVelocity = rb.linearVelocity.normalized * patternForLimit.MaxCollisionSpeed;
             }
-            // hk追加：ぶつかった時の見た目の重なり演出
+
+            // hk追加：質量の倍率を計算する（基準より重いほど、大きくめり込む）
+            float massRatio = 1f;
+            BubblesPhysicsData basePattern = HKSupplyManager.Instance.BaseSquishPhysicsData;
+            if (basePattern != null && basePattern.Mass > 0f && patternForLimit != null)
+            {
+                massRatio = patternForLimit.Mass / basePattern.Mass;
+            }
+
+            // hk追加：ぶつかった時の見た目の重なり演出（ぶつかる前の向き・強さ・質量倍率を使う）
             if (patternForLimit != null)
             {
                 graphics.MoveTowardsOnCollision(
-                    rb.linearVelocity.normalized,
-                    rb.linearVelocity.magnitude,
+                    velocityBeforeCollision.normalized,
+                    velocityBeforeCollision.magnitude * massRatio,
                     patternForLimit.SquishOnCollisionMaxDistance,
                     patternForLimit.SquishOnCollisionSensitivity
                 );

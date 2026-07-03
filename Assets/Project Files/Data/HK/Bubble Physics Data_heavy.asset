@@ -79,3 +79,5 @@ MonoBehaviour:
     m_RotationOrder: 4
   visualDragMax: 3
   maxCollisionSpeed: 15
+  squishOnCollisionMaxDistance: 0.1
+  squishOnCollisionSensitivity: 2
