@@ -275,11 +275,10 @@ namespace Watermelon.BubbleMerge
         }
 
         // hk修正：Levelの数値ではなく、BallDataに次の段階のデータが実在するかで判定する
+        // hk修正：進化の段階判定は③排出設計で再実装するため、一旦falseを返す
         public bool IsNextStageAllowed()
         {
-            BallType nextBallType = LevelController.LevelBehavior.GetBallTypeFromStageIdPublic(Data.stageId + 1);
-            var ballData = HKSupplyManager.Instance.SupplyData;
-            return ballData.GetEntry(Data.branch, nextBallType) != null;
+            return false;
         }
 
         public void StartMergin(BubbleBehavior mergingBubble)

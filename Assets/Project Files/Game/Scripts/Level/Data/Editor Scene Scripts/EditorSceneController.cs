@@ -123,20 +123,12 @@ namespace Watermelon.BubbleMerge
             BallData ballData = AssetDatabase.LoadAssetAtPath<BallData>("Assets/Project Files/Data/HK/BallData.asset");
             if (ballData == null) return null;
 
-            if (category == BallCategory.Nuisance)
+            if (category == BallCategory.Nuisance || category == BallCategory.Special)
             {
-                NuisanceBallEntry entry = ballData.GetNuisanceEntry(ballLevelIndex);
+                BallEntry entry = ballData.GetBall(category, ballLevelIndex);
                 if (entry == null) return null;
                 size = entry.size;
-                return entry.icon;
-            }
-
-            if (category == BallCategory.Special)
-            {
-                SpecialBallEntry entry = ballData.GetSpecialEntry(ballLevelIndex);
-                if (entry == null) return null;
-                size = entry.size;
-                return entry.icon;
+                return null; // hk修正：画像はフォルダ方式で別途対応。エディタ表示ではサイズのみ反映
             }
 
             return null;

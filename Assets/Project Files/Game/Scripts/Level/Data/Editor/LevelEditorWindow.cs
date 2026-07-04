@@ -350,9 +350,8 @@ namespace Watermelon.BubbleMerge
             EditorGUILayout.BeginHorizontal();
             for (int i = 0; i < 5; i++)
             {
-                NuisanceBallEntry entry = ballData.GetNuisanceEntry(i);
-                if (entry == null) continue;
-                string label = string.IsNullOrEmpty(entry.entryName) ? "NuisanceBall_" + i : entry.entryName;
+                BallEntry entry = ballData.GetBall(BallCategory.Nuisance, i);
+                string label = (entry == null || string.IsNullOrEmpty(entry.ballName)) ? "NuisanceBall_" + i : entry.ballName;
                 if (GUILayout.Button(label))
                 {
                     HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Nuisance, 0, i, Vector3.zero);
@@ -382,9 +381,8 @@ namespace Watermelon.BubbleMerge
             EditorGUILayout.BeginHorizontal();
             for (int i = 0; i < 5; i++)
             {
-                SpecialBallEntry entry = ballData.GetSpecialEntry(i);
-                if (entry == null) continue;
-                string label = string.IsNullOrEmpty(entry.entryName) ? "SpecialBall_" + i : entry.entryName;
+                BallEntry entry = ballData.GetBall(BallCategory.Special, i);
+                string label = (entry == null || string.IsNullOrEmpty(entry.ballName)) ? "SpecialBall_" + i : entry.ballName;
                 if (GUILayout.Button(label))
                 {
                     HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Special, 0, i, Vector3.zero);

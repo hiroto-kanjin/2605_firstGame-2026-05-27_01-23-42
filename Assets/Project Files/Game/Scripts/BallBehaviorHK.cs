@@ -31,28 +31,39 @@ namespace Watermelon.BubbleMerge
         // hk追加：このボールが使うBubblesPhysicsDataを取得する（3種類共通の窓口）
         public BubblesPhysicsData GetPhysicsPattern()
         {
-            var ballData = HKSupplyManager.Instance.SupplyData;
-
             if (ballCategory == BallCategory.Evolution)
             {
-                var entry = ballData.GetEntry(branch, ballType);
-                if (entry == null) return null;
-                return entry.physicsPattern;
+                return GetPhysicsPattern_Evolution();
             }
-            else if (ballCategory == BallCategory.Special)
+            else
             {
-                var entry = ballData.GetSpecialEntry(ballIndex);
-                if (entry == null) return null;
-                return entry.physicsPattern;
+                return GetPhysicsPattern_SpecialNuisance();
             }
-            else if (ballCategory == BallCategory.Nuisance)
-            {
-                var entry = ballData.GetNuisanceEntry(ballIndex);
-                if (entry == null) return null;
-                return entry.physicsPattern;
-            }
+        }
 
-            return null;
+        // hk追加：進化ボール用（新BallDataから物理を引く）
+        private BubblesPhysicsData GetPhysicsPattern_Evolution()
+        {
+            var ballData = HKSupplyManager.Instance.SupplyData;
+            int number = GetEvolutionNumber(ballType);
+            var entry = ballData.GetBall(BallCategory.Evolution, number);
+            if (entry == null) return null;
+            return entry.physicsPattern;
+        }
+
+        // hk追加：進化ボールのballTypeを段階番号(0〜)に変換する。段階数は決め打ちしない
+        public static int GetEvolutionNumber(BallType ballType)
+        {
+            return (int)ballType; // enumの並び順(EvolutionBall_01=0)をそのまま番号にする
+        }
+
+        // hk追加：特殊・お邪魔ボール用（新BallDataをグループ＋番号で引く）
+        private BubblesPhysicsData GetPhysicsPattern_SpecialNuisance()
+        {
+            var ballData = HKSupplyManager.Instance.SupplyData;
+            var entry = ballData.GetBall(ballCategory, ballIndex);
+            if (entry == null) return null;
+            return entry.physicsPattern;
         }
 
         public void ApplyPhysicsData(Rigidbody2D rb) // hk修正：BubblesPhysicsDataから値を取得するように変更
@@ -96,13 +107,6 @@ namespace Watermelon.BubbleMerge
                 CookingAreaManager.Instance.RemoveFromPot(this);
             }
         }
-    }
-
-    public enum BallCategory // hk追加
-    {
-        Evolution,
-        Special,
-        Nuisance
     }
 
     public enum BallType // hk追加：進化ボールのみ

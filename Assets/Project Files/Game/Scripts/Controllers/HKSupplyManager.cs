@@ -208,23 +208,10 @@ namespace Watermelon.BubbleMerge
             }
         }
 
+        // hk修正：変換を1箇所にまとめる。BallBehaviorHKの共通メソッドを呼ぶ
         private int GetStageIdFromBallType(BallType ballType)
         {
-            switch (ballType)
-            {
-                case BallType.EvolutionBall_01: return 0;
-                case BallType.EvolutionBall_02: return 1;
-                case BallType.EvolutionBall_03: return 2;
-                case BallType.EvolutionBall_04: return 3;
-                case BallType.EvolutionBall_05: return 4;
-                case BallType.EvolutionBall_06: return 5;
-                case BallType.EvolutionBall_07: return 6;
-                case BallType.EvolutionBall_08: return 7;
-                case BallType.EvolutionBall_09: return 8;
-                case BallType.EvolutionBall_10: return 9;
-                case BallType.EvolutionBall_11: return 10;
-                default: return 0;
-            }
+            return BallBehaviorHK.GetEvolutionNumber(ballType);
         }
 
         public (Branch, BallType) GetCurrentBall() => currentBall; // hk追加

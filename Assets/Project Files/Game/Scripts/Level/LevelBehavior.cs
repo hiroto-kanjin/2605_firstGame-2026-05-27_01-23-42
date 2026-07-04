@@ -332,13 +332,12 @@ namespace Watermelon.BubbleMerge
             return bombItem.GetComponent<BombBehavior>();
         }
 
-        // hk追加：お邪魔・特殊ボールを生成するための公開メソッド
-        public BubbleBehavior SpawnNuisanceBallHK(Sprite icon, Vector3 position)
+        // hk修正：iconの受け渡しを廃止（画像はフォルダ方式で別途対応。当面は元画像のまま）
+        public BubbleBehavior SpawnNuisanceBallHK(Vector3 position)
         {
             BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.kinoko, stageId = 0 };
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                data.icon = icon; // hk追加：アイコンを上書きする
                 return SpawnBubble(spawnData, data, position, false, Vector2.zero);
             }
             return null;
@@ -354,10 +353,7 @@ namespace Watermelon.BubbleMerge
             {
                 if (placement.category == BallCategory.Nuisance)
                 {
-                    NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry(placement.ballLevelIndex);
-                    if (entry == null) continue;
-
-                    BubbleBehavior bubble = SpawnNuisanceBallHK(entry.icon, placement.position);
+                    BubbleBehavior bubble = SpawnNuisanceBallHK(placement.position);
                     if (bubble != null)
                     {
                         BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
@@ -365,7 +361,6 @@ namespace Watermelon.BubbleMerge
                             ballHK.SetData(BallCategory.Nuisance, placement.ballLevelIndex);
                     }
                 }
-                // Evolution・Special は今後ここに追加
             }
         }
 
@@ -378,13 +373,10 @@ namespace Watermelon.BubbleMerge
             List<NuisanceSpawnEvent> events = gameLevelData.GetEventsForShot(currentShot);
             foreach (NuisanceSpawnEvent spawnEvent in events)
             {
-                NuisanceBallEntry entry = HKSupplyManager.Instance.SupplyData.GetNuisanceEntry((int)spawnEvent.ballType);
-                if (entry == null) continue;
-
                 for (int i = 0; i < spawnEvent.count; i++)
                 {
                     Vector3 position = GetRandomPosition();
-                    BubbleBehavior bubble = SpawnNuisanceBallHK(entry.icon, position);
+                    BubbleBehavior bubble = SpawnNuisanceBallHK(position);
                     if (bubble != null)
                     {
                         BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
