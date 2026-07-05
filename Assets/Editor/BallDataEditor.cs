@@ -27,9 +27,15 @@ namespace Watermelon.BubbleMerge
                 if (EditorUtility.DisplayDialog("確認", "今の内容をCSVの内容で上書きします。よろしいですか？", "読み込む", "やめる"))
                 {
                     BallDataCSV.ImportFromCSV(ballData);
+                    serializedObject.Update();
                 }
             }
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+
+            // hk追加：全ボール共通の見た目倍率（小数点で入力）
+            SerializedProperty visualScale = serializedObject.FindProperty("visualScale");
+            EditorGUILayout.PropertyField(visualScale, new GUIContent("Visual Scale（全ボール共通の見た目倍率）"));
             EditorGUILayout.Space();
 
             // 追加・削除ボタン

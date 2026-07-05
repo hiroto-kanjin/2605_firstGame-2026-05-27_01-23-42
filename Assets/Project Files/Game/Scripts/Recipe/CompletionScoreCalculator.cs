@@ -16,15 +16,16 @@ namespace Watermelon.BubbleMerge
             Instance = this;
         }
 
-        // hk追加：RecipeDataではなくList<RecipeIngredient>を受け取る
-        public int Calculate(List<BallBehaviorHK> ballsInPot, List<RecipeIngredient> ingredients)
+        // hk修正：レシピIDから②の食材（進化＋特殊）を取り、鍋と照合して採点する
+        public int Calculate(List<BallBehaviorHK> ballsInPot, int recipeId)
         {
             int score = 100;
+
+            List<RecipeSlotData> ingredients = HKSupplyManager.Instance.RecipeData.BuildSlotDataList(recipeId);
 
             foreach (BallBehaviorHK ball in ballsInPot)
             {
                 BallCategory category = ball.GetBallCategory();
-                BallType type = ball.GetBallType();
 
                 if (category == BallCategory.Nuisance)
                 {
@@ -32,30 +33,35 @@ namespace Watermelon.BubbleMerge
                     continue;
                 }
 
-                if (!IsInRecipe(ball.GetBranch(), type, ingredients))
+                if (!IsInRecipe(category, GetNumber(ball), ingredients))
                 {
                     if (category == BallCategory.Evolution)
-                    {
                         score -= penaltyExtraEvolutionBall;
-                    }
                     else if (category == BallCategory.Special)
-                    {
                         score -= penaltyExtraSpecialBall;
-                    }
                 }
             }
 
             return score;
         }
 
-        private bool IsInRecipe(Branch branch, BallType type, List<RecipeIngredient> ingredients) // hk追加
+        // hk修正：category＋numberのセットでレシピに含まれるか判定
+        private bool IsInRecipe(BallCategory category, int number, List<RecipeSlotData> ingredients)
         {
-            foreach (RecipeIngredient ingredient in ingredients)
+            foreach (RecipeSlotData ingredient in ingredients)
             {
-                if (ingredient.branch == branch && ingredient.ballType == type)
+                if (ingredient.category == category && ingredient.number == number)
                     return true;
             }
             return false;
+        }
+
+        // hk追加：ボールのnumberを取り出す（進化は段階番号、特殊はインデックス）
+        private int GetNumber(BallBehaviorHK ball)
+        {
+            if (ball.GetBallCategory() == BallCategory.Evolution)
+                return BallBehaviorHK.GetEvolutionNumber(ball.GetBallType());
+            return ball.GetBallIndex();
         }
 
         public CompletionRank GetRank(int score) // hk追加

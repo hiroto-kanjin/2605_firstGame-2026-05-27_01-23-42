@@ -20,14 +20,19 @@ namespace Watermelon.BubbleMerge
             Instance = this;
         }
 
-        public void SetupRecipe(List<RecipeIngredient> ingredients) // hk追加
+        // hk修正：レシピIDから②の食材（進化＋特殊）を組み立てて並べる
+        public void SetupRecipe(int recipeId)
         {
             foreach (var slot in slots)
                 Destroy(slot.gameObject);
             slots.Clear();
 
+            List<RecipeSlotData> ingredients = HKSupplyManager.Instance.RecipeData.BuildSlotDataList(recipeId);
+
             // hk追加：食材数に合うレイアウトを探す
             SlotLayout layout = GetLayout(ingredients.Count);
+
+            BallData ballData = HKSupplyManager.Instance.SupplyData;
 
             for (int i = 0; i < ingredients.Count; i++)
             {
@@ -41,25 +46,24 @@ namespace Watermelon.BubbleMerge
                     slotObj.GetComponent<RectTransform>().anchoredPosition = layout.positions[i];
                 }
 
-                // hk追加：アイコンをセットする
-                EvolutionBranch branch = LevelController.Database.GetBranch(ingredients[i].branch);
-                if (branch != null)
+                // hk修正：アイコンは①BallDataのuiIconPrefabから引く（category＋number）
+                if (ballData != null)
                 {
-                    int stageId = GetStageIdFromBallType(ingredients[i].ballType);
-                    if (stageId < branch.stages.Length)
-                        slot.SetIcon(branch.stages[stageId].icon);
+                    BallEntry entry = ballData.GetBall(ingredients[i].category, ingredients[i].number);
+                    if (entry != null)
+                        slot.SetIconPrefab(entry.uiIconPrefab);
                 }
 
                 slots.Add(slot);
             }
         }
 
-        public void UpdatePotContents(List<BallBehaviorHK> ballsInPot) // hk追加
+        public void UpdatePotContents(List<BallBehaviorHK> ballsInPot) // hk修正：category＋numberで数える
         {
-            Dictionary<(Branch, BallType), int> potContents = new Dictionary<(Branch, BallType), int>();
+            Dictionary<(BallCategory, int), int> potContents = new Dictionary<(BallCategory, int), int>();
             foreach (BallBehaviorHK ball in ballsInPot)
             {
-                var key = (ball.GetBranch(), ball.GetBallType());
+                var key = (ball.GetBallCategory(), GetNumber(ball));
                 if (potContents.ContainsKey(key))
                     potContents[key]++;
                 else
@@ -68,10 +72,19 @@ namespace Watermelon.BubbleMerge
 
             foreach (RecipeSlotUI slot in slots)
             {
-                var key = (slot.GetIngredient().branch, slot.GetIngredient().ballType);
+                RecipeSlotData data = slot.GetSlotData();
+                var key = (data.category, data.number);
                 int count = potContents.ContainsKey(key) ? potContents[key] : 0;
                 slot.UpdateCount(count);
             }
+        }
+
+        // hk追加：ボールのnumberを取り出す（進化は段階番号、特殊はインデックス）
+        private int GetNumber(BallBehaviorHK ball)
+        {
+            if (ball.GetBallCategory() == BallCategory.Evolution)
+                return BallBehaviorHK.GetEvolutionNumber(ball.GetBallType());
+            return ball.GetBallIndex();
         }
 
         private SlotLayout GetLayout(int count) // hk追加
@@ -82,25 +95,6 @@ namespace Watermelon.BubbleMerge
                     return layout;
             }
             return null;
-        }
-
-        private int GetStageIdFromBallType(BallType ballType) // hk追加
-        {
-            switch (ballType)
-            {
-                case BallType.EvolutionBall_01: return 0;
-                case BallType.EvolutionBall_02: return 1;
-                case BallType.EvolutionBall_03: return 2;
-                case BallType.EvolutionBall_04: return 3;
-                case BallType.EvolutionBall_05: return 4;
-                case BallType.EvolutionBall_06: return 5;
-                case BallType.EvolutionBall_07: return 6;
-                case BallType.EvolutionBall_08: return 7;
-                case BallType.EvolutionBall_09: return 8;
-                case BallType.EvolutionBall_10: return 9;
-                case BallType.EvolutionBall_11: return 10;
-                default: return 0;
-            }
         }
     }
 

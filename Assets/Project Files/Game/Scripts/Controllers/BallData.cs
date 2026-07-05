@@ -9,6 +9,9 @@ namespace Watermelon.BubbleMerge
         // hk追加：ボール1個ぶんの箱を、リストで並べて持つ
         [SerializeField] private List<BallEntry> balls = new List<BallEntry>();
 
+        [SerializeField] private float visualScale = 1f; // hk追加：全ボール共通の見た目倍率（小数点で入力）
+        public float VisualScale => visualScale; // hk追加
+
         // hk追加：グループと番号で1個のボールを取り出す
         public BallEntry GetBall(BallCategory category, int number)
         {
@@ -32,5 +35,7 @@ namespace Watermelon.BubbleMerge
         public float size = 1.2f;             // 大きさ（デフォルト1.2）
         public BubblesPhysicsData physicsPattern; // 動き方
         public bool canMerge;                 // マージするか（進化=する、特殊・お邪魔=しない）
+        public GameObject visualPrefab;       // hk追加：見た目のプレハブ（ボール本体に差し込む絵）
+        public GameObject uiIconPrefab;       // hk追加：UI用アイコンのプレハブ（レシピ欄などに表示）
     }
 }

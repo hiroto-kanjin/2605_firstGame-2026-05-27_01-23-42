@@ -42,7 +42,7 @@ namespace Watermelon.BubbleMerge
 
             UIController.GetPage<Watermelon.UIGame>().ResetCountUI();
             UIController.GetPage<Watermelon.UIGame>().UpdateShotsRemaining(shotsRemaining);
-            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.requiredIngredients);
+            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.recipeId); // hk修正：recipeIdで②から食材を組み立てる
             LevelController.LevelBehavior.SpawnBallPlacementsHK(); // hk追加：配置ボールを配置する
         }
 
@@ -112,31 +112,41 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        private bool CheckRecipe(List<BallBehaviorHK> ballsInPot) // hk追加
+        private bool CheckRecipe(List<BallBehaviorHK> ballsInPot) // hk修正：②の食材とcategory+numberで照合
         {
             var potContents = CountBalls(ballsInPot);
 
-            foreach (RecipeIngredient ingredient in currentLevel.requiredIngredients)
+            List<RecipeSlotData> ingredients = HKSupplyManager.Instance.RecipeData.BuildSlotDataList(currentLevel.recipeId);
+
+            foreach (RecipeSlotData ingredient in ingredients)
             {
-                var key = (ingredient.branch, ingredient.ballType);
-                if (!potContents.ContainsKey(key) || potContents[key] < ingredient.requiredCount)
+                var key = (ingredient.category, ingredient.number);
+                if (!potContents.ContainsKey(key) || potContents[key] < ingredient.count)
                     return false;
             }
             return true;
         }
 
-        private Dictionary<(Branch, BallType), int> CountBalls(List<BallBehaviorHK> balls) // hk追加
+        private Dictionary<(BallCategory, int), int> CountBalls(List<BallBehaviorHK> balls) // hk修正：category+numberで数える
         {
-            var counts = new Dictionary<(Branch, BallType), int>();
+            var counts = new Dictionary<(BallCategory, int), int>();
             foreach (BallBehaviorHK ball in balls)
             {
-                var key = (ball.GetBranch(), ball.GetBallType());
+                var key = (ball.GetBallCategory(), GetNumber(ball));
                 if (counts.ContainsKey(key))
                     counts[key]++;
                 else
                     counts[key] = 1;
             }
             return counts;
+        }
+
+        // hk追加：ボールのnumberを取り出す（進化は段階番号、特殊はインデックス）
+        private int GetNumber(BallBehaviorHK ball)
+        {
+            if (ball.GetBallCategory() == BallCategory.Evolution)
+                return BallBehaviorHK.GetEvolutionNumber(ball.GetBallType());
+            return ball.GetBallIndex();
         }
 
         public void OnJudgementResult(bool recipeMatched, int completionScore) // hk追加

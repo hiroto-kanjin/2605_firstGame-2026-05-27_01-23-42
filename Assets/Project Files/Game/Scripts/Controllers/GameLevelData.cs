@@ -10,39 +10,16 @@ namespace Watermelon.BubbleMerge
         public string levelName;
         public int turnsLimit = 20;
         public int coinsReward = 20;
+        public int recipeId; // hk追加：このレベルで使う完成料理のID（②RecipeDataを指す）
 
-        [Header("レシピ")]
-        public List<RecipeIngredient> requiredIngredients = new List<RecipeIngredient>();
-        public int finisherShotLimit = 3;
+        [Header("フィニッシャー")]
+        public int finisherShotLimit = 3; // hk追加：レベル固有。②にはないのでここに残す
 
         [Header("ボール供給")]
         public List<BallSupplyRate> ballSupplyRates = new List<BallSupplyRate>(); // hk追加：ゲームレベルごとの供給確率
 
         [Header("お邪魔ボール出現イベント")] // hk追加
         public List<NuisanceSpawnEvent> nuisanceSpawnEvents = new List<NuisanceSpawnEvent>(); // hk追加
-
-        [Header("料理結果")]
-        public List<CompletionImage> completionImages = new List<CompletionImage>();
-
-        // hk追加：供給確率に基づいてランダムにボールを返す
-        public (Branch branch, BallType ballType) GetRandomBall()
-        {
-            float total = 0f;
-            foreach (BallSupplyRate rate in ballSupplyRates)
-                total += rate.spawnRate;
-
-            float random = Random.Range(0f, total);
-            float cumulative = 0f;
-
-            foreach (BallSupplyRate rate in ballSupplyRates)
-            {
-                cumulative += rate.spawnRate;
-                if (random <= cumulative)
-                    return (rate.branch, rate.ballType);
-            }
-
-            return (ballSupplyRates[0].branch, ballSupplyRates[0].ballType);
-        }
 
         // hk追加：指定ショット数に対応する出現イベントをすべて返す
         public List<NuisanceSpawnEvent> GetEventsForShot(int shotNumber)
@@ -68,25 +45,9 @@ namespace Watermelon.BubbleMerge
     [System.Serializable]
     public class BallSupplyRate // hk追加：ゲームレベルごとのボール供給確率
     {
-        public Branch branch;
-        public BallType ballType;
+        public BallCategory category; // hk追加：進化 or 特殊
+        public int number;            // hk追加：素材番号（0001など）
         [Range(0f, 100f)]
         public float spawnRate;
-    }
-
-    [System.Serializable]
-    public class CompletionImage // hk追加：料理結果の絵（完成度別）
-    {
-        public CompletionRank rank;
-        public Sprite image;
-    }
-
-    [System.Serializable]
-    public class RecipeIngredient // hk追加：レシピ食材
-    {
-        public BallCategory category;
-        public Branch branch;
-        public BallType ballType;
-        public int requiredCount = 1;
     }
 }

@@ -125,7 +125,7 @@ namespace Watermelon.BubbleMerge
             bool recipeMatched = HKGameManager.Instance.IsRecipeReady();
             int completionScore = CompletionScoreCalculator.Instance.Calculate(
                 ballsInPotSnapshot,
-                HKGameManager.Instance.GetCurrentLevel().requiredIngredients
+                HKGameManager.Instance.GetCurrentLevel().recipeId
             );
 
             HKGameManager.Instance.OnJudgementResult(recipeMatched, completionScore);

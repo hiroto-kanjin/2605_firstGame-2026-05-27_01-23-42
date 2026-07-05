@@ -13,28 +13,43 @@ MonoBehaviour:
   m_Name: RecipeData
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.RecipeData
   recipes:
-  - recipeName: "\u304D\u306E\u3053\u306E\u4E32\u713C\u304D"
-    evolutionChain: 000000000100000002000000
+  - recipeId: 0
+    recipeName: "\u304D\u306E\u3053\u306E\u4E32\u713C\u304D"
+    evolutionChain: 00000000010000000200000002000000
     requiredList:
     - number: 0
       count: 2
     - number: 1
       count: 1
-    specialList: []
+    - number: 2
+      count: 0
+    specialList:
+    - number: 0
+      count: 1
+    - number: 1
+      count: 1
     completionStages:
-    - rankName: 
-      minScore: 0
-      image: {fileID: 0}
-    - rankName: 
-      minScore: 0
-      image: {fileID: 0}
-    - rankName: 
-      minScore: 0
-      image: {fileID: 0}
-    - rankName: 
-      minScore: 0
-      image: {fileID: 0}
+    - rankName: Masterpiece
+      minScore: 200
+      prefab: {fileID: 8316768132464706698, guid: 2c926aa93ba71e94393ac6750a0a419d,
+        type: 3}
+    - rankName: Delicious
+      minScore: 100
+      prefab: {fileID: 8316768132464706698, guid: 24068365eb2dd2b458f608ca6cd270dc,
+        type: 3}
+    - rankName: Good
+      minScore: 80
+      prefab: {fileID: 8316768132464706698, guid: f9f44f1c2a98aef4a96c44a33643ed13,
+        type: 3}
+    - rankName: Mediocre
+      minScore: 60
+      prefab: {fileID: 8316768132464706698, guid: 00c3139812c92624bb5faefeeaaeea48,
+        type: 3}
+    - rankName: Bad
+      minScore: -999
+      prefab: {fileID: 8316768132464706698, guid: 8246ca2e76712f04ca84506d77c56e95,
+        type: 3}
     hasSecret: 1
-    secretNuisanceCount: 0
-    secretIrregularCount: 0
-    secretImage: {fileID: 0}
+    secretNuisanceCount: 2
+    secretIrregularCount: 1
+    secretPrefab: {fileID: 0}

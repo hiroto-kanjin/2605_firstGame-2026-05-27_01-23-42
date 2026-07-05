@@ -116,7 +116,7 @@ namespace Watermelon.BubbleMerge
                 ParticlesController.PlayParticle("Bubble Merge").SetPosition(transform.position);
             }
 
-            graphics.SetData(data);
+            ApplyVisualPrefab(); // hk修正：メッシュに絵を貼るのをやめ、①BallDataのプレハブを差し込む
 
             scaleTween.KillActive();
             transform.localScale = Vector3.zero;
@@ -274,11 +274,28 @@ namespace Watermelon.BubbleMerge
             return true;
         }
 
-        // hk修正：Levelの数値ではなく、BallDataに次の段階のデータが実在するかで判定する
-        // hk修正：進化の段階判定は③排出設計で再実装するため、一旦falseを返す
+        // hk修正：②RecipeDataの進化の枠を見て、次の段階があるか判定する
+        // branch名ではなく、今のレベル(③)のrecipeIdで枠を引く
         public bool IsNextStageAllowed()
         {
-            return false;
+            BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
+            if (ballHK == null) return false;
+
+            // 今の段階番号（0始まり）
+            int currentNumber = BallBehaviorHK.GetEvolutionNumber(ballHK.GetBallType());
+
+            // 今のレベル(③)からレシピIDを取り、②の完成料理を引く
+            GameLevelData level = HKGameManager.Instance.GetCurrentLevel();
+            if (level == null) return false;
+
+            RecipeEntry recipe = HKSupplyManager.Instance.RecipeData.GetRecipeById(level.recipeId);
+            if (recipe == null) return false;
+
+            // 進化の枠の段階数
+            int chainLength = recipe.evolutionChain.Count;
+
+            // 次の段階（currentNumber+1）が枠の中にあるか
+            return (currentNumber + 1) < chainLength;
         }
 
         public void StartMergin(BubbleBehavior mergingBubble)
@@ -435,6 +452,42 @@ namespace Watermelon.BubbleMerge
         {
             BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
             return ballHK != null && ballHK.GetBallCategory() == BallCategory.Nuisance;
+        }
+
+        private GameObject currentVisual; // hk追加：今差し込んでいる見た目プレハブ
+
+        // hk追加：①BallDataのvisualPrefabを、ボールの見た目として差し込む
+        // ボールは使い回す（プール）ので、前の見た目を消してから新しいものを入れる
+        private void ApplyVisualPrefab()
+        {
+            // 前の見た目を片付ける
+            if (currentVisual != null)
+            {
+                Destroy(currentVisual);
+                currentVisual = null;
+            }
+
+            BallBehaviorHK ballHK = GetComponent<BallBehaviorHK>();
+            if (ballHK == null) return;
+
+            BallData ballData = HKSupplyManager.Instance.SupplyData;
+            if (ballData == null) return;
+
+            // このボールの素材（①BallDataのエントリ）を取り出す
+            BallCategory category = ballHK.GetBallCategory();
+            int number;
+            if (category == BallCategory.Evolution)
+                number = BallBehaviorHK.GetEvolutionNumber(ballHK.GetBallType());
+            else
+                number = ballHK.GetBallIndex();
+
+            BallEntry entry = ballData.GetBall(category, number);
+            if (entry == null || entry.visualPrefab == null) return;
+
+            // プレハブを中央に差し込む（大きさ = 固有size × 全体共通のvisualScale）
+            currentVisual = Instantiate(entry.visualPrefab, transform);
+            currentVisual.transform.localPosition = Vector3.zero;
+            currentVisual.transform.localScale = Vector3.one * entry.size * ballData.VisualScale;
         }
     }
 

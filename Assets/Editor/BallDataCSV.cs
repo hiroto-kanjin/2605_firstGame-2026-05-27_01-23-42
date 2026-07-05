@@ -105,12 +105,63 @@ namespace Watermelon.BubbleMerge
                 bool canMerge = false;
                 if (cols.Length >= 7) bool.TryParse(cols[6].Trim(), out canMerge);
                 entry.FindPropertyRelative("canMerge").boolValue = canMerge;
+
+                // hk追加：フォルダから見た目・アイコンのプレハブを名前で自動取得してセットする
+                AssignPrefabsFromFolder(entry, TextToCategory(cols[1]), number, cols[3]);
             }
 
             so.ApplyModifiedProperties();
             EditorUtility.SetDirty(ballData);
             AssetDatabase.SaveAssets();
             Debug.Log("CSVから読み込みました： " + (lines.Length - 1) + "件");
+        }
+
+        // hk追加：見た目・アイコンのプレハブを、フォルダから固定名で探してセットする
+        private const string BALL_ROOT = "Assets/Project Files/Game/Images/Ball/";
+        private const string VISUAL_PREFAB_NAME = "CookingBall"; // 見た目プレハブの固定名
+        private const string ICON_PREFAB_NAME = "CookingIcon";   // アイコンプレハブの固定名
+
+        private static void AssignPrefabsFromFolder(SerializedProperty entry, int category, int number, string folderName)
+        {
+            // フォルダのパスを組み立てる（例：.../Ball/EvolutionBall/0000_kinoko）
+            string categoryFolder = CategoryToFolder(category);
+            string numberText = number.ToString("0000");
+            string folderPath = BALL_ROOT + categoryFolder + "/" + numberText + "_" + folderName;
+
+            if (!Directory.Exists(folderPath))
+            {
+                Debug.LogWarning("フォルダが見つかりません（プレハブ未設定）： " + folderPath);
+                return;
+            }
+
+            // 見た目プレハブ・アイコンプレハブを固定名で読み込む
+            var visual = LoadPrefabInFolder(folderPath, VISUAL_PREFAB_NAME);
+            var icon = LoadPrefabInFolder(folderPath, ICON_PREFAB_NAME);
+
+            entry.FindPropertyRelative("visualPrefab").objectReferenceValue = visual;
+            entry.FindPropertyRelative("uiIconPrefab").objectReferenceValue = icon;
+        }
+
+        // hk追加：指定フォルダから、固定名のプレハブ(.prefab)を1つ読み込む
+        private static GameObject LoadPrefabInFolder(string folderPath, string prefabName)
+        {
+            string prefabPath = folderPath + "/" + prefabName + ".prefab";
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefab == null)
+                Debug.LogWarning("プレハブが見つかりません（空にします）： " + prefabPath);
+            return prefab;
+        }
+
+        // hk追加：カテゴリ番号 → フォルダ名
+        private static string CategoryToFolder(int category)
+        {
+            switch (category)
+            {
+                case 0: return "EvolutionBall";
+                case 1: return "SpecialBall";
+                case 2: return "NuisanceBall";
+                default: return "EvolutionBall";
+            }
         }
 
         // 物理パターンのアセットを名前で探す
