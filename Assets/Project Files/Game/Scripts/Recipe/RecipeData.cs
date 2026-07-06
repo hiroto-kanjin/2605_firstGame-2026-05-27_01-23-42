@@ -29,6 +29,11 @@ namespace Watermelon.BubbleMerge
             }
             return null;
         }
+        // hk追加：CSV書き出し用に、料理リスト全体を読み取り専用で返す
+        public List<RecipeEntry> GetRecipeListForExport()
+        {
+            return recipes;
+        }
         // hk追加：完成料理名で「進化の枠の段階数」を返す（マージ判定用）
         public int GetEvolutionChainLength(string recipeName)
         {
