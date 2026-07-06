@@ -1,1 +1,31 @@
-1TTMlDXzClfeay1luh4tpcCFzCUEgBrGf2lFOQWG87WU
+name: Sync Google Sheets to Git
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 毎日日本時間の午前9時に自動実行（必要なら変更可能）
+  workflow_dispatch: # ボタン一発で手動実行したい場合の設定
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Google Sheet as CSV
+        run: |
+          # [注] SPREADSHEET_ID と SHEET_NAME はご自身のものに書き換えてください
+          # SHEET_NAME（シート名）が「マスタ」なら「マスタ」と入力
+          SPREADSHEET_ID="ここにステップ1でメモしたIDを入れる"
+          SHEET_NAME="ここにシート名を入れる"
+          
+          # CSVとしてダウンロード実行
+          curl -Lo master_data.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}"
+
+      - name: Commit and Push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add master_data.csv
+          # 変更がある場合のみコミットしてプッシュ
+          git diff --cached --quiet || (git commit -m "Update master data from Google Sheets" && git push)
