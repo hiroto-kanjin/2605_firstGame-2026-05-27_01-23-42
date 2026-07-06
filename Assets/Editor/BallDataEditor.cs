@@ -5,18 +5,24 @@ using System.IO;
 
 namespace Watermelon.BubbleMerge
 {
-    // hk追加：BallDataのInspectorに「ID表示」「ダブり警告」「追加/削除」「並べ替え」「フォルダ照合」を出す
+    // hk追加：BallDataのInspectorを種類ごとにまとめ、折りたためるようにする
     [CustomEditor(typeof(BallData))]
     public class BallDataEditor : Editor
     {
-        // hk追加：カテゴリごとの親フォルダのパス
         private const string BALL_ROOT = "Assets/Project Files/Game/Images/Ball/";
+
+        // hk追加：各グループの開閉状態を覚えておく（進化・特殊・お邪魔）
+        private bool[] groupOpen = { true, true, true };
+
+        // グループの見出しに出す名前
+        private static readonly string[] GROUP_TITLES = { "進化ボール（Evolution）", "特殊ボール（Special）", "お邪魔ボール（Nuisance）" };
 
         public override void OnInspectorGUI()
         {
             SerializedProperty balls = serializedObject.FindProperty("balls");
-            // hk追加：CSV読み込み・書き出しボタン
             BallData ballData = (BallData)target;
+
+            // CSV読み込み・書き出しボタン
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("CSVへ書き出す（.asset→CSV）"))
             {
@@ -33,7 +39,7 @@ namespace Watermelon.BubbleMerge
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
 
-            // hk追加：全ボール共通の見た目倍率（小数点で入力）
+            // 全ボール共通の見た目倍率
             SerializedProperty visualScale = serializedObject.FindProperty("visualScale");
             EditorGUILayout.PropertyField(visualScale, new GUIContent("Visual Scale（全ボール共通の見た目倍率）"));
             EditorGUILayout.Space();
@@ -51,10 +57,9 @@ namespace Watermelon.BubbleMerge
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
 
-            // ダブりチェック用
+            // ダブりチェック（種類ごとに番号の重複を調べる）
             Dictionary<int, List<int>> usedNumbers = new Dictionary<int, List<int>>();
             HashSet<string> duplicateKeys = new HashSet<string>();
-
             for (int i = 0; i < balls.arraySize; i++)
             {
                 SerializedProperty entry = balls.GetArrayElementAtIndex(i);
@@ -70,75 +75,103 @@ namespace Watermelon.BubbleMerge
                     usedNumbers[category].Add(number);
             }
 
-            // 各ボールを表示
+            // hk追加：全ボールを種類ごとに仕分ける（値は「balls内の位置」）
+            List<int>[] groups = { new List<int>(), new List<int>(), new List<int>() };
             for (int i = 0; i < balls.arraySize; i++)
             {
-                SerializedProperty entry = balls.GetArrayElementAtIndex(i);
-                int category = entry.FindPropertyRelative("category").intValue;
-                int number = entry.FindPropertyRelative("number").intValue;
-                string listName = entry.FindPropertyRelative("folderName").stringValue;
+                int category = balls.GetArrayElementAtIndex(i).FindPropertyRelative("category").intValue;
+                if (category >= 0 && category <= 2)
+                    groups[category].Add(i);
+            }
 
-                // ボールごとの区切り
-                EditorGUILayout.Space(12);
-                Rect lineRect = EditorGUILayout.GetControlRect(false, 1);
-                EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 1f));
+            // hk追加：グループごとに、見出し（開閉）＋中身を表示する
+            for (int g = 0; g < 3; g++)
+            {
                 EditorGUILayout.Space(6);
 
-                string idText = category.ToString("00") + " " + number.ToString("0000");
+                // 見出し（クリックで開閉）。件数も出す
+                groupOpen[g] = EditorGUILayout.Foldout(groupOpen[g], GROUP_TITLES[g] + "　［" + groups[g].Count + "件］", true, EditorStyles.foldoutHeader);
 
-                // ID表示と、上へ/下へボタン
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("ID", idText, EditorStyles.boldLabel);
-                if (i > 0 && GUILayout.Button("▲上へ", GUILayout.Width(60)))
+                if (!groupOpen[g]) continue; // 畳んでいるなら中身は出さない
+
+                // このグループのボールを順に表示
+                for (int idx = 0; idx < groups[g].Count; idx++)
                 {
-                    balls.MoveArrayElement(i, i - 1);
+                    int ballIndex = groups[g][idx]; // balls内の実際の位置
+                    DrawBall(balls, ballIndex, duplicateKeys, groups[g], idx);
                 }
-                if (i < balls.arraySize - 1 && GUILayout.Button("▼下へ", GUILayout.Width(60)))
-                {
-                    balls.MoveArrayElement(i, i + 1);
-                }
-                EditorGUILayout.EndHorizontal();
-
-                // 番号ダブり警告
-                if (duplicateKeys.Contains(category + "_" + number))
-                {
-                    EditorGUILayout.HelpBox("番号がダブっています： " + idText, MessageType.Error);
-                }
-
-                // ── フォルダ照合 ──
-                DrawFolderCheck(category, number, listName);
-
-                EditorGUILayout.PropertyField(entry, true);
-                EditorGUILayout.Space();
             }
 
             serializedObject.ApplyModifiedProperties();
         }
 
-        // hk追加：フォルダを見て、リストと一致するか判定して表示する
+        // hk追加：ボール1個を表示する（groupList＝同じ種類の位置リスト、posInGroup＝その中での順番）
+        private void DrawBall(SerializedProperty balls, int i, HashSet<string> duplicateKeys, List<int> groupList, int posInGroup)
+        {
+            SerializedProperty entry = balls.GetArrayElementAtIndex(i);
+            int category = entry.FindPropertyRelative("category").intValue;
+            int number = entry.FindPropertyRelative("number").intValue;
+            string listName = entry.FindPropertyRelative("folderName").stringValue;
+
+            EditorGUILayout.Space(12);
+            Rect lineRect = EditorGUILayout.GetControlRect(false, 1);
+            EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 1f));
+            EditorGUILayout.Space(6);
+
+            string idText = category.ToString("00") + " " + number.ToString("0000");
+
+            // ID表示と、上へ/下へボタン（同じ種類の中だけで動かす）
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("ID", idText, EditorStyles.boldLabel);
+
+            // 「上へ」：グループ内で1つ前のボールと、balls内の位置を入れ替える
+            if (posInGroup > 0 && GUILayout.Button("▲上へ", GUILayout.Width(60)))
+            {
+                int prevBallIndex = groupList[posInGroup - 1];
+                balls.MoveArrayElement(i, prevBallIndex);
+            }
+            // 「下へ」：グループ内で1つ後のボールと入れ替える
+            if (posInGroup < groupList.Count - 1 && GUILayout.Button("▼下へ", GUILayout.Width(60)))
+            {
+                int nextBallIndex = groupList[posInGroup + 1];
+                balls.MoveArrayElement(i, nextBallIndex);
+            }
+            EditorGUILayout.EndHorizontal();
+
+            // 番号ダブり警告
+            if (duplicateKeys.Contains(category + "_" + number))
+            {
+                EditorGUILayout.HelpBox("番号がダブっています： " + idText, MessageType.Error);
+            }
+
+            // フォルダ照合
+            DrawFolderCheck(category, number, listName);
+
+            EditorGUILayout.PropertyField(entry, true);
+            EditorGUILayout.Space();
+        }
+
+        // hk追加：フォルダを見て、リストと一致するか判定して表示する（変更なし）
         private void DrawFolderCheck(int category, int number, string listName)
         {
-            // カテゴリ→親フォルダ名
             string categoryFolder;
             switch (category)
             {
-                case 0: categoryFolder = "EvolutionBall"; break; // 進化
-                case 1: categoryFolder = "SpecialBall"; break;   // 特殊
-                case 2: categoryFolder = "NuisanceBall"; break;  // お邪魔
+                case 0: categoryFolder = "EvolutionBall"; break;
+                case 1: categoryFolder = "SpecialBall"; break;
+                case 2: categoryFolder = "NuisanceBall"; break;
                 default: categoryFolder = ""; break;
             }
 
             string parentPath = BALL_ROOT + categoryFolder;
             string numberText = number.ToString("0000");
 
-            // 親フォルダが無い場合
             if (!Directory.Exists(parentPath))
             {
                 EditorGUILayout.HelpBox("フォルダ未作成（データなし）： " + categoryFolder + " が見つかりません", MessageType.None);
                 return;
             }
 
-            // 親フォルダの中から、番号(0000)で始まるフォルダを探す
             string[] dirs = Directory.GetDirectories(parentPath);
             string matchedFolder = null;
             foreach (string dir in dirs)
@@ -151,27 +184,22 @@ namespace Watermelon.BubbleMerge
                 }
             }
 
-            // 番号のフォルダが無い場合
             if (matchedFolder == null)
             {
                 EditorGUILayout.HelpBox("フォルダ未作成（データなし）： " + numberText + "_ のフォルダがありません", MessageType.None);
                 return;
             }
 
-            // フォルダ名を「_」で番号と名前に分ける
             int underscoreIndex = matchedFolder.IndexOf('_');
             string folderNumber = underscoreIndex >= 0 ? matchedFolder.Substring(0, underscoreIndex) : matchedFolder;
             string folderName = underscoreIndex >= 0 ? matchedFolder.Substring(underscoreIndex + 1) : "";
 
-            // 照合表示（省スペース：小さい文字で1行にまとめる）
             GUIStyle miniStyle = new GUIStyle(EditorStyles.miniLabel);
             miniStyle.margin = new RectOffset(0, 0, 0, 0);
             miniStyle.padding = new RectOffset(0, 0, 0, 0);
 
             EditorGUILayout.LabelField("List   → No." + numberText + " / " + listName, miniStyle);
             EditorGUILayout.LabelField("Folder → No." + folderNumber + " / " + folderName, miniStyle);
-
-            // 判定
 
             bool numberMatch = (numberText == folderNumber);
             bool nameMatch = (listName == folderName);
@@ -183,7 +211,6 @@ namespace Watermelon.BubbleMerge
                 if (!nameMatch) msg += " 名前(" + listName + "≠" + folderName + ")";
                 EditorGUILayout.HelpBox(msg, MessageType.Error);
 
-                // hk追加：番号は合うが名前が違うとき、実フォルダをリスト名にリネームするボタン
                 if (numberMatch && !nameMatch)
                 {
                     if (GUILayout.Button("フォルダを直す（" + matchedFolder + " → " + numberText + "_" + listName + "）"))

@@ -17,6 +17,8 @@ MonoBehaviour:
     recipeName: "\u30AD\u30CE\u30B3\u5730\u7344\u4E32"
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
+    - number: 1
+      count: 0
     - number: 2
       count: 2
     - number: 3
@@ -31,19 +33,19 @@ MonoBehaviour:
     - number: 1
       count: 1
     completionStages:
-    - rankName: masterpiece
+    - rankName: Masterpiece
       minScore: 200
       prefab: {fileID: 0}
-    - rankName: delicious
+    - rankName: Delicious
       minScore: 100
       prefab: {fileID: 0}
-    - rankName: good
+    - rankName: Good
       minScore: 80
       prefab: {fileID: 0}
-    - rankName: mediocre
+    - rankName: Mediocre
       minScore: 60
       prefab: {fileID: 0}
-    - rankName: bad
+    - rankName: Bad
       minScore: -999
       prefab: {fileID: 0}
     hasSecret: 1
@@ -54,6 +56,8 @@ MonoBehaviour:
     recipeName: "\u30B7\u30B7\u30AB\u30D0\u30D6\u30FC"
     evolutionChain: 040000000800000005000000070000000f00000002000000
     requiredList:
+    - number: 4
+      count: 0
     - number: 8
       count: 2
     - number: 5
@@ -68,19 +72,19 @@ MonoBehaviour:
     - number: 1
       count: 2
     completionStages:
-    - rankName: masterpiece
+    - rankName: Masterpiece
       minScore: 200
       prefab: {fileID: 0}
-    - rankName: delicious
+    - rankName: Masterpiece
       minScore: 100
       prefab: {fileID: 0}
-    - rankName: good
+    - rankName: Masterpiece
       minScore: 80
       prefab: {fileID: 0}
-    - rankName: mediocre
+    - rankName: Masterpiece
       minScore: 60
       prefab: {fileID: 0}
-    - rankName: bad
+    - rankName: Masterpiece
       minScore: -999
       prefab: {fileID: 0}
     hasSecret: 0
