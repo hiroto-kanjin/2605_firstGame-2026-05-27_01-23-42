@@ -1,0 +1,32 @@
+name: Sync Google Sheets to Git
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Google Sheets as CSV
+        run: |
+          SPREADSHEET_ID="1TTMlDXzClfeay1luh4tpcCFzCUEgBrGf2lFOQWG87WU"
+          
+          SHEET_1="Git運用方法"
+          SHEET_2="Ball"
+          SHEET_3="Recipe"
+          
+          curl -Lo "data_${SHEET_1}.csv" "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_1}"
+          curl -Lo "data_${SHEET_2}.csv" "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_2}"
+          curl -Lo "data_${SHEET_3}.csv" "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_3}"
+
+      - name: Commit and Push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add *.csv
+          git diff --cached --quiet || (git commit -m "Update master data from Google Sheets" && git push)
