@@ -2,8 +2,8 @@ name: Sync Google Sheets to Git
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 毎日日本時間の午前9時に自動実行（必要なら変更可能）
-  workflow_dispatch: # ボタン一発で手動実行したい場合の設定
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -12,20 +12,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download Google Sheet as CSV
+      - name: Download Google Sheets as CSV
         run: |
-          # [注] SPREADSHEET_ID と SHEET_NAME はご自身のものに書き換えてください
-          # SHEET_NAME（シート名）が「マスタ」なら「マスタ」と入力
-          SPREADSHEET_ID="ここにステップ1でメモしたIDを入れる"
-          SHEET_NAME="ここにシート名を入れる"
+          SPREADSHEET_ID="1TTMlDXzClfeay1luh4tpcCFzCUEgBrGf2lFOQWG87WU"
           
-          # CSVとしてダウンロード実行
-          curl -Lo master_data.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}"
+          # 各シート名をここに正確に入力してください
+          SHEET_1="Git運用方法"
+          SHEET_2="Ball"
+          SHEET_3="Recipe"
+          
+          # それぞれ別名のCSVとしてダウンロード
+          curl -Lo data_${SHEET_1}.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_1}"
+          curl -Lo data_${SHEET_2}.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_2}"
+          curl -Lo data_${SHEET_3}.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_3}"
 
       - name: Commit and Push if changed
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add master_data.csv
-          # 変更がある場合のみコミットしてプッシュ
+          git add *.csv
           git diff --cached --quiet || (git commit -m "Update master data from Google Sheets" && git push)
