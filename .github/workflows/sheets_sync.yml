@@ -16,15 +16,13 @@ jobs:
         run: |
           SPREADSHEET_ID="1TTMlDXzClfeay1luh4tpcCFzCUEgBrGf2lFOQWG87WU"
           
-          # 各シート名をここに正確に入力してください
           SHEET_1="Git運用方法"
           SHEET_2="Ball"
           SHEET_3="Recipe"
           
-          # それぞれ別名のCSVとしてダウンロード
-          curl -Lo data_${SHEET_1}.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_1}"
-          curl -Lo data_${SHEET_2}.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_2}"
-          curl -Lo data_${SHEET_3}.csv "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_3}"
+          curl -Lo "data_${SHEET_1}.csv" "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_1}"
+          curl -Lo "data_${SHEET_2}.csv" "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_2}"
+          curl -Lo "data_${SHEET_3}.csv" "https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_3}"
 
       - name: Commit and Push if changed
         run: |
