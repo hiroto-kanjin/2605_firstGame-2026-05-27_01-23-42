@@ -17,15 +17,6 @@ MonoBehaviour:
     turnsLimit: 1000
     coinsReward: 20
     recipeId: 0
-    requiredIngredients:
-    - category: 0
-      branch: 0
-      ballType: 2
-      requiredCount: 1
-    - category: 0
-      branch: 0
-      ballType: 5
-      requiredCount: 1
     finisherShotLimit: 60
     ballSupplyRates:
     - category: 0
@@ -38,15 +29,4 @@ MonoBehaviour:
     - triggerShot: 0
       count: 0
       ballType: 0
-    completionImages:
-    - rank: 0
-      image: {fileID: 0}
-    - rank: 1
-      image: {fileID: 0}
-    - rank: 2
-      image: {fileID: 0}
-    - rank: 3
-      image: {fileID: 0}
-    - rank: 4
-      image: {fileID: 0}
   loopLastLevel: 1

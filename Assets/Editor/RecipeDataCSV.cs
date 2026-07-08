@@ -10,17 +10,19 @@ namespace Watermelon.BubbleMerge
         private const int HeaderRows = 3;   // 各ブロックの上3行は見出し（飛ばす）
 
         // 列の位置（0始まり）。C・E列は飾りなので使わない
-        private const int ColRecipeName = 0;   // A：料理名
-        private const int ColRecipeId = 1;     // B：ID
-        private const int ColEvoNumber = 3;    // D：進化ボールの番号
-        private const int ColNormalCount = 5;  // F：通常レシピの個数
-        private const int ColSpecialNumber = 6;// G：特殊ボールの番号
-        private const int ColSpecialCount = 7; // H：特殊ボールの個数
-        private const int ColSecretFlag = 8;   // I：裏メニューあり/無し
-        private const int ColSecretNuisance = 9;// J：お邪魔個数
-        private const int ColSecretIrregular = 10;// K：イレギュラー個数
-        private const int ColRank = 11;        // L：完成データのランク名
-        private const int ColScore = 12;       // M：完成データの点数
+        private const int ColRecipeName = 0;    // A：料理名
+        private const int ColRecipeId = 1;      // B：ID
+        private const int ColEvoNumber = 3;     // D：進化ボールの番号
+        private const int ColNormalCount = 5;   // F：通常レシピの個数
+        private const int ColSpecialNumber = 6; // G：特殊ボールの番号
+        private const int ColSpecialCount = 7;  // H：特殊ボールの個数
+        private const int ColSecretFlag = 8;    // I：裏メニューあり/無し
+        private const int ColSecretCookingName = 9; // J：hk追加：裏メニューの料理名
+        private const int ColSecretNuisance = 10;   // K：お邪魔個数（右へ移動）
+        private const int ColSecretIrregular = 11;  // L：イレギュラー個数（右へ移動）
+        private const int ColRank = 12;         // M：完成データのランク名（右へ移動）
+        private const int ColCookingName = 13;  // N：料理名（右へ移動）
+        private const int ColScore = 14;        // O：点数下限（右へ移動）
 
         // ランク名の正しい表記。CSVが大文字でも小文字でも、これに合わせて入れ直す
         private static readonly string[] RANK_NAMES = { "Masterpiece", "Delicious", "Good", "Mediocre", "Bad" };
@@ -63,6 +65,7 @@ namespace Watermelon.BubbleMerge
 
             // 裏メニュー（先頭行だけ見る）
             entry.hasSecret = ParseBool(GetCell(head, ColSecretFlag));
+            entry.secretCookingName = GetCell(head, ColSecretCookingName); // hk追加：裏メニューの料理名
             entry.secretNuisanceCount = ParseInt(GetCell(head, ColSecretNuisance), 0);
             entry.secretIrregularCount = ParseInt(GetCell(head, ColSecretIrregular), 0);
 
@@ -126,9 +129,10 @@ namespace Watermelon.BubbleMerge
                 if (!string.IsNullOrEmpty(rank))
                 {
                     CompletionStage stage = new CompletionStage();
-                    stage.rankName = NormalizeRank(rank); // hk追加：大文字小文字を気にせず正しい表記に直す
+                    stage.rankName = NormalizeRank(rank);              // ランク名を正しい表記に直す
+                    stage.cookingName = GetCell(cells, ColCookingName); // hk追加：料理名を読む
                     stage.minScore = ParseInt(GetCell(cells, ColScore), 0);
-                    stage.prefab = null; // プレハブはCSVでは扱わない（名前取得は別処理）
+                    stage.prefab = null; // プレハブはCSVでは扱わない
                     entry.completionStages.Add(stage);
                 }
             }

@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.RecipeData
   recipes:
   - recipeId: 1
-    recipeName: "\u30AD\u30CE\u30B3\u5730\u7344\u4E32"
-    evolutionChain: 010000000200000003000000040000000500000006000000
+    recipeName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
+    evolutionChain: 000000000100000004000000030000000200000005000000
     requiredList:
-    - number: 1
+    - number: 0
       count: 0
-    - number: 2
-      count: 2
-    - number: 3
+    - number: 1
       count: 2
     - number: 4
+      count: 2
+    - number: 3
       count: 1
-    - number: 5
+    - number: 2
       count: 1
     specialList:
     - number: 0
@@ -34,31 +34,37 @@ MonoBehaviour:
       count: 1
     completionStages:
     - rankName: Masterpiece
+      cookingName: "\u3046\u3089\u307F\u30AD\u30CE\u30B3\u5730\u7344\u4E32"
       minScore: 200
       prefab: {fileID: 0}
     - rankName: Delicious
+      cookingName: "\u4E32\u523A\uFF01\u713C\u304D\u30AD\u30CE\u30B3"
       minScore: 100
       prefab: {fileID: 0}
     - rankName: Good
+      cookingName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
       minScore: 80
       prefab: {fileID: 0}
     - rankName: Mediocre
+      cookingName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
       minScore: 60
       prefab: {fileID: 0}
     - rankName: Bad
+      cookingName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32\uFF1F"
       minScore: -999
       prefab: {fileID: 0}
     hasSecret: 1
-    secretNuisanceCount: 5
+    secretCookingName: "\u30AD\u30CE\u30B3\u306E\u8E0A\u308A\u3050\u3044"
+    secretNuisanceCount: 10
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
   - recipeId: 2
     recipeName: "\u30B7\u30B7\u30AB\u30D0\u30D6\u30FC"
-    evolutionChain: 040000000800000005000000070000000f00000002000000
+    evolutionChain: 000000000400000005000000070000000f00000002000000
     requiredList:
-    - number: 4
+    - number: 0
       count: 0
-    - number: 8
+    - number: 4
       count: 2
     - number: 5
       count: 2
@@ -73,21 +79,162 @@ MonoBehaviour:
       count: 2
     completionStages:
     - rankName: Masterpiece
+      cookingName: 
       minScore: 200
       prefab: {fileID: 0}
-    - rankName: Masterpiece
+    - rankName: Delicious
+      cookingName: 
       minScore: 100
       prefab: {fileID: 0}
-    - rankName: Masterpiece
+    - rankName: Good
+      cookingName: 
       minScore: 80
       prefab: {fileID: 0}
-    - rankName: Masterpiece
+    - rankName: Mediocre
+      cookingName: 
       minScore: 60
       prefab: {fileID: 0}
-    - rankName: Masterpiece
+    - rankName: Bad
+      cookingName: 
       minScore: -999
       prefab: {fileID: 0}
     hasSecret: 0
+    secretCookingName: 
     secretNuisanceCount: 0
     secretIrregularCount: 0
+    secretPrefab: {fileID: 0}
+  - recipeId: 3
+    recipeName: "\u3057\u304A\u30E9\u30FC\u30E1\u30F3"
+    evolutionChain: 000000000200000003000000040000000500000006000000
+    requiredList:
+    - number: 0
+      count: 0
+    - number: 2
+      count: 2
+    - number: 3
+      count: 2
+    - number: 4
+      count: 1
+    - number: 5
+      count: 0
+    specialList:
+    - number: 0
+      count: 1
+    - number: 1
+      count: 1
+    completionStages:
+    - rankName: Masterpiece
+      cookingName: 
+      minScore: 200
+      prefab: {fileID: 0}
+    - rankName: Delicious
+      cookingName: 
+      minScore: 100
+      prefab: {fileID: 0}
+    - rankName: Good
+      cookingName: 
+      minScore: 80
+      prefab: {fileID: 0}
+    - rankName: Mediocre
+      cookingName: 
+      minScore: 60
+      prefab: {fileID: 0}
+    - rankName: Bad
+      cookingName: 
+      minScore: -999
+      prefab: {fileID: 0}
+    hasSecret: 1
+    secretCookingName: 
+    secretNuisanceCount: 5
+    secretIrregularCount: 2
+    secretPrefab: {fileID: 0}
+  - recipeId: 4
+    recipeName: "\u30A2\u30A4\u30B9\u30AF\u30EA\u30FC\u30E0"
+    evolutionChain: 010000000200000003000000040000000500000006000000
+    requiredList:
+    - number: 1
+      count: 0
+    - number: 2
+      count: 2
+    - number: 3
+      count: 2
+    - number: 4
+      count: 1
+    - number: 5
+      count: 0
+    specialList:
+    - number: 0
+      count: 1
+    - number: 1
+      count: 1
+    completionStages:
+    - rankName: Masterpiece
+      cookingName: 
+      minScore: 200
+      prefab: {fileID: 0}
+    - rankName: Delicious
+      cookingName: 
+      minScore: 100
+      prefab: {fileID: 0}
+    - rankName: Good
+      cookingName: 
+      minScore: 80
+      prefab: {fileID: 0}
+    - rankName: Mediocre
+      cookingName: 
+      minScore: 60
+      prefab: {fileID: 0}
+    - rankName: Bad
+      cookingName: 
+      minScore: -999
+      prefab: {fileID: 0}
+    hasSecret: 1
+    secretCookingName: 
+    secretNuisanceCount: 5
+    secretIrregularCount: 2
+    secretPrefab: {fileID: 0}
+  - recipeId: 5
+    recipeName: "\u30B9\u30FC\u30D7"
+    evolutionChain: 010000000200000003000000040000000500000006000000
+    requiredList:
+    - number: 1
+      count: 0
+    - number: 2
+      count: 2
+    - number: 3
+      count: 2
+    - number: 4
+      count: 1
+    - number: 5
+      count: 0
+    specialList:
+    - number: 0
+      count: 1
+    - number: 1
+      count: 1
+    completionStages:
+    - rankName: Masterpiece
+      cookingName: 
+      minScore: 200
+      prefab: {fileID: 0}
+    - rankName: Delicious
+      cookingName: 
+      minScore: 100
+      prefab: {fileID: 0}
+    - rankName: Good
+      cookingName: 
+      minScore: 80
+      prefab: {fileID: 0}
+    - rankName: Mediocre
+      cookingName: 
+      minScore: 60
+      prefab: {fileID: 0}
+    - rankName: Bad
+      cookingName: 
+      minScore: -999
+      prefab: {fileID: 0}
+    hasSecret: 1
+    secretCookingName: 
+    secretNuisanceCount: 5
+    secretIrregularCount: 2
     secretPrefab: {fileID: 0}

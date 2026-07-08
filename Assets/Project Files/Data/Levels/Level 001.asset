@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
   m_Name: Level 001
   m_EditorClassIdentifier: 
-  note: 'Base + x1 Bomb + x2 Ice(2hp) + x10 Box(17hp) '
+  note: 'Tutorial + x1 BounceZone + x1 Bomb + x2 Ice(2hp) + x10 Box(17hp) '
   bubblesOnTheFieldAmount: 236
   turnsLimit: 30
   coinsReward: 200
@@ -30,13 +30,17 @@ MonoBehaviour:
     bombsData:
     - movesToSpawn: 25
   canBeUsedInRandomizer: 0
-  items: []
+  items:
+  - type: 0
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
   ballPlacements:
   - category: 0
     branchIndex: 0
     ballLevelIndex: 1
     position: {x: 0, y: 2.07, z: 0}
-  - category: 0
+  - category: 1
     branchIndex: 0
     ballLevelIndex: 4
     position: {x: -1.74, y: 1.34, z: 0}
@@ -44,7 +48,21 @@ MonoBehaviour:
     branchIndex: 0
     ballLevelIndex: 0
     position: {x: 1.55, y: 1.2, z: 0}
-  specialEffectsRandom: 0
-  specialEffectPlacements: []
-  levelShapeType: 0
+  - category: 2
+    branchIndex: 0
+    ballLevelIndex: 0
+    position: {x: 0, y: 0, z: 0}
+  - category: 2
+    branchIndex: 0
+    ballLevelIndex: 0
+    position: {x: 0, y: 0, z: 0}
+  - category: 2
+    branchIndex: 0
+    ballLevelIndex: 0
+    position: {x: 0, y: 0, z: 0}
+  specialEffectsRandom: 1
+  specialEffectPlacements:
+  - type: 0
+    position: {x: 0, y: 0, z: 0}
+  levelShapeType: 1
   levelBackType: 0

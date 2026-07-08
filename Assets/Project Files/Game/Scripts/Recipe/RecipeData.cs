@@ -104,6 +104,7 @@ namespace Watermelon.BubbleMerge
 
         [Header("裏メニュー")]
         public bool hasSecret;                     // 裏メニュー有り/無し
+        public string secretCookingName;           // hk追加：裏メニューの料理名
         public int secretNuisanceCount;            // 裏：お邪魔の必要数
         public int secretIrregularCount;           // 裏：イレギュラー素材の必要数
         public GameObject secretPrefab;            // 裏（Anomaly）の演出プレハブ（絵もエフェクトも中に仕込む）
@@ -117,12 +118,13 @@ namespace Watermelon.BubbleMerge
         public int count;    // 必要な個数
     }
 
-    // hk追加：完成データの1段階（名前・点数下限・絵）
+    // hk追加：完成データの1段階（ランク名・料理名・点数下限・絵）
     [System.Serializable]
     public class CompletionStage
     {
-        public string rankName;   // 段階の名前（パーフェクト/グレート/グッド/バッド）
-        public int minScore;      // この点数以上ならこの絵（下限）
-        public GameObject prefab; // 完成演出のプレハブ（絵もエフェクトも中に仕込む）
+        public string rankName;    // 段階のランク名（Masterpiece/Delicious/…）
+        public string cookingName; // hk追加：このランクで完成したときに表示する料理名
+        public int minScore;       // この点数以上ならこのランク（下限）
+        public GameObject prefab;  // 完成演出のプレハブ（絵もエフェクトも中に仕込む）
     }
 }

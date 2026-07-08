@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Watermelon.BubbleMerge
 {
@@ -16,6 +17,12 @@ namespace Watermelon.BubbleMerge
 
         // ランク名の選択肢（データは英語で保存）
         private static readonly string[] RANK_NAMES = { "Masterpiece", "Delicious", "Good", "Mediocre", "Bad" };
+
+        // hk追加：折りたたみの開閉状態を覚える（キー＝レシピの並び順）。無いキーは「開いている」扱い
+        private Dictionary<int, bool> openRecipe = new Dictionary<int, bool>();       // レシピ全体
+        private Dictionary<int, bool> openEvolution = new Dictionary<int, bool>();    // 進化の枠
+        private Dictionary<int, bool> openRecipeBody = new Dictionary<int, bool>();   // 通常/特殊/裏
+        private Dictionary<int, bool> openCompletion = new Dictionary<int, bool>();   // 完成データ
 
         public override void OnInspectorGUI()
         {
@@ -60,7 +67,16 @@ namespace Watermelon.BubbleMerge
 
                 SerializedProperty idProp = recipe.FindPropertyRelative("recipeId");
                 SerializedProperty nameProp = recipe.FindPropertyRelative("recipeName");
-                EditorGUILayout.LabelField("完成料理 ID:" + idProp.intValue + "  " + nameProp.stringValue, EditorStyles.boldLabel);
+
+                // hk追加：レシピ全体の折りたたみ（親）。見出しにID・料理名を出す
+                string recipeTitle = "完成料理 ID:" + idProp.intValue + "  " + nameProp.stringValue;
+                bool recipeOpen = DrawFoldout(openRecipe, i, recipeTitle, true);
+                if (!recipeOpen)
+                {
+                    EditorGUILayout.Space();
+                    continue; // 閉じているなら見出しだけ出して次のレシピへ
+                }
+
                 EditorGUILayout.PropertyField(idProp, new GUIContent("レシピID（重複禁止）"));
                 EditorGUILayout.PropertyField(nameProp, new GUIContent("料理名"));
 
@@ -76,136 +92,174 @@ namespace Watermelon.BubbleMerge
                     EditorGUILayout.HelpBox("レシピIDが重複しています： " + idProp.intValue, MessageType.Error);
                 }
 
-                // 進化の枠（名前表示つき）
+                // hk追加：進化の枠の折りたたみ（子）
                 SerializedProperty chain = recipe.FindPropertyRelative("evolutionChain");
-                EditorGUILayout.LabelField("進化の枠（最後＝イレギュラー素材）", EditorStyles.boldLabel);
-                for (int c = 0; c < chain.arraySize; c++)
+                if (DrawFoldout(openEvolution, i, "進化の枠（最後＝イレギュラー素材）", false))
                 {
-                    SerializedProperty numProp = chain.GetArrayElementAtIndex(c);
-                    string ballName = GetBallName(BallCategory.Evolution, numProp.intValue);
-                    bool isLast = (c == chain.arraySize - 1);
-                    string tag = isLast ? "（イレギュラー素材）" : "";
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("段階 " + c, GUILayout.Width(60));
-                    numProp.intValue = EditorGUILayout.IntField(numProp.intValue, GUILayout.Width(40));
-                    EditorGUILayout.LabelField(ballName + tag, GUILayout.Width(200));
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("削除", GUILayout.Width(50)))
+                    for (int c = 0; c < chain.arraySize; c++)
                     {
-                        chain.DeleteArrayElementAtIndex(c);
-                        break;
+                        SerializedProperty numProp = chain.GetArrayElementAtIndex(c);
+                        string ballName = GetBallName(BallCategory.Evolution, numProp.intValue);
+                        bool isLast = (c == chain.arraySize - 1);
+                        string tag = isLast ? "（イレギュラー素材）" : "";
+
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("段階 " + c, GUILayout.Width(60));
+                        numProp.intValue = EditorGUILayout.IntField(numProp.intValue, GUILayout.Width(40));
+                        EditorGUILayout.LabelField(ballName + tag, GUILayout.Width(200));
+                        GUILayout.FlexibleSpace();
+                        if (GUILayout.Button("削除", GUILayout.Width(50)))
+                        {
+                            chain.DeleteArrayElementAtIndex(c);
+                            break;
+                        }
+                        EditorGUILayout.EndHorizontal();
                     }
-                    EditorGUILayout.EndHorizontal();
-                }
-                if (GUILayout.Button("＋ 進化段階を追加"))
-                {
-                    chain.arraySize++;
+                    if (GUILayout.Button("＋ 進化段階を追加"))
+                    {
+                        chain.arraySize++;
+                    }
                 }
 
-                // レシピを進化の枠に自動追従
+                // レシピを進化の枠に自動追従（折りたたみの外で常に実行）
                 SyncRequiredList(recipe, chain);
 
-                // 進化ボールのレシピ
-                EditorGUILayout.Space();
-                EditorGUILayout.LabelField("通常レシピ（個数を入力。0＝使わない）", EditorStyles.boldLabel);
-                SerializedProperty requiredList = recipe.FindPropertyRelative("requiredList");
-                for (int r = 0; r < requiredList.arraySize; r++)
+                // hk追加：通常レシピ・特殊ボール・裏メニューをまとめた折りたたみ（子）
+                if (DrawFoldout(openRecipeBody, i, "通常レシピ／特殊ボール／裏メニュー", false))
                 {
-                    SerializedProperty item = requiredList.GetArrayElementAtIndex(r);
-                    int number = item.FindPropertyRelative("number").intValue;
-                    string ballName = GetBallName(BallCategory.Evolution, number);
-                    SerializedProperty count = item.FindPropertyRelative("count");
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("No." + number + "  " + ballName, GUILayout.Width(200));
-                    GUILayout.FlexibleSpace();
-                    EditorGUILayout.LabelField("個数", GUILayout.Width(30));
-                    count.intValue = EditorGUILayout.IntField(count.intValue, GUILayout.Width(60));
-                    GUILayout.Space(54); // 削除ボタン分のスペースを空けて個数の列をそろえる
-                    EditorGUILayout.EndHorizontal();
-                }
-
-                // 特殊ボールのレシピ
-                EditorGUILayout.Space();
-                EditorGUILayout.LabelField("特殊ボールのレシピ（この料理に固定）", EditorStyles.boldLabel);
-                SerializedProperty specialList = recipe.FindPropertyRelative("specialList");
-                for (int s = 0; s < specialList.arraySize; s++)
-                {
-                    SerializedProperty item = specialList.GetArrayElementAtIndex(s);
-                    SerializedProperty numProp = item.FindPropertyRelative("number");
-                    SerializedProperty count = item.FindPropertyRelative("count");
-                    string ballName = GetBallName(BallCategory.Special, numProp.intValue);
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("特殊No.", GUILayout.Width(50));
-                    numProp.intValue = EditorGUILayout.IntField(numProp.intValue, GUILayout.Width(40));
-                    EditorGUILayout.LabelField(ballName, GUILayout.Width(110));
-                    GUILayout.FlexibleSpace();
-                    EditorGUILayout.LabelField("個数", GUILayout.Width(30));
-                    count.intValue = EditorGUILayout.IntField(count.intValue, GUILayout.Width(60));
-                    GUILayout.Space(4);
-                    if (GUILayout.Button("削除", GUILayout.Width(50)))
+                    // 進化ボールのレシピ
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("通常レシピ（個数を入力。0＝使わない）");
+                    SerializedProperty requiredList = recipe.FindPropertyRelative("requiredList");
+                    for (int r = 0; r < requiredList.arraySize; r++)
                     {
-                        specialList.DeleteArrayElementAtIndex(s);
-                        break;
+                        SerializedProperty item = requiredList.GetArrayElementAtIndex(r);
+                        int number = item.FindPropertyRelative("number").intValue;
+                        string ballName = GetBallName(BallCategory.Evolution, number);
+                        SerializedProperty count = item.FindPropertyRelative("count");
+
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("No." + number + "  " + ballName, GUILayout.Width(200));
+                        GUILayout.FlexibleSpace();
+                        EditorGUILayout.LabelField("個数", GUILayout.Width(30));
+                        count.intValue = EditorGUILayout.IntField(count.intValue, GUILayout.Width(60));
+                        GUILayout.Space(54);
+                        EditorGUILayout.EndHorizontal();
                     }
-                    EditorGUILayout.EndHorizontal();
-                }
-                if (GUILayout.Button("＋ 特殊ボールを追加"))
-                {
-                    specialList.arraySize++;
-                }
 
-                // 裏メニュー（通常レシピの直下）
-                EditorGUILayout.Space();
-                EditorGUILayout.LabelField("── 裏メニュー（テリブル）──", EditorStyles.boldLabel);
-                SerializedProperty hasSecret = recipe.FindPropertyRelative("hasSecret");
-                EditorGUILayout.PropertyField(hasSecret, new GUIContent("裏メニュー有り"));
-                if (hasSecret.boolValue)
-                {
-                    EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretNuisanceCount"), new GUIContent("お邪魔の必要数"));
-                    EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretIrregularCount"), new GUIContent("イレギュラー素材の必要数"));
-                    EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretPrefab"), new GUIContent("Anomalyの演出プレハブ"));
-                }
-
-                // 完成データ（ランク名は選択式）
-                EditorGUILayout.Space();
-                EditorGUILayout.LabelField("完成データ", EditorStyles.boldLabel);
-                SerializedProperty stages = recipe.FindPropertyRelative("completionStages");
-                for (int st = 0; st < stages.arraySize; st++)
-                {
-                    SerializedProperty stage = stages.GetArrayElementAtIndex(st);
-                    SerializedProperty rankName = stage.FindPropertyRelative("rankName");
-                    SerializedProperty minScore = stage.FindPropertyRelative("minScore");
-                    SerializedProperty prefab = stage.FindPropertyRelative("prefab");
-
-                    EditorGUILayout.BeginHorizontal();
-                    int current = System.Array.IndexOf(RANK_NAMES, rankName.stringValue);
-                    if (current < 0) current = 0;
-                    int selected = EditorGUILayout.Popup(current, RANK_NAMES, GUILayout.Width(90));
-                    rankName.stringValue = RANK_NAMES[selected];
-
-                    EditorGUILayout.LabelField("点数下限", GUILayout.Width(55));
-                    minScore.intValue = EditorGUILayout.IntField(minScore.intValue, GUILayout.Width(60));
-                    EditorGUILayout.PropertyField(prefab, GUIContent.none, GUILayout.Width(120));
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button("削除", GUILayout.Width(50)))
+                    // 特殊ボールのレシピ
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("特殊ボールのレシピ（この料理に固定）");
+                    SerializedProperty specialList = recipe.FindPropertyRelative("specialList");
+                    for (int s = 0; s < specialList.arraySize; s++)
                     {
-                        stages.DeleteArrayElementAtIndex(st);
-                        break;
+                        SerializedProperty item = specialList.GetArrayElementAtIndex(s);
+                        SerializedProperty numProp = item.FindPropertyRelative("number");
+                        SerializedProperty count = item.FindPropertyRelative("count");
+                        string ballName = GetBallName(BallCategory.Special, numProp.intValue);
+
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField("特殊No.", GUILayout.Width(50));
+                        numProp.intValue = EditorGUILayout.IntField(numProp.intValue, GUILayout.Width(40));
+                        EditorGUILayout.LabelField(ballName, GUILayout.Width(110));
+                        GUILayout.FlexibleSpace();
+                        EditorGUILayout.LabelField("個数", GUILayout.Width(30));
+                        count.intValue = EditorGUILayout.IntField(count.intValue, GUILayout.Width(60));
+                        GUILayout.Space(4);
+                        if (GUILayout.Button("削除", GUILayout.Width(50)))
+                        {
+                            specialList.DeleteArrayElementAtIndex(s);
+                            break;
+                        }
+                        EditorGUILayout.EndHorizontal();
                     }
-                    EditorGUILayout.EndHorizontal();
+                    if (GUILayout.Button("＋ 特殊ボールを追加"))
+                    {
+                        specialList.arraySize++;
+                    }
+
+                    // 裏メニュー
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("── 裏メニュー ──");
+                    SerializedProperty hasSecret = recipe.FindPropertyRelative("hasSecret");
+                    EditorGUILayout.PropertyField(hasSecret, new GUIContent("裏メニュー有り"));
+                    if (hasSecret.boolValue)
+                    {
+                        EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretCookingName"), new GUIContent("裏メニューの料理名"));
+                        EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretNuisanceCount"), new GUIContent("お邪魔の必要数"));
+                        EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretIrregularCount"), new GUIContent("イレギュラー素材の必要数"));
+                        EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretPrefab"), new GUIContent("Anomalyの演出プレハブ"));
+                    }
                 }
-                if (GUILayout.Button("＋ 完成データを追加"))
+
+                // hk追加：完成データの折りたたみ（子）
+                if (DrawFoldout(openCompletion, i, "完成データ", false))
                 {
-                    stages.arraySize++;
+                    SerializedProperty stages = recipe.FindPropertyRelative("completionStages");
+                    for (int st = 0; st < stages.arraySize; st++)
+                    {
+                        SerializedProperty stage = stages.GetArrayElementAtIndex(st);
+                        SerializedProperty rankName = stage.FindPropertyRelative("rankName");
+                        SerializedProperty cookingName = stage.FindPropertyRelative("cookingName");
+                        SerializedProperty minScore = stage.FindPropertyRelative("minScore");
+                        SerializedProperty prefab = stage.FindPropertyRelative("prefab");
+
+                        EditorGUILayout.BeginHorizontal();
+                        int current = System.Array.IndexOf(RANK_NAMES, rankName.stringValue);
+                        if (current < 0) current = 0;
+                        int selected = EditorGUILayout.Popup(current, RANK_NAMES, GUILayout.Width(90));
+                        rankName.stringValue = RANK_NAMES[selected];
+
+                        cookingName.stringValue = EditorGUILayout.TextField(cookingName.stringValue, GUILayout.Width(110));
+
+                        EditorGUILayout.LabelField("点数下限", GUILayout.Width(55));
+                        minScore.intValue = EditorGUILayout.IntField(minScore.intValue, GUILayout.Width(60));
+                        EditorGUILayout.PropertyField(prefab, GUIContent.none, GUILayout.Width(120));
+                        GUILayout.FlexibleSpace();
+                        if (GUILayout.Button("削除", GUILayout.Width(50)))
+                        {
+                            stages.DeleteArrayElementAtIndex(st);
+                            break;
+                        }
+                        EditorGUILayout.EndHorizontal();
+                    }
+                    if (GUILayout.Button("＋ 完成データを追加"))
+                    {
+                        stages.arraySize++;
+                    }
                 }
 
                 EditorGUILayout.Space();
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        // hk追加：折りたたみを1つ描く。メモに無ければ開いている扱い。
+        // isParent＝trueなら親（大きい太字）、falseなら子（普通サイズの太字＋一段下げ）
+        private bool DrawFoldout(Dictionary<int, bool> memo, int key, string title, bool isParent)
+        {
+            bool isOpen = memo.ContainsKey(key) ? memo[key] : true; // 無ければ開いている
+
+            if (isParent)
+            {
+                // 親：太字を一回り大きくしたスタイルで描く
+                GUIStyle bigStyle = new GUIStyle(EditorStyles.foldoutHeader);
+                bigStyle.fontSize = 14; // 通常より大きく
+                isOpen = EditorGUILayout.Foldout(isOpen, title, true, bigStyle);
+            }
+            else
+            {
+                // 子：太字の折りたたみで描き、一段下げる。終わったら戻す
+                GUIStyle childStyle = new GUIStyle(EditorStyles.foldout);
+                childStyle.fontStyle = FontStyle.Bold; // 中身の説明より目立つよう太字に
+                EditorGUI.indentLevel++;
+                isOpen = EditorGUILayout.Foldout(isOpen, title, true, childStyle);
+                EditorGUI.indentLevel--;
+            }
+
+            memo[key] = isOpen;
+            return isOpen;
         }
 
         // hk追加：CSVファイルを選んで読み込み、今の料理リストを置き換える
@@ -244,6 +298,7 @@ namespace Watermelon.BubbleMerge
                 r.FindPropertyRelative("recipeId").intValue = src.recipeId;
                 r.FindPropertyRelative("recipeName").stringValue = src.recipeName;
                 r.FindPropertyRelative("hasSecret").boolValue = src.hasSecret;
+                r.FindPropertyRelative("secretCookingName").stringValue = src.secretCookingName; // hk追加
                 r.FindPropertyRelative("secretNuisanceCount").intValue = src.secretNuisanceCount;
                 r.FindPropertyRelative("secretIrregularCount").intValue = src.secretIrregularCount;
 
@@ -284,16 +339,16 @@ namespace Watermelon.BubbleMerge
         // hk追加：料理1つを20行ブロックとして書く
         private void WriteBlock(StringBuilder sb, RecipeEntry entry)
         {
-            // 見出し3行（案1：簡素な固定文字。読み込みは3行飛ばすだけなので中身は自由）
-            sb.AppendLine("recipeName,recipeId,進化の枠,進化ボールNo,名前,通常個数,特殊No,特殊個数,裏メニュー,お邪魔個数,イレギュラー個数,ランク,点数");
-            sb.AppendLine(",,,,,,,,,,,,");
-            sb.AppendLine(",,,,,,,,,,,,");
+            // 見出し3行（1行目＝表題、2・3行目＝空行。読み込みは上3行を飛ばすので中身は自由）
+            sb.AppendLine("recipeName,recipeId,進化の枠,進化ボールNo,名前,通常個数,特殊No,特殊個数,裏メニュー,裏料理名,お邪魔個数,イレギュラー個数,ランク,料理名,点数下限");
+            sb.AppendLine(",,,,,,,,,,,,,,");
+            sb.AppendLine(",,,,,,,,,,,,,,");
 
-            // データ17行分を作る（段階0〜16。実際は使う分だけ埋める）
+            // データ17行分を作る
             int dataRows = BlockRows - 3; // 20 - 見出し3 = 17
             for (int row = 0; row < dataRows; row++)
             {
-                string[] cells = new string[13]; // A〜M
+                string[] cells = new string[15]; // A〜O（裏料理名が増えて14→15）
                 for (int c = 0; c < cells.Length; c++) cells[c] = "";
 
                 // 先頭データ行にだけ、料理名・ID・裏メニューを書く
@@ -302,8 +357,9 @@ namespace Watermelon.BubbleMerge
                     cells[0] = Escape(entry.recipeName);
                     cells[1] = entry.recipeId.ToString();
                     cells[8] = entry.hasSecret ? "TRUE" : "FALSE";
-                    cells[9] = entry.secretNuisanceCount.ToString();
-                    cells[10] = entry.secretIrregularCount.ToString();
+                    cells[9] = Escape(entry.secretCookingName); // hk追加：裏メニューの料理名
+                    cells[10] = entry.secretNuisanceCount.ToString();
+                    cells[11] = entry.secretIrregularCount.ToString();
                 }
 
                 // 進化の枠（D列）と通常レシピの個数（F列）
@@ -311,9 +367,8 @@ namespace Watermelon.BubbleMerge
                 {
                     int number = entry.evolutionChain[row];
                     cells[3] = number.ToString();
-                    cells[4] = "日本語"; // E列は飾り（読み込みでは使わない）
+                    cells[4] = ""; // E列は空欄。スプレッドシート側の数式（番号→名前）を壊さないため
 
-                    // その段階の番号に対応する通常レシピの個数を探して入れる
                     int count = FindRequiredCount(entry, number);
                     if (count > 0) cells[5] = count.ToString();
                 }
@@ -325,11 +380,12 @@ namespace Watermelon.BubbleMerge
                     cells[7] = entry.specialList[row].count.ToString();
                 }
 
-                // 完成データ（L・M列）を上から順に
+                // 完成データ（M=ランク, N=料理名, O=点数下限）を上から順に
                 if (row < entry.completionStages.Count)
                 {
-                    cells[11] = Escape(entry.completionStages[row].rankName);
-                    cells[12] = entry.completionStages[row].minScore.ToString();
+                    cells[12] = Escape(entry.completionStages[row].rankName);
+                    cells[13] = Escape(entry.completionStages[row].cookingName);
+                    cells[14] = entry.completionStages[row].minScore.ToString();
                 }
 
                 sb.AppendLine(string.Join(",", cells));
@@ -356,7 +412,7 @@ namespace Watermelon.BubbleMerge
         }
 
         // hk追加：int（番号）のリストをコピー
-        private void CopyIntList(SerializedProperty listProp, System.Collections.Generic.List<int> src)
+        private void CopyIntList(SerializedProperty listProp, List<int> src)
         {
             listProp.ClearArray();
             listProp.arraySize = src.Count;
@@ -365,7 +421,7 @@ namespace Watermelon.BubbleMerge
         }
 
         // hk追加：RequiredItem（番号＋個数）のリストをコピー
-        private void CopyRequiredList(SerializedProperty listProp, System.Collections.Generic.List<RequiredItem> src)
+        private void CopyRequiredList(SerializedProperty listProp, List<RequiredItem> src)
         {
             listProp.ClearArray();
             listProp.arraySize = src.Count;
@@ -377,8 +433,8 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        // hk追加：CompletionStage（ランク名＋点数）のリストをコピー。プレハブはCSVに無いので触らない
-        private void CopyCompletionStages(SerializedProperty listProp, System.Collections.Generic.List<CompletionStage> src)
+        // hk追加：CompletionStage（ランク名・料理名・点数）のリストをコピー。プレハブはCSVに無いので触らない
+        private void CopyCompletionStages(SerializedProperty listProp, List<CompletionStage> src)
         {
             listProp.ClearArray();
             listProp.arraySize = src.Count;
@@ -386,6 +442,7 @@ namespace Watermelon.BubbleMerge
             {
                 SerializedProperty stage = listProp.GetArrayElementAtIndex(i);
                 stage.FindPropertyRelative("rankName").stringValue = src[i].rankName;
+                stage.FindPropertyRelative("cookingName").stringValue = src[i].cookingName; // hk追加：料理名
                 stage.FindPropertyRelative("minScore").intValue = src[i].minScore;
             }
         }
@@ -404,7 +461,7 @@ namespace Watermelon.BubbleMerge
             int usableCount = chain.arraySize - 1;
             if (usableCount < 0) usableCount = 0;
 
-            var savedCounts = new System.Collections.Generic.Dictionary<int, int>();
+            var savedCounts = new Dictionary<int, int>();
             for (int r = 0; r < requiredList.arraySize; r++)
             {
                 SerializedProperty item = requiredList.GetArrayElementAtIndex(r);
