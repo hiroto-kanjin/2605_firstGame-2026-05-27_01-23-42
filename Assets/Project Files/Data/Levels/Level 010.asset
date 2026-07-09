@@ -12,29 +12,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
   m_Name: Level 010
   m_EditorClassIdentifier: 
-  note: TopTriangles + x6 Ice(2hp)
-  bubblesOnTheFieldAmount: 9
-  turnsLimit: 40
+  note: HourGlass + x2 Bomb
+  bubblesOnTheFieldAmount: 6
+  turnsLimit: 38
   coinsReward: 20
   requirements:
     recipe:
       ResultPreview: {fileID: 21300000, guid: c21598c7689e8074cb3217d45aed3853, type: 3}
       Ingridients:
-      - branch: 0
-        stageId: 2
-        amount: 1
-      - branch: 5
-        stageId: 2
-        amount: 3
-      - branch: 8
+      - branch: 9
         stageId: 2
         amount: 2
-    iceBubblesPerLevel: 6
-    iceBubblesHealth: 2
+      - branch: 3
+        stageId: 2
+        amount: 4
+      - branch: 0
+        stageId: 2
+        amount: 4
+    iceBubblesPerLevel: 0
+    iceBubblesHealth: 0
     boxesPerLevel: 0
     boxesHealth: 0
-    bombsData: []
+    bombsData:
+    - movesToSpawn: 4
+    - movesToSpawn: 8
   canBeUsedInRandomizer: 1
   items: []
-  levelShapeType: 2
+  ballPlacements:
+  - category: 0
+    branchIndex: 0
+    ballLevelIndex: 0
+    position: {x: 6.82, y: 16.01, z: 0}
+  - category: 0
+    branchIndex: 0
+    ballLevelIndex: 1
+    position: {x: 0, y: 0, z: 0}
+  - category: 0
+    branchIndex: 0
+    ballLevelIndex: 2
+    position: {x: 0, y: 0, z: 0}
+  - category: 0
+    branchIndex: 0
+    ballLevelIndex: 3
+    position: {x: 0, y: 0, z: 0}
+  - category: 0
+    branchIndex: 0
+    ballLevelIndex: 3
+    position: {x: 0, y: 0, z: 0}
+  - category: 0
+    branchIndex: 0
+    ballLevelIndex: 4
+    position: {x: 0, y: 0, z: 0}
+  specialEffectsRandom: 0
+  specialEffectPlacements:
+  - type: 1
+    position: {x: 0, y: 0, z: 0}
+  - type: 0
+    position: {x: 0, y: 0, z: 0}
+  levelShapeType: 3
   levelBackType: 0

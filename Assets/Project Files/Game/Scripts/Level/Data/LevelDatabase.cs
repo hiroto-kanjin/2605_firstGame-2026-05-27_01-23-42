@@ -6,6 +6,7 @@ namespace Watermelon.BubbleMerge
     public class LevelDatabase : ScriptableObject
     {
         [SerializeField, LevelEditorSetting] Level[] levels;
+        [SerializeField, LevelEditorSetting] GameLevelData[] gameLevels; // hk追加：1レベル分の設定一式を並べる配列（統合先）
         [SerializeField, LevelEditorSetting] LevelItem[] items;
         [SerializeField, LevelEditorSetting] LevelShape[] levelShapes;
         [SerializeField, LevelEditorSetting] LevelBackground[] levelBackgrounds;
@@ -15,6 +16,9 @@ namespace Watermelon.BubbleMerge
         public LevelItem[] Items => items;
         public LevelShape[] LevelShapes => levelShapes;
         public LevelBackground[] LevelBackgrounds => levelBackgrounds;
+
+        public GameLevelData[] GameLevels => gameLevels; // hk追加：外から gameLevels を読むため
+        public int AmountOfGameLevels => gameLevels.Length; // hk追加：ゲームレベルの総数
 
         public int AmountOfLevels => levels.Length;
 

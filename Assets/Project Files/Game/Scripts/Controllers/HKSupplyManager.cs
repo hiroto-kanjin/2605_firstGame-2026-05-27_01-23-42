@@ -84,18 +84,33 @@ namespace Watermelon.BubbleMerge
 
         private void SpawnCurrentBall()
         {
-            // hk修正：仮の橋渡し。SpawnBallHKはまだbranchを要求する古い作りのため、
-            // branchはkinoko決め打ち、numberはそのままstageIdとして渡す（両方0始まりで一致）。
-            // 次段階でSpawnBallHKをcategory＋number受け取りに直したら、この仮コードは消える。
-            currentBallObject = LevelController.LevelBehavior.SpawnBallHK(
-                Branch.kinoko,
-                currentBall.number,
-                launcherPosition.position
-            );
-
-            if (currentBallObject != null)
+            // hk修正：抽選が返したcategoryを見て分岐する（branch決め打ちを廃止）
+            if (currentBall.category == BallCategory.Evolution)
             {
-                currentBallObject.transform.SetParent(launcherPosition);
+                // 進化ボール：現状はbranchをkinoko固定で生成する。
+                // branchという概念は将来的に廃止予定。今はEvolutionBranchが見た目・サイズの入れ物として必要なため残す。
+                // numberは進化の段階番号として、そのままstageIdに渡す（両方0始まりで一致）。
+                currentBallObject = LevelController.LevelBehavior.SpawnBallHK(
+                    Branch.kinoko,
+                    currentBall.number,
+                    launcherPosition.position
+                );
+
+                if (currentBallObject != null)
+                {
+                    currentBallObject.transform.SetParent(launcherPosition);
+                }
+            }
+            else if (currentBall.category == BallCategory.Special)
+            {
+                // 特殊ボール：盤面に出す生成処理は未実装。次のステップで対応する。
+                // データ（BallDataのSpecialエントリ・visualPrefab）は存在するが、生成経路がまだないため今は出せない。
+                Debug.LogWarning($"HKSupplyManager: 特殊ボール(number={currentBall.number})の供給が要求されましたが、生成処理が未実装のためスキップしました");
+            }
+            else
+            {
+                // 想定外のカテゴリ（お邪魔などが供給抽選に混ざった場合）
+                Debug.LogWarning($"HKSupplyManager: 供給抽選に想定外のカテゴリ({currentBall.category})が来ました");
             }
         }
 

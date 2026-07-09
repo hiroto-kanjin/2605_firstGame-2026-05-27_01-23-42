@@ -100,16 +100,15 @@ namespace Watermelon.BubbleMerge
 
             LevelBehavior.ChangeShape(database.GetShape(Level.LevelShapeType).Prefab);
             LevelBehavior.ChangeBackround(database.GetBackground(Level.LevelBackType).Prefab);
-            LevelBehavior.SetLevelItems(Level.Items, Level.Requirements.BombsData.ToArray(), database);
+
+            // hk修正：爆弾は使わないため空配列を渡す（Level.Requirements依存を外す）
+            LevelBehavior.SetLevelItems(Level.Items, new BombData[0], database);
 
             turnsLimit = Level.TurnsLimit;
             Turn = 0;
 
-            // requirements are received only once at the begging and cashed
-            GeneralLevelTargets = Level.Requirements;
-            GeneralLevelTargets.Init();
-
-            LevelBehavior.InitialiseRequirements(GeneralLevelTargets.GetActiveRequirements(), GeneralLevelTargets.Recipe);
+            // hk修正：古いレシピ系統（GeneralLevelTargets / InitialiseRequirements）を外した。
+            // レシピ表示・判定はHK側（RecipeDisplayUI / HKGameManager）が担当する。
 
             UIGame gameUI = UIController.GetPage<UIGame>();
 

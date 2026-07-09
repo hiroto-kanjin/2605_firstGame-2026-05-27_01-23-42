@@ -14,24 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levels:
   - {fileID: 11400000, guid: c6570b5e6cc0ea243817d1caf88c1bd8, type: 2}
-  - {fileID: 11400000, guid: 58a76b045a37ae84889ae58198c0d285, type: 2}
-  - {fileID: 11400000, guid: 4697cf8485750b54fbda04cba3fd3445, type: 2}
-  - {fileID: 11400000, guid: ba69e15943b0dd14e97838c3ac194384, type: 2}
-  - {fileID: 11400000, guid: 8143c4c9db7819f4687bb832fe933699, type: 2}
-  - {fileID: 11400000, guid: 21f72577b45e69b41a629090f986ec4b, type: 2}
-  - {fileID: 11400000, guid: bb44a9d591d41d340b15dbc5f3b9e31d, type: 2}
-  - {fileID: 11400000, guid: 8480547a4c75cd546a4e37ea5b8223d9, type: 2}
-  - {fileID: 11400000, guid: bf65380b561adb84db85d243fcac5744, type: 2}
-  - {fileID: 11400000, guid: ab3d2eb6e39dc9141b19a121af6523af, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  gameLevels:
+  - levelName: 
+    turnsLimit: 0
+    coinsReward: 0
+    recipeId: 0
+    levelDesign: {fileID: 0}
+    finisherShotLimit: 0
+    ballSupplyRates: []
+    nuisanceSpawnEvents: []
+  - levelName: 
+    turnsLimit: 0
+    coinsReward: 0
+    recipeId: 0
+    levelDesign: {fileID: 0}
+    finisherShotLimit: 0
+    ballSupplyRates: []
+    nuisanceSpawnEvents: []
   items:
   - type: 0
     prefab: {fileID: 593033756453074001, guid: e73bede6976572940b0d7a4a45c73e9e, type: 3}
@@ -57,26 +56,22 @@ MonoBehaviour:
     editorTexture: {fileID: 2800000, guid: 34dd3e6545ab5754dafa502de7d377cb, type: 3}
   levelShapes:
   - type: 0
-    prefab: {fileID: 5363470372480083075, guid: ed1d99712b1c9e54488bec1f5479ae5d,
+    prefab: {fileID: 5363470372480083075, guid: 64b6356a5a040c4449262c01b8436e73,
       type: 3}
   - type: 1
-    prefab: {fileID: 8793055630726231160, guid: 84c37ed8a7b49ec4fb496fd97cd231a5,
+    prefab: {fileID: 8793055630726231160, guid: 487eb6bd3f64bdd4c9e4c7654b22495d,
       type: 3}
   - type: 2
-    prefab: {fileID: 1355858245521181689, guid: 9aed8336513d73b44bc6547abca0ccca,
+    prefab: {fileID: 5363470372480083075, guid: afad2355cb699944a8b9166fc73939c4,
       type: 3}
   - type: 3
-    prefab: {fileID: 4003308609297374439, guid: 423febca47f7805479460706641c74b4,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 4
-    prefab: {fileID: 8180051929761279971, guid: 7f38028f20f5f9148ae870efa7f8f8b2,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 5
-    prefab: {fileID: 5696468751417055216, guid: 57ffb80041a07954b97a655ea9aa7f2e,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 6
-    prefab: {fileID: 4921594331404573096, guid: 7df1c3b5b673d6c43ad4b9168ac3e8e2,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 7
     prefab: {fileID: 5589433557728770110, guid: b5b24d4857f8ea34d9a10f963e548cee,
       type: 3}
@@ -99,134 +94,5 @@ MonoBehaviour:
   - type: 1
     prefab: {fileID: 5363470372480083075, guid: f2058ae853faab743b82c5b1987e3774,
       type: 3}
-  branches:
-  - branch: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
-      size: 1.2
-    - icon: {fileID: 21300000, guid: fec2a7e37b5b05641aab9162998e81f5, type: 3}
-      size: 1.2
-    - icon: {fileID: 21300000, guid: b12aca74230bb8b4bb2f761ff050e278, type: 3}
-      size: 1.3
-    - icon: {fileID: 21300000, guid: 8a27cdc64a2ef0d49a06aa6c45257696, type: 3}
-      size: 1.4
-    - icon: {fileID: 21300000, guid: 33c86932ce3ea2c419daaf765f69e218, type: 3}
-      size: 1.6
-    - icon: {fileID: 21300000, guid: fa9999342fc844b4390117782705deea, type: 3}
-      size: 1.8
-    - icon: {fileID: 21300000, guid: cf99b62de8a55e44b9e41535086c595e, type: 3}
-      size: 2
-    - icon: {fileID: 21300000, guid: d5e3291587ebe6047adf4d72371601af, type: 3}
-      size: 2.2
-    - icon: {fileID: 21300000, guid: dcd92b4f0656dda46a99d0912b573a7f, type: 3}
-      size: 2.5
-    - icon: {fileID: 21300000, guid: f17d4d0283fd42c4b9da9361e2784dd6, type: 3}
-      size: 2.8
-    - icon: {fileID: 21300000, guid: 151563f179e2e05468113976325e2bf5, type: 3}
-      size: 3
-  - branch: 1
-    backgroundColor: {r: 0.5188679, g: 0.31040242, b: 0.24265115, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 198951ea96542c240bfcdb4ba0eef056, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 19929f870e7385746b5f1ee179a3ac1b, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: d47d0b8d240c71e4ab06f0488aadcd97, type: 3}
-      size: 1
-  - branch: 2
-    backgroundColor: {r: 0.04705883, g: 0.29803923, b: 0.19215688, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 3fd6c68f1ee05a543918fca93301aed2, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 9d95be5def7426542b797c9a8d639961, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 8e52184f74fa14343bb64768402fa8ce, type: 3}
-      size: 1
-  - branch: 3
-    backgroundColor: {r: 0.455017, g: 0.67556155, b: 0.8679245, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 47c0c48d2a1f06e4699a925c09125702, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 1d08ced9e364b314ca0ebbee6a2fe8a6, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: d20e87284c812a8429ee5561ddde1e1a, type: 3}
-      size: 1
-  - branch: 4
-    backgroundColor: {r: 0.8862745, g: 0.5108213, b: 0, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 2c4e6cf035acb334d8139ec3dd7a05fb, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 3c728b3bf1500364a9a18e34cba6496a, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 189d1fadc5e9023489b38a239dc5287a, type: 3}
-      size: 1
-  - branch: 5
-    backgroundColor: {r: 0.11061384, g: 0.7075472, b: 0.5009165, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: b45199c20f4c3394f85f9d587d729868, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 5b76ff36e56055048b532487dac6a4a0, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 7a68ca5b257e4f34a9d4421a31717ab2, type: 3}
-      size: 1
-  - branch: 6
-    backgroundColor: {r: 1, g: 0.69394857, b: 0.51482475, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 31ef62660690e0f41b26d74deb3aae16, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 3686338beed824f4fb2e302b65faa727, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: e17f8c2271fe6ef4dbc7132bc71b7f60, type: 3}
-      size: 1
-  - branch: 7
-    backgroundColor: {r: 1, g: 0.5529412, b: 0.45882356, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: ff3891e251a1ba647aa5a8f2fd3a0eff, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: a4ec62d14843d1047bedf2538eccd7b2, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: b7a87c1a521fc8b4eb84c322147a64a9, type: 3}
-      size: 1
-  - branch: 8
-    backgroundColor: {r: 0.75769967, g: 0.6041804, b: 0.9339623, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: a0281003a9bdec346a74f8d293f52936, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 9e53878f887a2e243b662adc86651334, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: b55bb3da1d0208e459d33c151dc8e62f, type: 3}
-      size: 1
-  - branch: 9
-    backgroundColor: {r: 0.8584906, g: 0.30846325, b: 0.28809187, a: 1}
-    requirementUIPrefab: {fileID: 2333677794826614514, guid: fdf7fa33322f3f74dbf337a2552e5600,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 82f6ab75b604e5f418270c44e3d0949f, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 2421136f97b772c4782891a7a6ba1ec1, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: e9fea7b397fa20e4cb86abdc99bacb70, type: 3}
-      size: 1
-  potionSprites:
-  - {fileID: 21300000, guid: c21598c7689e8074cb3217d45aed3853, type: 3}
-  - {fileID: 21300000, guid: 5de491c524210aa47b73b56347ab60da, type: 3}
-  - {fileID: 21300000, guid: 03828651c97bb3e4b9d243d4997cbfee, type: 3}
+  branches: []
+  potionSprites: []

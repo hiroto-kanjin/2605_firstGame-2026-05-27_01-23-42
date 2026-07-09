@@ -7,7 +7,6 @@ namespace Watermelon.BubbleMerge
     {
         public static HKGameManager Instance { get; private set; }
 
-        [SerializeField] private GameLevelDatabase gameLevelDatabase; // hk追加
         [SerializeField] private float resultDelaySeconds = 1.5f; // hk追加：結果画面表示までの遅延秒数
 
         private GameLevelData currentLevel; // hk追加
@@ -27,7 +26,18 @@ namespace Watermelon.BubbleMerge
         {
             Debug.Log("StartGame called");
 
-            currentLevel = gameLevelDatabase.GetLevel(GameController.LevelID);
+            // hk修正：古いGameLevelDatabaseではなく、新しいLevelDatabase.GameLevelsから取得（棚を統合）
+            GameLevelData[] gameLevels = LevelController.Database.GameLevels;
+            int levelId = GameController.LevelID;
+
+            if (gameLevels == null || levelId < 0 || levelId >= gameLevels.Length)
+            {
+                Debug.LogError($"HKGameManager: ゲームレベル{levelId}のデータがありません");
+                currentLevel = null;
+                return;
+            }
+
+            currentLevel = gameLevels[levelId];
             if (currentLevel == null) return;
 
             currentScore = 0;

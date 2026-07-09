@@ -12,6 +12,9 @@ namespace Watermelon.BubbleMerge
         public int coinsReward = 20;
         public int recipeId; // hk追加：このレベルで使う完成料理のID（②RecipeDataを指す）
 
+        [Header("盤面デザイン")]
+        public Level levelDesign; // hk追加：このゲームレベルで使う盤面デザイン（Level.asset）への参照
+
         [Header("フィニッシャー")]
         public int finisherShotLimit = 3; // hk追加：レベル固有。②にはないのでここに残す
 
