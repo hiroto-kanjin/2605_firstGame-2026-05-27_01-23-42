@@ -11,7 +11,7 @@ namespace Watermelon.BubbleMerge
 
         private GameLevelData currentLevel; // hk追加
         private int currentScore = 0; // hk追加
-        private CompletionRank currentRank; // hk追加
+        private string currentRank; // hk修正：ランクをrankName（文字列）で持つ
         private bool isRecipeReady = false; // hk追加
         private bool isGameEnded = false; // hk追加
         private int shotsRemaining = 0; // hk追加
@@ -142,21 +142,13 @@ namespace Watermelon.BubbleMerge
             var counts = new Dictionary<(BallCategory, int), int>();
             foreach (BallBehaviorHK ball in balls)
             {
-                var key = (ball.GetBallCategory(), GetNumber(ball));
+                var key = (ball.GetBallCategory(), ball.GetNumber()); // hk修正：共通のGetNumber()を使う
                 if (counts.ContainsKey(key))
                     counts[key]++;
                 else
                     counts[key] = 1;
             }
             return counts;
-        }
-
-        // hk追加：ボールのnumberを取り出す（進化は段階番号、特殊はインデックス）
-        private int GetNumber(BallBehaviorHK ball)
-        {
-            if (ball.GetBallCategory() == BallCategory.Evolution)
-                return BallBehaviorHK.GetEvolutionNumber(ball.GetBallType());
-            return ball.GetBallIndex();
         }
 
         public void OnJudgementResult(bool recipeMatched, int completionScore) // hk追加
@@ -167,7 +159,7 @@ namespace Watermelon.BubbleMerge
             isRecipeReady = false;
 
             currentScore = completionScore;
-            currentRank = CompletionScoreCalculator.Instance.GetRank(completionScore);
+            currentRank = CompletionScoreCalculator.Instance.GetRank(completionScore, currentLevel.recipeId); // hk修正：recipeIdを渡し、rankName（文字列）を受け取る
 
             HKSupplyManager.Instance.ClearFinisher();
 
@@ -186,7 +178,7 @@ namespace Watermelon.BubbleMerge
         public bool IsFinalCountZero() => isFinalCountZero; // hk追加
         public GameLevelData GetCurrentLevel() => currentLevel; // hk追加
         public int GetCurrentScore() => currentScore; // hk追加
-        public CompletionRank GetCurrentRank() => currentRank; // hk追加
+        public string GetCurrentRank() => currentRank; // hk修正：rankName（文字列）を返す
         public bool IsRecipeReady() => isRecipeReady; // hk追加
         public int GetShotsRemaining() => shotsRemaining; // hk追加
     }

@@ -33,7 +33,7 @@ namespace Watermelon.BubbleMerge
                     continue;
                 }
 
-                if (!IsInRecipe(category, GetNumber(ball), ingredients))
+                if (!IsInRecipe(category, ball.GetNumber(), ingredients)) // hk修正：共通のGetNumber()を使う
                 {
                     if (category == BallCategory.Evolution)
                         score -= penaltyExtraEvolutionBall;
@@ -56,30 +56,27 @@ namespace Watermelon.BubbleMerge
             return false;
         }
 
-        // hk追加：ボールのnumberを取り出す（進化は段階番号、特殊はインデックス）
-        private int GetNumber(BallBehaviorHK ball)
+        // hk修正：ランク判定をレシピデータ（completionStages）ベースに変更。
+        // 点数とrecipeIdを受け取り、そのレシピのrankName＋minScoreを高い下限順に照合してランク名を返す。
+        // 数字はコードに持たず、すべてデータ側（レシピ）に置く。レベル（レシピ）ごとに下限を変えられる。
+        public string GetRank(int score, int recipeId) // hk修正：戻り値をstring（rankName）に、引数にrecipeIdを追加
         {
-            if (ball.GetBallCategory() == BallCategory.Evolution)
-                return BallBehaviorHK.GetEvolutionNumber(ball.GetBallType());
-            return ball.GetBallIndex();
-        }
+            RecipeEntry entry = HKSupplyManager.Instance.RecipeData.GetRecipeById(recipeId);
+            if (entry == null || entry.completionStages == null || entry.completionStages.Count == 0)
+                return ""; // データが無ければ空（呼び出し側で扱う）
 
-        public CompletionRank GetRank(int score) // hk追加
-        {
-            if (score == 100) return CompletionRank.Perfect;
-            if (score >= 80) return CompletionRank.Great;
-            if (score >= 60) return CompletionRank.Good;
-            if (score >= 40) return CompletionRank.Bad;
-            return CompletionRank.Terrible;
-        }
-    }
+            // minScoreの高い順に並べ替えて、点数が下限以上になる最初のランクを返す
+            List<CompletionStage> stages = new List<CompletionStage>(entry.completionStages);
+            stages.Sort((a, b) => b.minScore.CompareTo(a.minScore));
 
-    public enum CompletionRank // hk追加
-    {
-        Perfect,
-        Great,
-        Good,
-        Bad,
-        Terrible
+            foreach (CompletionStage stage in stages)
+            {
+                if (score >= stage.minScore)
+                    return stage.rankName;
+            }
+
+            // どの下限にも届かなければ、一番低いランク（並べ替え後の末尾）を返す
+            return stages[stages.Count - 1].rankName;
+        }
     }
 }

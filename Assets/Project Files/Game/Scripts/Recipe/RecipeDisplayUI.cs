@@ -13,6 +13,8 @@ namespace Watermelon.BubbleMerge
         [Header("食材数ごとのレイアウト")] // hk追加
         [SerializeField] private SlotLayout[] layouts; // hk追加：食材数ごとのレイアウト
 
+        [SerializeField] private float autoSlotSpacing = 150f; // hk追加：自動配置の間隔（Inspectorで調整可）
+
         private List<RecipeSlotUI> slots = new List<RecipeSlotUI>(); // hk追加
 
         private void Awake()
@@ -29,7 +31,7 @@ namespace Watermelon.BubbleMerge
 
             List<RecipeSlotData> ingredients = HKSupplyManager.Instance.RecipeData.BuildSlotDataList(recipeId);
 
-            // hk追加：食材数に合うレイアウトを探す
+            // hk追加：食材数に合う手動レイアウトを探す（無ければnull）
             SlotLayout layout = GetLayout(ingredients.Count);
 
             BallData ballData = HKSupplyManager.Instance.SupplyData;
@@ -40,11 +42,14 @@ namespace Watermelon.BubbleMerge
                 RecipeSlotUI slot = slotObj.GetComponent<RecipeSlotUI>();
                 slot.SetData(ingredients[i]);
 
-                // hk追加：レイアウトの座標を適用する
+                // hk修正：手動レイアウトがあればその座標、無ければ自動配置（横一列）の座標を使う
+                Vector2 pos;
                 if (layout != null && i < layout.positions.Length)
-                {
-                    slotObj.GetComponent<RectTransform>().anchoredPosition = layout.positions[i];
-                }
+                    pos = layout.positions[i];
+                else
+                    pos = GetAutoPosition(i, ingredients.Count);
+
+                slotObj.GetComponent<RectTransform>().anchoredPosition = pos;
 
                 // hk修正：アイコンは①BallDataのuiIconPrefabから引く（category＋number）
                 if (ballData != null)
@@ -63,7 +68,7 @@ namespace Watermelon.BubbleMerge
             Dictionary<(BallCategory, int), int> potContents = new Dictionary<(BallCategory, int), int>();
             foreach (BallBehaviorHK ball in ballsInPot)
             {
-                var key = (ball.GetBallCategory(), GetNumber(ball));
+                var key = (ball.GetBallCategory(), ball.GetNumber()); // hk修正：共通のGetNumber()を使う
                 if (potContents.ContainsKey(key))
                     potContents[key]++;
                 else
@@ -79,14 +84,6 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        // hk追加：ボールのnumberを取り出す（進化は段階番号、特殊はインデックス）
-        private int GetNumber(BallBehaviorHK ball)
-        {
-            if (ball.GetBallCategory() == BallCategory.Evolution)
-                return BallBehaviorHK.GetEvolutionNumber(ball.GetBallType());
-            return ball.GetBallIndex();
-        }
-
         private SlotLayout GetLayout(int count) // hk追加
         {
             foreach (SlotLayout layout in layouts)
@@ -95,6 +92,16 @@ namespace Watermelon.BubbleMerge
                     return layout;
             }
             return null;
+        }
+
+        // hk追加：手動レイアウト未設定時の保険。横一列に等間隔で並べる座標を返す
+        private Vector2 GetAutoPosition(int index, int totalCount)
+        {
+            // 全体を中央そろえにする：左端の位置を出してから、間隔ぶんずらす
+            float totalWidth = (totalCount - 1) * autoSlotSpacing;
+            float startX = -totalWidth * 0.5f;
+            float x = startX + index * autoSlotSpacing;
+            return new Vector2(x, 0f);
         }
     }
 

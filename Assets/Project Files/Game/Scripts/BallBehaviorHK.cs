@@ -15,6 +15,13 @@ namespace Watermelon.BubbleMerge
         public BallType GetBallType() => ballType; // hk追加
         public int GetBallIndex() => ballIndex; // hk追加
 
+        // hk追加：カテゴリに関係なく、このボールの番号を返す共通の窓口。
+        // 進化・特殊・お邪魔すべてBallIndexに番号が入っている（ブランチ除去済み）ので、それを返す。
+        public int GetNumber()
+        {
+            return ballIndex;
+        }
+
         public void SetData(BallCategory category, Branch branch, BallType type) // hk追加：進化ボール用
         {
             ballCategory = category;

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: BallData
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.BallSupplyData
   balls:
-  - ballName: "\u3075\u308F\u3075\u308F"
+  - ballName: "\u3082\u3058\u3083\u3082\u3058\u3083"
     category: 0
     number: 0
-    folderName: fuwafuwa
+    folderName: mojamoja
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: e2761765e029b124ab3d0a7ad15b84a1, type: 2}
     canMerge: 1
@@ -77,10 +77,10 @@ MonoBehaviour:
       type: 3}
     uiIconPrefab: {fileID: 8795762186055714128, guid: 9f6f22c0db2b6934eb91b2e697f69276,
       type: 3}
-  - ballName: "\u306E\u30FC\u3053"
+  - ballName: "\u306A\u3081\u30FC\u3053"
     category: 0
     number: 2
-    folderName: nasu
+    folderName: noko
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
@@ -95,10 +95,8 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
   - ballName: "\u3051\u308D\u30FC\u3063\u3050"
     category: 2
     number: 2
@@ -106,21 +104,17 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
-  - ballName: "\u306A\u3081\u30FC\u3053"
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u305F\u3051\u306E\u30FC\u3053"
     category: 0
     number: 3
-    folderName: tamago
+    folderName: takenoko
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 20c501240a605a541ba6c359da5f85f8, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
   - ballName: "\u3059\u3071\u3044\u30FC\u3059"
     category: 1
     number: 3
@@ -128,10 +122,8 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
   - ballName: "\u306A\u30FC\u3059"
     category: 0
     number: 4
@@ -139,10 +131,8 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
   - ballName: "\u305F\u307E\u30FC\u3054"
     category: 0
     number: 5
@@ -150,10 +140,8 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
   - ballName: "\u3082\u308D\u3053\u30FC\u3057"
     category: 0
     number: 6
@@ -161,8 +149,78 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
-      type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u305F\u307E\u30FC\u306D\u304E"
+    category: 0
+    number: 7
+    folderName: tamanegi
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u30C8\u30EA\u30E5\u30D5"
+    category: 0
+    number: 8
+    folderName: Truffle
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u30AE\u30E3\u30ED\u30C3\u30C8"
+    category: 0
+    number: 9
+    folderName: gyarot
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u30D4\u30FC\u30DE\u30F3"
+    category: 0
+    number: 10
+    folderName: pman
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u3080\u304E\u30FC"
+    category: 0
+    number: 11
+    folderName: mugi
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u3068\u307E\u30FC\u3068"
+    category: 0
+    number: 12
+    folderName: tomato
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u30AD\u30E3\u30D9\u30C3\u30C4"
+    category: 0
+    number: 13
+    folderName: kyabesstu
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
+  - ballName: "\u30D6\u3063\u3053\u30ED\u30EA"
+    category: 0
+    number: 14
+    folderName: bukkorori
+    size: 1.2
+    physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
+    canMerge: 1
+    visualPrefab: {fileID: 0}
+    uiIconPrefab: {fileID: 0}
   visualScale: 0.1

@@ -331,19 +331,28 @@ namespace Watermelon.BubbleMerge
 
             return bombItem.GetComponent<BombBehavior>();
         }
-
-        // hk修正：iconの受け渡しを廃止（画像はフォルダ方式で別途対応。当面は元画像のまま）
-        public BubbleBehavior SpawnNuisanceBallHK(Vector3 position)
+        // hk修正：indexを引数で受け取り、SpawnBubble経由でInit前にSetDataさせる（後付けをやめ、正しい順番にする）
+        public BubbleBehavior SpawnNuisanceBallHK(int index, Vector3 position)
         {
             BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.kinoko, stageId = 0 };
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                return SpawnBubble(spawnData, data, position, false, Vector2.zero);
+                return SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Nuisance, default, default, index);
             }
             return null;
         }
-
+        // hk追加：特殊ボールを盤面に出す。SpawnBubble経由でInit前にSetDataさせる（進化・お邪魔と同じ正しい順番）
+        public BubbleBehavior SpawnSpecialBallHK(int number, Vector3 position)
+        {
+            BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.kinoko, stageId = 0 };
+            if (LevelController.CreateRandomBubbleData(spawnData, out var data))
+            {
+                return SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Special, default, default, number);
+            }
+            return null;
+        }
         // hk追加：ゲーム開始時に手動配置ボールをスポーンする（Level.BallPlacementsを使用）
+        // hk修正：Nuisanceだけでなく、Evolution・Specialも配置できるようcategoryで振り分ける
         public void SpawnBallPlacementsHK()
         {
             Level level = LevelController.Level;
@@ -351,15 +360,26 @@ namespace Watermelon.BubbleMerge
 
             foreach (BallPlacementHK placement in level.BallPlacements)
             {
-                if (placement.category == BallCategory.Nuisance)
+                switch (placement.category)
                 {
-                    BubbleBehavior bubble = SpawnNuisanceBallHK(placement.position);
-                    if (bubble != null)
-                    {
-                        BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
-                        if (ballHK != null)
-                            ballHK.SetData(BallCategory.Nuisance, placement.ballLevelIndex);
-                    }
+                    case BallCategory.Evolution:
+                        // 進化ボール：branchは当面kinoko固定（除去フェーズでまとめて外す）。段階番号はballLevelIndex。
+                        SpawnBallHK(Branch.kinoko, placement.ballLevelIndex, placement.position);
+                        break;
+
+                    case BallCategory.Special:
+                        // 特殊ボール：番号はballLevelIndexを流用。
+                        SpawnSpecialBallHK(placement.ballLevelIndex, placement.position);
+                        break;
+
+                    case BallCategory.Nuisance:
+                        // お邪魔ボール：種類インデックスはballLevelIndex。
+                        SpawnNuisanceBallHK(placement.ballLevelIndex, placement.position);
+                        break;
+
+                    default:
+                        Debug.LogWarning($"SpawnBallPlacementsHK: 未対応のカテゴリ({placement.category})が配置にありました");
+                        break;
                 }
             }
         }
@@ -376,18 +396,14 @@ namespace Watermelon.BubbleMerge
                 for (int i = 0; i < spawnEvent.count; i++)
                 {
                     Vector3 position = GetRandomPosition();
-                    BubbleBehavior bubble = SpawnNuisanceBallHK(position);
-                    if (bubble != null)
-                    {
-                        BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
-                        if (ballHK != null)
-                            ballHK.SetData(BallCategory.Nuisance, (int)spawnEvent.ballType);
-                    }
+                    // hk修正：indexを引数で渡し、Init前にSetDataさせる（後付けを廃止）
+                    SpawnNuisanceBallHK((int)spawnEvent.ballType, position);
                 }
             }
         }
 
         // hk追加：HKSupplyManagerからボールを生成するための公開メソッド
+        // hk修正：Ball Typeではなくindex（番号）を渡す形に変更（ブランチ除去）
         public BubbleBehavior SpawnBallHK(Branch branch, int stageId, Vector3 position)
         {
             BubbleSpawnData spawnData = new BubbleSpawnData()
@@ -398,9 +414,8 @@ namespace Watermelon.BubbleMerge
 
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                // hk修正：ボールの種類(SetData)をInitより前に確定させ、正しい物理データを適用させる
-                BallType ballType = GetBallTypeFromStageId(stageId);
-                BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Evolution, branch, ballType);
+                // hk修正：indexにstageId（番号）を渡す。番号はBallIndexから引かれる（Ball Type依存を廃止）
+                BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Evolution, default, default, stageId);
 
                 return bubble;
             }
@@ -409,29 +424,6 @@ namespace Watermelon.BubbleMerge
             return null;
         }
 
-        // hk追加：stageIdをBallTypeに変換する（プログラム0始まり→企画1始まり）
-        private BallType GetBallTypeFromStageId(int stageId)
-        {
-            switch (stageId)
-            {
-                case 0: return BallType.EvolutionBall_01;
-                case 1: return BallType.EvolutionBall_02;
-                case 2: return BallType.EvolutionBall_03;
-                case 3: return BallType.EvolutionBall_04;
-                case 4: return BallType.EvolutionBall_05;
-                case 5: return BallType.EvolutionBall_06;
-                case 6: return BallType.EvolutionBall_07;
-                case 7: return BallType.EvolutionBall_08;
-                case 8: return BallType.EvolutionBall_09;
-                case 9: return BallType.EvolutionBall_10;
-                case 10: return BallType.EvolutionBall_11;
-                default: return BallType.EvolutionBall_01;
-            }
-        }
-        public BallType GetBallTypeFromStageIdPublic(int stageId) // hk追加：他クラスから呼べる公開版
-        {
-            return GetBallTypeFromStageId(stageId);
-        }
 
         public BubbleBehavior SpawnRandomBubble(bool checkAvailable, bool checkAmount = true)
         {
@@ -493,8 +485,8 @@ namespace Watermelon.BubbleMerge
             smallest.SwapData(secondSmallest.Data);
         }
 
-        // hk修正：category/ballBranch/ballTypeを追加。渡された場合、Initより前にSetDataを呼び、正しい物理データを適用させる
-        private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity, BallCategory? category = null, Branch ballBranch = default, BallType ballType = default)
+        // hk修正：category/ballBranch/ballType/indexを追加。渡された場合、Initより前にSetDataを呼び、正しい物理データ・見た目を適用させる
+        private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity, BallCategory? category = null, Branch ballBranch = default, BallType ballType = default, int? index = null)
         {
             BubbleBehavior bubble = bubblesPool.GetPooledComponent();
             bubble.transform.SetParent(transform);
@@ -506,7 +498,11 @@ namespace Watermelon.BubbleMerge
                 BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
                 if (ballHK != null)
                 {
-                    ballHK.SetData(category.Value, ballBranch, ballType);
+                    // hk修正：indexが渡されたら特殊・お邪魔用のSetData、なければ進化用のSetDataを呼ぶ
+                    if (index.HasValue)
+                        ballHK.SetData(category.Value, index.Value);
+                    else
+                        ballHK.SetData(category.Value, ballBranch, ballType);
                 }
             }
 
@@ -950,39 +946,26 @@ namespace Watermelon.BubbleMerge
         }
         public void OnBubblesMerged(BubbleBehavior bubble1, BubbleBehavior bubble2, Vector3 position)
         {
-            if (LevelController.CreateBubbleData(new Requirement(bubble1.Data.branch, bubble1.Data.stageId + 1), out var data))
-            {
-                // hk修正：ボールの種類(SetData)をInitより前に確定させ、正しい物理データを適用させる
-                BallType ballType = GetBallTypeFromStageId(data.stageId);
-                BubbleSpawnData spawnData = new BubbleSpawnData() { branch = data.branch, stageId = data.stageId };
-                var newBubble = SpawnBubble(spawnData, data, position, true, (bubble1.RB.GetVelocity()), BallCategory.Evolution, data.branch, ballType);
+            // hk修正：次の段階のボールを、Ball Index方式のSpawnBallHKで作る（Requirement/ballType依存を廃止＝ブランチ除去）
+            int nextNumber = bubble1.Data.stageId + 1;
+            BubbleBehavior newBubble = SpawnBallHK(bubble1.Data.branch, nextNumber, position);
 
-                // hk追加：テンプレートのRequirements判定を無効化（HKのレシピシステムを使うため）
-                // CheckRequirements(newBubble);
+            if (newBubble != null)
+            {
+                // 合体は勢いを引き継ぐ（元のボールの速度を渡す）
+                newBubble.RB.SetVelocity(bubble1.RB.GetVelocity());
 
                 OnBubbleMerged?.Invoke(newBubble);
             }
             else
             {
-                var newBubble = SpawnRandomBubble(true);
-
-                if (newBubble != null)
+                // 次の段階が作れなかった場合の保険（従来通り）
+                var fallbackBubble = SpawnRandomBubble(true);
+                if (fallbackBubble != null)
                 {
-                    // hk追加：テンプレートのRequirements判定を無効化（HKのレシピシステムを使うため）
-                    // CheckRequirements(newBubble);
-                    OnBubbleMerged?.Invoke(newBubble);
+                    OnBubbleMerged?.Invoke(fallbackBubble);
                 }
             }
-
-            // hk追加：自動スポーンを無効化（HKSupplyManagerが代わりに担当）
-            // if (bubbles.Count - 1 <= LevelController.Level.BubblesOnTheFieldAmount)
-            // {
-            //     var newRandomBubble = SpawnRandomBubble(true, false);
-            //     if (newRandomBubble != null)
-            //     {
-            //         CheckRequirements(newRandomBubble);
-            //     }
-            // }
         }
 
         #region Dev

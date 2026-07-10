@@ -16,8 +16,17 @@ namespace Watermelon.BubbleMerge
         private const int HeaderRows = 2;   // 上2行（空行＋見出し）は飛ばす
         private const int ItemColumns = 7;  // 1ブロックのデータ項目数（ballName〜canMerge）
 
-        // 各ブロックのデータ開始列（0始まり）。各ブロックは「画像1列＋データ7列＝8列」ずつずれる
-        private static readonly int[] BlockStartCols = { 1, 9, 17 }; // 進化=B, 特殊=J, お邪魔=R
+        // 各ブロックの「判定(use)」列（0始まり）。画像列の次。B=1, K=10, T=19
+        private static readonly int[] BlockUseCols = { 1, 10, 19 };
+
+        // 各ブロックのデータ開始列（0始まり）。判定の次。C=2, L=11, U=20
+        private static readonly int[] BlockStartCols = { 2, 11, 20 };
+
+        // 1ブロックの幅（画像1＋判定1＋データ7＝9列）
+        private const int BlockWidth = 9;
+
+        // 行の総セル数（3ブロック×9＝27）
+        private const int TotalCells = BlockWidth * 3;
 
         // ── .asset → CSV（書き出し）──
         public static void ExportToCSV(BallData ballData)
@@ -42,33 +51,32 @@ namespace Watermelon.BubbleMerge
 
             StringBuilder sb = new StringBuilder();
 
-            // ③ 1行目＝空行（画像列を含めて全部空）
-            sb.AppendLine(EmptyRow());
+            // ③ 1行目＝空行（全セル空）
+            sb.AppendLine(new string(',', TotalCells - 1));
 
-            // ④ 2行目＝見出し（3ブロックぶん横に並べる。各ブロック前に画像列の空セル）
-            string headBlock = "ballName,category,number,folderName,size,physicsPattern,canMerge";
+            // ④ 2行目＝見出し（3ブロックぶん横に並べる。各ブロック＝画像空+判定+データ7）
+            string headBlock = "use,ballName,category,number,folderName,size,physicsPattern,canMerge";
             sb.AppendLine("," + headBlock + ",," + headBlock + ",," + headBlock);
 
             // ⑤ 3行目から、一番多い件数ぶん回す
-            // 1行は必ず24セル（3ブロック×(画像1＋データ7)）。箱を用意して位置で埋める
             for (int row = 0; row < maxRows; row++)
             {
-                string[] cells = new string[24];
-                for (int c = 0; c < 24; c++) cells[c] = ""; // 全部空で初期化
+                string[] cells = new string[TotalCells];
+                for (int c = 0; c < TotalCells; c++) cells[c] = ""; // 全部空で初期化
 
                 for (int block = 0; block < 3; block++)
                 {
-                    // このブロックのデータ開始位置（画像列を1つ空けた次）
-                    // 進化=1, 特殊=9, お邪魔=17
-                    int start = block * 8 + 1;
+                    int useCol = BlockUseCols[block];
+                    int start = BlockStartCols[block];
 
                     if (row < byCategory[block].Count)
                     {
+                        cells[useCol] = "TRUE"; // 取り込んだデータは有効印
+
                         string[] item = EntryToCells(byCategory[block][row]).Split(',');
                         for (int k = 0; k < item.Length && k < ItemColumns; k++)
-                            cells[start + k] = item[k]; // 7項目を決まった位置に入れる
+                            cells[start + k] = item[k];
                     }
-                    // 在庫が無ければ、その7セルは空のまま（初期化済み）
                 }
 
                 sb.AppendLine(string.Join(",", cells));
@@ -92,7 +100,6 @@ namespace Watermelon.BubbleMerge
             string folderName = entry.FindPropertyRelative("folderName").stringValue;
             float size = entry.FindPropertyRelative("size").floatValue;
 
-            // 物理パターン：本物のアセット名から接頭辞を外して短い名前にする
             var physicsObj = entry.FindPropertyRelative("physicsPattern").objectReferenceValue;
             string physicsShort = "";
             if (physicsObj != null)
@@ -108,15 +115,8 @@ namespace Watermelon.BubbleMerge
             return ballName + "," + category + "," + number + "," + folderName + "," + size + "," + physicsShort + "," + canMerge;
         }
 
-        // hk追加：画像列を含む空行（見出しと同じ列数ぶんのカンマ）
-        private static string EmptyRow()
-        {
-            // 3ブロック×（画像1＋データ7）＝24セル → カンマ23個
-            return new string(',', 23);
-        }
-
-        // ── CSV → .asset（読み込み）──
-        public static void ImportFromCSV(BallData ballData)
+        // ── CSV → .asset（読み込み）── ※Editor側のSerializedObjectを受け取る
+        public static void ImportFromCSV(SerializedObject so)
         {
             if (!File.Exists(CSV_PATH))
             {
@@ -131,42 +131,51 @@ namespace Watermelon.BubbleMerge
                 return;
             }
 
-            SerializedObject so = new SerializedObject(ballData);
             SerializedProperty balls = so.FindProperty("balls");
             balls.ClearArray(); // 既存を全部消してCSVで入れ替える
 
             int added = 0;
 
-            // 上2行（空行＋見出し）を飛ばし、3行目(i=HeaderRows)から
             for (int i = HeaderRows; i < lines.Length; i++)
             {
                 if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
                 string[] cols = lines[i].Split(',');
 
-                // 3ブロックを、開始列を変えて読む（同じ読み方を3回）
                 for (int block = 0; block < 3; block++)
                 {
+                    int useCol = BlockUseCols[block];
                     int start = BlockStartCols[block];
+
+                    // 判定がTRUE（大文字小文字問わず）の行だけ取り込む。それ以外は全部飛ばす
+                    if (!IsUseTrue(cols, useCol)) continue;
+
                     if (TryAddEntry(balls, cols, start))
                         added++;
                 }
             }
 
             so.ApplyModifiedProperties();
-            EditorUtility.SetDirty(ballData);
+            EditorUtility.SetDirty(so.targetObject);
             AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             Debug.Log("CSVから読み込みました（横3ブロック）： " + added + "件");
         }
 
-        // hk追加：指定の開始列から7項目を読み、1件を追加する。ballNameが空なら追加しない（trueを返したら追加した）
+        // hk追加：判定列がTRUE（大文字小文字問わず）かどうか。それ以外は全部false
+        private static bool IsUseTrue(string[] cols, int useCol)
+        {
+            string v = GetCol(cols, useCol);
+            return v.Equals("TRUE", System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        // hk追加：指定の開始列から7項目を読み、1件を追加する
         private static bool TryAddEntry(SerializedProperty balls, string[] cols, int start)
         {
-            // 列が足りない（その行にそのブロックが無い）
             if (start + ItemColumns > cols.Length) return false;
 
             string ballName = GetCol(cols, start + 0);
-            if (string.IsNullOrWhiteSpace(ballName)) return false; // 空の在庫は飛ばす
+            if (string.IsNullOrWhiteSpace(ballName)) return false;
 
             int categoryInt = TextToCategory(GetCol(cols, start + 1));
             int.TryParse(GetCol(cols, start + 2), out int number);
@@ -186,7 +195,6 @@ namespace Watermelon.BubbleMerge
             entry.FindPropertyRelative("physicsPattern").objectReferenceValue = FindPhysics(physicsShort);
             entry.FindPropertyRelative("canMerge").boolValue = canMerge;
 
-            // フォルダから見た目・アイコンのプレハブを名前で自動取得してセットする
             AssignPrefabsFromFolder(entry, categoryInt, number, folderName);
 
             return true;
@@ -199,7 +207,7 @@ namespace Watermelon.BubbleMerge
             return cols[index].Trim();
         }
 
-        // ── ここから下は、縦1枚のときと同じ部品（変更なし）──
+        // ── フォルダ・プレハブまわり ──
 
         private const string BALL_ROOT = "Assets/Project Files/Game/Images/Ball/";
         private const string VISUAL_PREFAB_NAME = "CookingBall";
@@ -209,7 +217,16 @@ namespace Watermelon.BubbleMerge
         {
             string categoryFolder = CategoryToFolder(category);
             string numberText = number.ToString("0000");
-            string folderPath = BALL_ROOT + categoryFolder + "/" + numberText + "_" + folderName;
+            string parentPath = BALL_ROOT + categoryFolder;
+            string wantFolderName = numberText + "_" + folderName;
+
+            // フォルダをID基準で用意し、実際に使うべきフォルダ名を受け取る
+            string actualFolderName = EnsureFolder(parentPath, numberText, wantFolderName);
+
+            // 用意できなかった（危険で中止した）場合は、プレハブ設定をせず抜ける
+            if (string.IsNullOrEmpty(actualFolderName)) return;
+
+            string folderPath = parentPath + "/" + actualFolderName;
 
             if (!Directory.Exists(folderPath))
             {
@@ -222,6 +239,70 @@ namespace Watermelon.BubbleMerge
 
             entry.FindPropertyRelative("visualPrefab").objectReferenceValue = visual;
             entry.FindPropertyRelative("uiIconPrefab").objectReferenceValue = icon;
+        }
+
+        // hk追加：そのIDのフォルダをディスク上に必ず1つ用意し、実際に使うべきフォルダ名を返す
+        // ・無ければ空で新規作成 → その名前を返す
+        // ・名前だけ違えばリネーム → 新しい名前を返す
+        // ・危ない状況（リネーム先が既にある／同じIDが2つ）では消さずに警告して止める → 空文字を返す
+        private static string EnsureFolder(string parentPath, string numberText, string wantFolderName)
+        {
+            if (!Directory.Exists(parentPath))
+            {
+                Directory.CreateDirectory(parentPath);
+                AssetDatabase.Refresh();
+            }
+
+            string wantPath = parentPath + "/" + wantFolderName;
+
+            // 同じID（numberText_）で始まるフォルダを、ディスクから全部探す
+            List<string> sameIdFolders = new List<string>();
+            foreach (string dir in Directory.GetDirectories(parentPath))
+            {
+                string name = Path.GetFileName(dir);
+                if (name.StartsWith(numberText + "_"))
+                    sameIdFolders.Add(name);
+            }
+
+            // 同じIDのフォルダが2つ以上 → 勝手にどちらか消さない。止めて空を返す
+            if (sameIdFolders.Count >= 2)
+            {
+                Debug.LogWarning("同じID(" + numberText + ")のフォルダが複数あります。手動で整理してください： "
+                    + string.Join(" / ", sameIdFolders));
+                return "";
+            }
+
+            // ちょうど1つある場合
+            if (sameIdFolders.Count == 1)
+            {
+                string current = sameIdFolders[0];
+
+                // 望ましい名前と同じなら、そのまま使う
+                if (current == wantFolderName) return wantFolderName;
+
+                // 名前が違う → リネームしたい。ただしリネーム先が既にあるなら危険なので止める
+                if (Directory.Exists(wantPath))
+                {
+                    Debug.LogWarning("リネーム先が既に存在するため中止します： "
+                        + current + " → " + wantFolderName);
+                    return "";
+                }
+
+                string oldPath = parentPath + "/" + current;
+                string error = AssetDatabase.RenameAsset(oldPath, wantFolderName);
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Debug.LogWarning("フォルダのリネームに失敗しました： " + error);
+                    return "";
+                }
+
+                Debug.Log("フォルダをリネームしました： " + current + " → " + wantFolderName);
+                return wantFolderName;
+            }
+
+            // 同じIDのフォルダが1つも無い → 空で新規作成して、その名前を返す
+            AssetDatabase.CreateFolder(parentPath, wantFolderName);
+            return wantFolderName;
         }
 
         private static GameObject LoadPrefabInFolder(string folderPath, string prefabName)

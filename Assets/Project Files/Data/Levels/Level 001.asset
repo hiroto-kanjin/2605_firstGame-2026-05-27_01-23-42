@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
   m_Name: Level 001
   m_EditorClassIdentifier: 
-  note: 'Base + x1 BounceZone + x1 CageBehaviour + x1 IceZone + x1 SpikesZone + x1
-    Teleport + x1 Wind + x1 Bomb + x2 Ice(2hp) + x10 Box(17hp) '
+  note: 'Base + x1 Bomb + x2 Ice(2hp) + x10 Box(17hp) '
   bubblesOnTheFieldAmount: 236
   turnsLimit: 30
   coinsReward: 200
@@ -31,31 +30,7 @@ MonoBehaviour:
     bombsData:
     - movesToSpawn: 25
   canBeUsedInRandomizer: 0
-  items:
-  - type: 0
-    position: {x: -2.92, y: -0.89, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-  - type: 1
-    position: {x: -1.48, y: 1.96, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-  - type: 2
-    position: {x: 2.4, y: 0, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-  - type: 3
-    position: {x: -2.74, y: 1.55, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-  - type: 4
-    position: {x: 0, y: 3.17, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
-  - type: 5
-    position: {x: 0, y: 3.54, z: 0}
-    rotation: {x: 0, y: 0, z: 0}
-    scale: {x: 1, y: 1, z: 1}
+  items: []
   ballPlacements:
   - category: 0
     branchIndex: 0

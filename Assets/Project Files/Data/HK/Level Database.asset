@@ -15,21 +15,22 @@ MonoBehaviour:
   levels:
   - {fileID: 11400000, guid: c6570b5e6cc0ea243817d1caf88c1bd8, type: 2}
   gameLevels:
-  - levelName: 
-    turnsLimit: 0
-    coinsReward: 0
+  - levelName: 001
+    turnsLimit: 1000
+    coinsReward: 200
     recipeId: 0
-    levelDesign: {fileID: 0}
+    levelDesign: {fileID: 11400000, guid: c6570b5e6cc0ea243817d1caf88c1bd8, type: 2}
     finisherShotLimit: 0
-    ballSupplyRates: []
-    nuisanceSpawnEvents: []
-  - levelName: 
-    turnsLimit: 0
-    coinsReward: 0
-    recipeId: 0
-    levelDesign: {fileID: 0}
-    finisherShotLimit: 0
-    ballSupplyRates: []
+    ballSupplyRates:
+    - category: 0
+      number: 0
+      spawnRate: 100
+    - category: 0
+      number: 1
+      spawnRate: 100
+    - category: 1
+      number: 1
+      spawnRate: 100
     nuisanceSpawnEvents: []
   items:
   - type: 0
@@ -94,5 +95,15 @@ MonoBehaviour:
   - type: 1
     prefab: {fileID: 5363470372480083075, guid: f2058ae853faab743b82c5b1987e3774,
       type: 3}
-  branches: []
-  potionSprites: []
+  branches:
+  - branch: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+    requirementUIPrefab: {fileID: 8795762186055714128, guid: 73f5c55e267b5a0439d5f1dc72f91de1,
+      type: 3}
+    stages:
+    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
+      size: 1
+    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
+      size: 1
+  potionSprites:
+  - {fileID: 21300000, guid: 5774bb467539ec343881ad7097c871bc, type: 3}

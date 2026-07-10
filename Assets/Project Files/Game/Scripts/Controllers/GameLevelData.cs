@@ -15,6 +15,9 @@ namespace Watermelon.BubbleMerge
         [Header("盤面デザイン")]
         public Level levelDesign; // hk追加：このゲームレベルで使う盤面デザイン（Level.asset）への参照
 
+        [Header("背景")]
+        public GameObject levelBackgroundPrefab; // hk修正：背景プレハブを直接指定（Type二択を廃止、CSV指定対応）
+
         [Header("フィニッシャー")]
         public int finisherShotLimit = 3; // hk追加：レベル固有。②にはないのでここに残す
 

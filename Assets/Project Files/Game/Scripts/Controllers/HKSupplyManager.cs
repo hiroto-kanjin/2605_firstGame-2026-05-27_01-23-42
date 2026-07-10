@@ -103,9 +103,16 @@ namespace Watermelon.BubbleMerge
             }
             else if (currentBall.category == BallCategory.Special)
             {
-                // 特殊ボール：盤面に出す生成処理は未実装。次のステップで対応する。
-                // データ（BallDataのSpecialエントリ・visualPrefab）は存在するが、生成経路がまだないため今は出せない。
-                Debug.LogWarning($"HKSupplyManager: 特殊ボール(number={currentBall.number})の供給が要求されましたが、生成処理が未実装のためスキップしました");
+                // hk修正：特殊ボールを盤面に出す（SpawnSpecialBallHK経由でInit前にSetData）
+                currentBallObject = LevelController.LevelBehavior.SpawnSpecialBallHK(
+                    currentBall.number,
+                    launcherPosition.position
+                );
+
+                if (currentBallObject != null)
+                {
+                    currentBallObject.transform.SetParent(launcherPosition);
+                }
             }
             else
             {

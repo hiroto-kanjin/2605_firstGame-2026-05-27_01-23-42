@@ -32,8 +32,7 @@ namespace Watermelon.BubbleMerge
             {
                 if (EditorUtility.DisplayDialog("確認", "今の内容をCSVの内容で上書きします。よろしいですか？", "読み込む", "やめる"))
                 {
-                    BallDataCSV.ImportFromCSV(ballData);
-                    serializedObject.Update();
+                    BallDataCSV.ImportFromCSV(serializedObject);
                 }
             }
             EditorGUILayout.EndHorizontal();

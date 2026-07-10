@@ -170,15 +170,15 @@ namespace Watermelon.BubbleMerge
             itemsEnumObjectsList = new EnumObjectsList(itemsSerializedProperty, TYPE_PROPERTY_PATH, PREFAB_PROPERTY_PATH, ITEM_ENUM_FILE_PATH, OnBeforeEnumFileupdateCallback);
             itemsEnumObjectsList.EnableTextureField(EDITOR_TEXTURE_PROPERTY_PATH);
             levelShapesEnumObjectsList = new EnumObjectsList(levelShapesSerializedProperty, TYPE_PROPERTY_PATH, PREFAB_PROPERTY_PATH, LEVEL_SHAPE_ENUM_FILE_PATH, OnBeforeEnumFileupdateCallback, LEVELS_SHAPE_ENUM_NAME);
-            levelSBackgroundsEnumObjectsList = new EnumObjectsList(levelBackgroundsSerializedProperty, TYPE_PROPERTY_PATH, PREFAB_PROPERTY_PATH, LEVEL_BACKGROUNDS_ENUM_FILE_PATH, OnBeforeEnumFileupdateCallback, LEVELS_BACKGROUNDS_ENUM_NAME);
+        
             levelShapesEnumObjectsList.TabLabel = SHAPES_TAB_LABEL;
-            levelSBackgroundsEnumObjectsList.TabLabel = BACKGROUNDS_TAB_LABEL;
+           
 
             tabHandler = new TabHandler();
             tabHandler.AddTab(new TabHandler.Tab(LEVELS_TAB_NAME, DisplayLevelsTab));
             tabHandler.AddTab(new TabHandler.Tab(ITEMS_TAB_NAME, itemsEnumObjectsList.DisplayTab));
             tabHandler.AddTab(new TabHandler.Tab(LEVEL_SHAPES_TAB_NAME, levelShapesEnumObjectsList.DisplayTab));
-            tabHandler.AddTab(new TabHandler.Tab(LEVEL_BACKGROUNDS_TAB_NAME, levelSBackgroundsEnumObjectsList.DisplayTab));
+        
             tabHandler.AddTab(new TabHandler.Tab(EDITOR_TAB_NAME, DisplayPropertiesTab));
             tabHandler.AddTab(new TabHandler.Tab(BALLS_TAB_NAME, DisplayBallsTab)); // hk追加
             tabHandler.AddTab(new TabHandler.Tab(EFFECTS_TAB_NAME, DisplayEffectsTab)); // hk追加

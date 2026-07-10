@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 using Watermelon;
@@ -123,7 +124,7 @@ namespace Watermelon.BubbleMerge
 
             scaleTween = transform.DOScale(data.size, quickAppearance ? 0.15f : 0.5f).SetCustomEasing(Ease.GetCustomEasingFunction("BackOutLight"));
 
-            name = data.icon.name;
+            name = gameObject.name; // hk修正：icon廃止に伴い、iconの名前ではなく自分の名前を使う（nullクラッシュ防止）
 
             IsMerging = false;
             isMagnetActive = true;
@@ -282,7 +283,7 @@ namespace Watermelon.BubbleMerge
             if (ballHK == null) return false;
 
             // 今の段階番号（0始まり）
-            int currentNumber = BallBehaviorHK.GetEvolutionNumber(ballHK.GetBallType());
+            int currentNumber = ballHK.GetNumber(); // hk修正：共通のGetNumber()を使う
 
             // 今のレベル(③)からレシピIDを取り、②の完成料理を引く
             GameLevelData level = HKGameManager.Instance.GetCurrentLevel();
@@ -473,16 +474,23 @@ namespace Watermelon.BubbleMerge
             BallData ballData = HKSupplyManager.Instance.SupplyData;
             if (ballData == null) return;
 
-            // このボールの素材（①BallDataのエントリ）を取り出す
+            // hk修正：カテゴリに関係なくBallIndexで番号を取る（Ball Type依存を廃止＝ブランチ除去）
             BallCategory category = ballHK.GetBallCategory();
-            int number;
-            if (category == BallCategory.Evolution)
-                number = BallBehaviorHK.GetEvolutionNumber(ballHK.GetBallType());
-            else
-                number = ballHK.GetBallIndex();
+            int number = ballHK.GetBallIndex();
 
             BallEntry entry = ballData.GetBall(category, number);
-            if (entry == null || entry.visualPrefab == null) return;
+
+            // hk追加：確認用ログ。透明になったとき、どのcategory/numberで、何がnullだったかを出す
+            if (entry == null)
+            {
+                Debug.LogWarning($"[透明の原因] entryが見つからない category={category} number={number}");
+                return;
+            }
+            if (entry.visualPrefab == null)
+            {
+                Debug.LogWarning($"[透明の原因] visualPrefabが空 category={category} number={number} name={entry.ballName}");
+                return;
+            }
 
             // プレハブを中央に差し込む（大きさ = 固有size × 全体共通のvisualScale）
             currentVisual = Instantiate(entry.visualPrefab, transform);

@@ -99,7 +99,12 @@ namespace Watermelon.BubbleMerge
             Level.Init();
 
             LevelBehavior.ChangeShape(database.GetShape(Level.LevelShapeType).Prefab);
-            LevelBehavior.ChangeBackround(database.GetBackground(Level.LevelBackType).Prefab);
+            // hk修正：背景はGameLevelDataのlevelBackgroundPrefabを直接使う（共通配列は廃止）
+            GameLevelData currentGameLevel = HKGameManager.Instance.GetCurrentLevel();
+            if (currentGameLevel != null && currentGameLevel.levelBackgroundPrefab != null)
+                LevelBehavior.ChangeBackround(currentGameLevel.levelBackgroundPrefab);
+            else
+                Debug.LogWarning("背景プレハブが未設定です（levelBackgroundPrefab）");
 
             // hk修正：爆弾は使わないため空配列を渡す（Level.Requirements依存を外す）
             LevelBehavior.SetLevelItems(Level.Items, new BombData[0], database);
@@ -228,20 +233,22 @@ namespace Watermelon.BubbleMerge
         {
             data = new BubbleData();
 
-            EvolutionBranch branch = Database.GetBranch(settings.branch);
-            if (branch == null)
+            // hk修正：sizeはBallDataから取る（枝依存を外す＝ブランチ除去）。
+            // 進化はcategory=Evolution固定、number=stageIdで一致するのでそれで引く。
+            BallData ballData = HKSupplyManager.Instance.SupplyData;
+            if (ballData == null)
                 return false;
 
-            if (branch.stages.Length <= settings.stageId)
+            BallEntry entry = ballData.GetBall(BallCategory.Evolution, settings.stageId);
+            if (entry == null)
                 return false;
 
-            var stage = branch.stages[settings.stageId];
-
+            // branch/stageIdはCompare（合体判定）でまだ使うので残す。除去は次段階。
             data.branch = settings.branch;
             data.stageId = settings.stageId;
-            data.color = branch.backgroundColor;
-            data.icon = stage.icon;
-            data.size = stage.size; // hk追加
+            data.size = entry.size; // hk修正：BallDataのsizeを使う
+
+            // icon/colorは読み出し箇所が無いため設定しない（除去2aで確認済み）
 
             return true;
         }
