@@ -58,6 +58,8 @@ MonoBehaviour:
     secretNuisanceCount: 10
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
+    categoryId: 0
+    dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}
   - recipeId: 1
     recipeName: "\u30B7\u30B7\u30AB\u30D0\u30D6\u30FC"
     evolutionChain: 000000000400000005000000070000000f00000002000000
@@ -103,6 +105,8 @@ MonoBehaviour:
     secretNuisanceCount: 0
     secretIrregularCount: 0
     secretPrefab: {fileID: 0}
+    categoryId: 0
+    dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}
   - recipeId: 2
     recipeName: "\u3057\u304A\u30E9\u30FC\u30E1\u30F3"
     evolutionChain: 000000000200000003000000040000000500000006000000
@@ -148,7 +152,9 @@ MonoBehaviour:
     secretNuisanceCount: 5
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
-  - recipeId: 4
+    categoryId: 1
+    dishSprite: {fileID: 21300000, guid: 841b741638837f0438bbfab1150e7805, type: 3}
+  - recipeId: 3
     recipeName: "\u30A2\u30A4\u30B9\u30AF\u30EA\u30FC\u30E0"
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
@@ -193,7 +199,9 @@ MonoBehaviour:
     secretNuisanceCount: 5
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
-  - recipeId: 5
+    categoryId: 0
+    dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}
+  - recipeId: 4
     recipeName: "\u30B9\u30FC\u30D7"
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
@@ -238,3 +246,5 @@ MonoBehaviour:
     secretNuisanceCount: 5
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
+    categoryId: 0
+    dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}

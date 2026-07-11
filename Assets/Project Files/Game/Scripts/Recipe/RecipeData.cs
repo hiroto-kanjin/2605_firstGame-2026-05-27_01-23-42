@@ -108,6 +108,10 @@ namespace Watermelon.BubbleMerge
         public int secretNuisanceCount;            // 裏：お邪魔の必要数
         public int secretIrregularCount;           // 裏：イレギュラー素材の必要数
         public GameObject secretPrefab;            // 裏（Anomaly）の演出プレハブ（絵もエフェクトも中に仕込む）
+
+        [Header("カテゴリ（料理パターン。右上表示用）")]
+        public int categoryId;                     // hk追加：料理カテゴリのID（Categoryフォルダを指すキー）
+        public Sprite dishSprite;                  // hk追加：カテゴリの絵（CSV読み込みでDish_Images.pngが自動セットされる）
     }
 
     // hk追加：レシピが要求する材料1つ（numberを何個）

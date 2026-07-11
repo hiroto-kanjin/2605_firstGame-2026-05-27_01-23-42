@@ -1,5 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Watermelon.BubbleMerge
 {
@@ -17,12 +21,18 @@ namespace Watermelon.BubbleMerge
         private const int ColSpecialNumber = 6; // G：特殊ボールの番号
         private const int ColSpecialCount = 7;  // H：特殊ボールの個数
         private const int ColSecretFlag = 8;    // I：裏メニューあり/無し
-        private const int ColSecretCookingName = 9; // J：hk追加：裏メニューの料理名
-        private const int ColSecretNuisance = 10;   // K：お邪魔個数（右へ移動）
-        private const int ColSecretIrregular = 11;  // L：イレギュラー個数（右へ移動）
-        private const int ColRank = 12;         // M：完成データのランク名（右へ移動）
-        private const int ColCookingName = 13;  // N：料理名（右へ移動）
-        private const int ColScore = 14;        // O：点数下限（右へ移動）
+        private const int ColSecretCookingName = 9; // J：裏メニューの料理名
+        private const int ColSecretNuisance = 10;   // K：お邪魔個数
+        private const int ColSecretIrregular = 11;  // L：イレギュラー個数
+        private const int ColRank = 12;         // M：完成データのランク名
+        private const int ColCookingName = 13;  // N：料理名
+        private const int ColScore = 14;        // O：点数下限
+        private const int ColCategoryId = 15;   // P：hk追加：カテゴリID
+        private const int ColCategoryName = 16; // Q：hk追加：カテゴリ名（フォルダ名に使う）
+
+        // hk追加：カテゴリ画像のフォルダと固定ファイル名
+        private const string CATEGORY_ROOT = "Assets/Project Files/Game/Images/Category";
+        private const string DISH_IMAGE_FILE = "Dish_Images.png";
 
         // ランク名の正しい表記。CSVが大文字でも小文字でも、これに合わせて入れ直す
         private static readonly string[] RANK_NAMES = { "Masterpiece", "Delicious", "Good", "Mediocre", "Bad" };
@@ -65,9 +75,15 @@ namespace Watermelon.BubbleMerge
 
             // 裏メニュー（先頭行だけ見る）
             entry.hasSecret = ParseBool(GetCell(head, ColSecretFlag));
-            entry.secretCookingName = GetCell(head, ColSecretCookingName); // hk追加：裏メニューの料理名
+            entry.secretCookingName = GetCell(head, ColSecretCookingName);
             entry.secretNuisanceCount = ParseInt(GetCell(head, ColSecretNuisance), 0);
             entry.secretIrregularCount = ParseInt(GetCell(head, ColSecretIrregular), 0);
+
+            // hk追加：カテゴリ（先頭行だけ見る）
+            entry.categoryId = ParseInt(GetCell(head, ColCategoryId), 0);
+            string categoryName = GetCell(head, ColCategoryName);
+            Debug.LogError($"カテゴリ読み込み: recipe={recipeName} categoryId列の生値=[{GetCell(head, ColCategoryId)}] name列=[{categoryName}]");
+            entry.dishSprite = LoadCategorySprite(entry.categoryId, categoryName);
 
             entry.evolutionChain = new List<int>();
             entry.requiredList = new List<RequiredItem>();
@@ -124,15 +140,15 @@ namespace Watermelon.BubbleMerge
                     }
                 }
 
-                // 完成データ：L列にランク名がある行だけ拾う（進化とは独立）
+                // 完成データ：M列にランク名がある行だけ拾う（進化とは独立）
                 string rank = GetCell(cells, ColRank);
                 if (!string.IsNullOrEmpty(rank))
                 {
                     CompletionStage stage = new CompletionStage();
-                    stage.rankName = NormalizeRank(rank);              // ランク名を正しい表記に直す
-                    stage.cookingName = GetCell(cells, ColCookingName); // hk追加：料理名を読む
+                    stage.rankName = NormalizeRank(rank);
+                    stage.cookingName = GetCell(cells, ColCookingName);
                     stage.minScore = ParseInt(GetCell(cells, ColScore), 0);
-                    stage.prefab = null; // プレハブはCSVでは扱わない
+                    stage.prefab = null;
                     entry.completionStages.Add(stage);
                 }
             }
@@ -140,20 +156,67 @@ namespace Watermelon.BubbleMerge
             return entry;
         }
 
-        // hk追加：CSVのランク名を、選択肢の正しい表記に合わせる。
-        // 大文字小文字を無視して照合するので、masterpieceでもMASTERPIECEでも通る
+        // hk追加：categoryIdから、Categoryフォルダ内の該当フォルダを用意し、Dish_Images.pngを読み込む
+        private static Sprite LoadCategorySprite(int categoryId, string categoryName)
+        {
+#if UNITY_EDITOR
+            string idText = categoryId.ToString("0000");
+
+            // ID基準で、既存フォルダ（0000始まり）を探す
+            string actualFolderName = FindCategoryFolder(idText);
+
+            // 無ければ作る（ID重複は作らない）
+            if (string.IsNullOrEmpty(actualFolderName))
+            {
+                string wantName = string.IsNullOrEmpty(categoryName) ? idText : idText + "_" + categoryName;
+                if (!AssetDatabase.IsValidFolder(CATEGORY_ROOT))
+                {
+                    Debug.LogWarning("Categoryの親フォルダが見つかりません： " + CATEGORY_ROOT);
+                    return null;
+                }
+                AssetDatabase.CreateFolder(CATEGORY_ROOT, wantName);
+                AssetDatabase.Refresh();
+                actualFolderName = wantName;
+            }
+
+            string imagePath = CATEGORY_ROOT + "/" + actualFolderName + "/" + DISH_IMAGE_FILE;
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(imagePath);
+            if (sprite == null)
+                Debug.LogWarning("カテゴリ画像が見つかりません（dishSprite空）： " + imagePath);
+            return sprite;
+#else
+            return null;
+#endif
+        }
+
+#if UNITY_EDITOR
+        // hk追加：Categoryフォルダの中で、指定ID（4桁）で始まるフォルダ名を返す。無ければ空文字
+        private static string FindCategoryFolder(string idText)
+        {
+            if (!AssetDatabase.IsValidFolder(CATEGORY_ROOT)) return "";
+
+            string[] subFolders = AssetDatabase.GetSubFolders(CATEGORY_ROOT);
+            foreach (string sub in subFolders)
+            {
+                string folderName = Path.GetFileName(sub);
+                if (folderName.StartsWith(idText))
+                    return folderName;
+            }
+            return "";
+        }
+#endif
+
         private static string NormalizeRank(string raw)
         {
             string trimmed = raw.Trim();
             foreach (string name in RANK_NAMES)
             {
                 if (string.Equals(trimmed, name, System.StringComparison.OrdinalIgnoreCase))
-                    return name; // 正しい表記に置き換える
+                    return name;
             }
-            return trimmed; // どれにも当てはまらなければ、そのまま入れる
+            return trimmed;
         }
 
-        // 1行をカンマで区切る（前後の空白と引用符を落とす）
         private static string[] SplitLine(string line)
         {
             if (line == null) return new string[0];
@@ -163,21 +226,18 @@ namespace Watermelon.BubbleMerge
             return raw;
         }
 
-        // 指定の列を安全に取り出す（列が足りなければ空文字）
         private static string GetCell(string[] cells, int index)
         {
             if (cells == null || index < 0 || index >= cells.Length) return "";
             return cells[index];
         }
 
-        // 文字を数字に。読めなければ既定値
         private static int ParseInt(string s, int fallback)
         {
             if (int.TryParse(s, out int v)) return v;
             return fallback;
         }
 
-        // TRUE/true/1 を真とみなす
         private static bool ParseBool(string s)
         {
             if (string.IsNullOrEmpty(s)) return false;

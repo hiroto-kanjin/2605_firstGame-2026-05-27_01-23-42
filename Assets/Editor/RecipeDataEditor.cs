@@ -230,8 +230,12 @@ namespace Watermelon.BubbleMerge
                 }
 
                 EditorGUILayout.Space();
-            }
 
+                // hk追加：カテゴリID と カテゴリ画像の表示
+                EditorGUILayout.LabelField("カテゴリ（料理パターン）", EditorStyles.boldLabel);
+                EditorGUILayout.PropertyField(recipe.FindPropertyRelative("categoryId"), new GUIContent("カテゴリID"));
+                EditorGUILayout.PropertyField(recipe.FindPropertyRelative("dishSprite"), new GUIContent("カテゴリ画像"));
+            }
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -265,7 +269,7 @@ namespace Watermelon.BubbleMerge
         // hk追加：CSVファイルを選んで読み込み、今の料理リストを置き換える
         private void ImportFromCsv()
         {
-            string path = EditorUtility.OpenFilePanel("レシピCSVを選択", Application.dataPath, "csv");
+            string path = EditorUtility.OpenFilePanel("レシピCSVを選択", Application.dataPath + "/Project Files/Data/CSV", "csv");
             if (string.IsNullOrEmpty(path)) return;
 
             // 押し間違いで消えないよう、置き換え前に確認をはさむ
@@ -306,6 +310,10 @@ namespace Watermelon.BubbleMerge
                 CopyRequiredList(r.FindPropertyRelative("requiredList"), src.requiredList);
                 CopyRequiredList(r.FindPropertyRelative("specialList"), src.specialList);
                 CopyCompletionStages(r.FindPropertyRelative("completionStages"), src.completionStages);
+
+                // hk追加：カテゴリID と カテゴリ画像を書き戻す
+                r.FindPropertyRelative("categoryId").intValue = src.categoryId;
+                r.FindPropertyRelative("dishSprite").objectReferenceValue = src.dishSprite;
 
                 recipes.serializedObject.ApplyModifiedProperties();
             }

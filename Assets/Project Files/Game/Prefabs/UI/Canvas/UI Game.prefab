@@ -1031,7 +1031,6 @@ RectTransform:
   - {fileID: 4343504399153561242}
   - {fileID: 7822443286813267662}
   - {fileID: 5817030597883087925}
-  - {fileID: 1071730393032181816}
   - {fileID: 3058785067464438356}
   - {fileID: 657252076870988868}
   m_Father: {fileID: 7921812722436507108}
@@ -1464,11 +1463,11 @@ RectTransform:
   m_Children:
   - {fileID: 7018483004294966193}
   - {fileID: 649627544441510614}
-  m_Father: {fileID: 2288064350841511145}
+  m_Father: {fileID: 7921812722436507108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1112, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6215127336118595567
@@ -1602,6 +1601,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1071730393032181816}
   - {fileID: 2288064350841511145}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1664,7 +1664,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   registeredElements: []
   movesLeft: {fileID: 1058904479467912943}
-  finalCountText: {fileID: 0}
+  finalCount: {fileID: 0}
   levelText: {fileID: 7917278035616630630}
   requirementsResultImage: {fileID: 8603201241113330380}
   safeAreaRectTransform: {fileID: 2288064350841511145}
