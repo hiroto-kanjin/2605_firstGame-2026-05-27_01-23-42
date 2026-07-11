@@ -212,6 +212,7 @@ namespace Watermelon.BubbleMerge
         private const string BALL_ROOT = "Assets/Project Files/Game/Images/Ball/";
         private const string VISUAL_PREFAB_NAME = "CookingBall";
         private const string ICON_PREFAB_NAME = "CookingIcon";
+        private const string IMAGE_FILE_NAME = "Ball_Images.png"; // hk追加：各フォルダ内の画像ファイル名（固定）
 
         private static void AssignPrefabsFromFolder(SerializedProperty entry, int category, int number, string folderName)
         {
@@ -223,22 +224,34 @@ namespace Watermelon.BubbleMerge
             // フォルダをID基準で用意し、実際に使うべきフォルダ名を受け取る
             string actualFolderName = EnsureFolder(parentPath, numberText, wantFolderName);
 
-            // 用意できなかった（危険で中止した）場合は、プレハブ設定をせず抜ける
+            // 用意できなかった（危険で中止した）場合は、設定をせず抜ける
             if (string.IsNullOrEmpty(actualFolderName)) return;
 
             string folderPath = parentPath + "/" + actualFolderName;
 
             if (!Directory.Exists(folderPath))
             {
-                Debug.LogWarning("フォルダが見つかりません（プレハブ未設定）： " + folderPath);
+                Debug.LogWarning("フォルダが見つかりません（未設定）： " + folderPath);
                 return;
             }
 
+            // visualPrefabは従来通りCookingBallプレハブを読む
             var visual = LoadPrefabInFolder(folderPath, VISUAL_PREFAB_NAME);
-            var icon = LoadPrefabInFolder(folderPath, ICON_PREFAB_NAME);
-
             entry.FindPropertyRelative("visualPrefab").objectReferenceValue = visual;
-            entry.FindPropertyRelative("uiIconPrefab").objectReferenceValue = icon;
+
+            // hk修正：UIアイコンはCookingIconプレハブではなく、Ball_Images.png（Sprite）を読んでuiSpriteにセット
+            var uiSprite = LoadSpriteInFolder(folderPath, IMAGE_FILE_NAME);
+            entry.FindPropertyRelative("uiSprite").objectReferenceValue = uiSprite;
+        }
+
+        // hk追加：フォルダ内の画像ファイル（Ball_Images.png）をSpriteとして読み込む
+        private static Sprite LoadSpriteInFolder(string folderPath, string imageFileName)
+        {
+            string imagePath = folderPath + "/" + imageFileName;
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(imagePath);
+            if (sprite == null)
+                Debug.LogWarning("画像が見つかりません（uiSprite空にします）： " + imagePath);
+            return sprite;
         }
 
         // hk追加：そのIDのフォルダをディスク上に必ず1つ用意し、実際に使うべきフォルダ名を返す

@@ -1,43 +1,36 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Watermelon.BubbleMerge
 {
-    public class RecipeSlotUI : MonoBehaviour // hk追加
+    public class RecipeSlotUI : MonoBehaviour
     {
-        [SerializeField] private Transform iconParent; // hk修正：アイコンプレハブを差し込む場所
-        [SerializeField] private TMP_Text countText;   // hk追加：必要個数
+        [SerializeField] private Image iconImage;    // hk修正：アイコンを表示するImage
+        [SerializeField] private TMP_Text countText;
 
-        private RecipeSlotData slotData;   // hk修正：category＋number＋count を持つ
-        private GameObject currentIcon;    // hk追加：今差し込んでいるアイコンプレハブ
-        private int currentCount = 0;      // hk追加：現在の鍋の個数
+        private RecipeSlotData slotData;
+        private int currentCount = 0;
 
-        public void SetData(RecipeSlotData data) // hk修正：食材データをセットする
+        public void SetData(RecipeSlotData data)
         {
             slotData = data;
             countText.text = "0 / " + slotData.count;
         }
 
-        // hk修正：アイコンをプレハブとして差し込む（Image廃止）
-        public void SetIconPrefab(GameObject iconPrefab)
+        // hk修正：Sprite（絵）をImageに直接セットする
+        public void SetIcon(Sprite icon)
         {
-            if (currentIcon != null)
-            {
-                Destroy(currentIcon);
-                currentIcon = null;
-            }
-            if (iconPrefab == null || iconParent == null) return;
-
-            currentIcon = Instantiate(iconPrefab, iconParent);
-            currentIcon.transform.localPosition = Vector3.zero;
+            if (iconImage == null) return;
+            iconImage.sprite = icon;
         }
 
-        public void UpdateCount(int count) // hk追加：鍋の個数が変わった時に呼ばれる
+        public void UpdateCount(int count)
         {
             currentCount = count;
             countText.text = currentCount + " / " + slotData.count;
         }
 
-        public RecipeSlotData GetSlotData() => slotData; // hk修正
+        public RecipeSlotData GetSlotData() => slotData;
     }
 }

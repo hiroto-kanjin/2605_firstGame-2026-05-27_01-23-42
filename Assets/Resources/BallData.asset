@@ -22,8 +22,7 @@ MonoBehaviour:
     canMerge: 1
     visualPrefab: {fileID: 8795762186055714128, guid: 73f5c55e267b5a0439d5f1dc72f91de1,
       type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: ff762115c1aec354c88abcf0aea4b07b,
-      type: 3}
+    uiSprite: {fileID: 21300000, guid: c6884339af8c31444915b727f0dc782b, type: 3}
   - ballName: "\u30A4\u30CC\u30AD\u30CE\u30B3"
     category: 1
     number: 0
@@ -33,8 +32,7 @@ MonoBehaviour:
     canMerge: 0
     visualPrefab: {fileID: 8795762186055714128, guid: b0750d697203f6e449f337748d3d9ef7,
       type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: d0dc77d4009aa0e4a9d839a8cfc83eeb,
-      type: 3}
+    uiSprite: {fileID: 21300000, guid: 51464c26e6b23f9459ca393840d215fb, type: 3}
   - ballName: "\u30AB\u30D3\u30AC\u30FC\u30D3"
     category: 2
     number: 0
@@ -44,8 +42,7 @@ MonoBehaviour:
     canMerge: 0
     visualPrefab: {fileID: 8795762186055714128, guid: e4a4886c3ed83334eb1dea99a5e8e7b6,
       type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: 024b5b89d3924ca44879e17c77c6d8a1,
-      type: 3}
+    uiSprite: {fileID: 21300000, guid: 34f3cba7cdc8c364ea70ec3482cd8446, type: 3}
   - ballName: "\u304D\u306E\u30FC\u3053"
     category: 0
     number: 1
@@ -55,8 +52,7 @@ MonoBehaviour:
     canMerge: 1
     visualPrefab: {fileID: 8795762186055714128, guid: 7b87aec195164b94bb1e3389f510d84d,
       type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: 722f6596b09efb443987198b253218b2,
-      type: 3}
+    uiSprite: {fileID: 21300000, guid: 86f6a1072c8f89940b0d6b8a5d66ef01, type: 3}
   - ballName: "\u3057\u304A\u3063\u3068"
     category: 1
     number: 1
@@ -64,8 +60,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: d8460dbd2f96e9c478f701953ec12922,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: eec5be78f0abd2248a6e01750f63b21a, type: 3}
   - ballName: "\u3081\u3060\u30FC\u307E"
     category: 2
     number: 1
@@ -75,8 +72,7 @@ MonoBehaviour:
     canMerge: 0
     visualPrefab: {fileID: 8795762186055714128, guid: 1998926e53725f443be2fd4a0492b002,
       type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: 9f6f22c0db2b6934eb91b2e697f69276,
-      type: 3}
+    uiSprite: {fileID: 21300000, guid: 3bc6206fec73c6f46ab46e271cf9a59a, type: 3}
   - ballName: "\u306A\u3081\u30FC\u3053"
     category: 0
     number: 2
@@ -86,8 +82,7 @@ MonoBehaviour:
     canMerge: 1
     visualPrefab: {fileID: 8795762186055714128, guid: c0dd434e1df29a84382af1d8e43dd618,
       type: 3}
-    uiIconPrefab: {fileID: 8795762186055714128, guid: f210fa45eb4f922439570f12a8ff7b11,
-      type: 3}
+    uiSprite: {fileID: 21300000, guid: b24e7a8fd29eacf49b0948e72ee6eb21, type: 3}
   - ballName: "\u3055\u3063\u3068\u30FC"
     category: 1
     number: 2
@@ -95,8 +90,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 7992031df56a1ab4b9e915dff00e7db3,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: bf46a915c6f85c348bfebd71ca9fe503, type: 3}
   - ballName: "\u3051\u308D\u30FC\u3063\u3050"
     category: 2
     number: 2
@@ -104,8 +100,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 9678a83ef0af8264f8f1099a28473548,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 62ecb135e846f5140b549741bad92139, type: 3}
   - ballName: "\u305F\u3051\u306E\u30FC\u3053"
     category: 0
     number: 3
@@ -113,8 +110,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 20c501240a605a541ba6c359da5f85f8, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: bcac909c28bd69b45854546088a94923,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: adb31a0a61c856f428e9322123c9548d, type: 3}
   - ballName: "\u3059\u3071\u3044\u30FC\u3059"
     category: 1
     number: 3
@@ -122,8 +120,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 0
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: ad87d3b4830e6ec4ea6489e42cdd8117,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: c249cebc47dfa7b4b86e53c164decf6c, type: 3}
   - ballName: "\u306A\u30FC\u3059"
     category: 0
     number: 4
@@ -131,8 +130,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 9ef6ee859066d2e4ebbbc3eacbb5eac1,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 0a505ca8a5d64014a99d51f91ed3affb, type: 3}
   - ballName: "\u305F\u307E\u30FC\u3054"
     category: 0
     number: 5
@@ -140,8 +140,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 7e3c1c9381ada3244b743352c4c6406f,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 962dd0a205f3c09479a710564f5d1ec2, type: 3}
   - ballName: "\u3082\u308D\u3053\u30FC\u3057"
     category: 0
     number: 6
@@ -149,8 +150,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 1f5ffdb128542d948b84abddffa31a9f,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: a6867bd0a7a069d45b1031b5ca1a3e74, type: 3}
   - ballName: "\u305F\u307E\u30FC\u306D\u304E"
     category: 0
     number: 7
@@ -158,8 +160,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 46070deb24b94a947ac60e8a6863a5ef,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 68bb02383fa9e42419466107587670fc, type: 3}
   - ballName: "\u30C8\u30EA\u30E5\u30D5"
     category: 0
     number: 8
@@ -167,8 +170,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 19bce9ea3f80014479120323a26799ad,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: c54bf9149d3ae9345985c2909c9100ce, type: 3}
   - ballName: "\u30AE\u30E3\u30ED\u30C3\u30C8"
     category: 0
     number: 9
@@ -176,8 +180,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 23ece5dcd1fe93f4c99a7a9583f4f8d1,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 4816804ea0b13394d8a880233802c4be, type: 3}
   - ballName: "\u30D4\u30FC\u30DE\u30F3"
     category: 0
     number: 10
@@ -185,8 +190,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: ad5683bbde16f6b4eb92b907d8a8f676,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 4caaf8ddbb1716d4cbfb0201f9d4ca69, type: 3}
   - ballName: "\u3080\u304E\u30FC"
     category: 0
     number: 11
@@ -194,8 +200,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: b2921b0dd2f671c44aaae9ef9163b197,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: c6309f085e0068141999041c9e754619, type: 3}
   - ballName: "\u3068\u307E\u30FC\u3068"
     category: 0
     number: 12
@@ -203,8 +210,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 9dd2c32d7d1df7e44bf2a05a71c8bb47,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: ec21791d6ae6a8a4c887ee64eecd2cd1, type: 3}
   - ballName: "\u30AD\u30E3\u30D9\u30C3\u30C4"
     category: 0
     number: 13
@@ -212,8 +220,9 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: f2a48ffd6c2a7ca419f09678f068409d,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: f25bde4f20149a24680c28ab3a20b125, type: 3}
   - ballName: "\u30D6\u3063\u3053\u30ED\u30EA"
     category: 0
     number: 14
@@ -221,6 +230,7 @@ MonoBehaviour:
     size: 1.2
     physicsPattern: {fileID: 11400000, guid: 18733af0972af8e4ba6b8e2f2584a07d, type: 2}
     canMerge: 1
-    visualPrefab: {fileID: 0}
-    uiIconPrefab: {fileID: 0}
+    visualPrefab: {fileID: 8795762186055714128, guid: 8092f2eaec8883a4db252d168c6685a4,
+      type: 3}
+    uiSprite: {fileID: 21300000, guid: 873e446e48dd59740a38f896800ae9a8, type: 3}
   visualScale: 0.1

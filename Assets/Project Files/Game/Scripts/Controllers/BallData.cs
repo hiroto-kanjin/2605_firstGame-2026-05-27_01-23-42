@@ -36,6 +36,6 @@ namespace Watermelon.BubbleMerge
         public BubblesPhysicsData physicsPattern; // 動き方
         public bool canMerge;                 // マージするか（進化=する、特殊・お邪魔=しない）
         public GameObject visualPrefab;       // hk追加：見た目のプレハブ（ボール本体に差し込む絵）
-        public GameObject uiIconPrefab;       // hk追加：UI用アイコンのプレハブ（レシピ欄などに表示）
+        public Sprite uiSprite;               // hk修正：UIアイコン画像（uiIconから改名。シリアライズ競合回避）
     }
 }

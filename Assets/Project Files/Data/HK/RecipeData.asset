@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RecipeData
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.RecipeData
   recipes:
-  - recipeId: 1
+  - recipeId: 0
     recipeName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
     evolutionChain: 000000000100000004000000030000000200000005000000
     requiredList:
@@ -58,7 +58,7 @@ MonoBehaviour:
     secretNuisanceCount: 10
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
-  - recipeId: 2
+  - recipeId: 1
     recipeName: "\u30B7\u30B7\u30AB\u30D0\u30D6\u30FC"
     evolutionChain: 000000000400000005000000070000000f00000002000000
     requiredList:
@@ -103,7 +103,7 @@ MonoBehaviour:
     secretNuisanceCount: 0
     secretIrregularCount: 0
     secretPrefab: {fileID: 0}
-  - recipeId: 3
+  - recipeId: 2
     recipeName: "\u3057\u304A\u30E9\u30FC\u30E1\u30F3"
     evolutionChain: 000000000200000003000000040000000500000006000000
     requiredList:
