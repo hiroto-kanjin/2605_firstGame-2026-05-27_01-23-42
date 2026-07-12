@@ -179,7 +179,6 @@ namespace Watermelon.BubbleMerge
             tabHandler.AddTab(new TabHandler.Tab(ITEMS_TAB_NAME, itemsEnumObjectsList.DisplayTab));
             tabHandler.AddTab(new TabHandler.Tab(LEVEL_SHAPES_TAB_NAME, levelShapesEnumObjectsList.DisplayTab));
 
-            tabHandler.AddTab(new TabHandler.Tab(EDITOR_TAB_NAME, DisplayPropertiesTab));
             tabHandler.AddTab(new TabHandler.Tab(BALLS_TAB_NAME, DisplayBallsTab)); // hk追加
             tabHandler.AddTab(new TabHandler.Tab(EFFECTS_TAB_NAME, DisplayEffectsTab)); // hk追加
 
@@ -328,64 +327,71 @@ namespace Watermelon.BubbleMerge
                 return;
             }
 
-            BallData ballData = AssetDatabase.LoadAssetAtPath<BallData>("Assets/Project Files/Data/HK/BallData.asset");
             GameObject bubblePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Project Files/Game/Prefabs/Bubble.prefab");
-
-            if (ballData == null)
-            {
-                EditorGUILayout.HelpBox("BallData.asset が見つかりません。", MessageType.Error);
-                return;
-            }
-
             if (bubblePrefab == null)
             {
                 EditorGUILayout.HelpBox("Bubble.prefab が見つかりません。", MessageType.Error);
                 return;
             }
 
+            // hk修正：進化・特殊は「今のレベルのレシピ」から並べる（レシピ依存＝レベルデザインの汎用性）
+            RecipeData recipeData = AssetDatabase.LoadAssetAtPath<RecipeData>("Assets/Project Files/Data/HK/RecipeData.asset");
+            RecipeEntry recipe = null;
+            if (recipeData != null)
+            {
+                GameLevelData gameLevel = FindGameLevelForCurrentLevel();
+                if (gameLevel != null)
+                    recipe = recipeData.GetRecipeById(gameLevel.recipeId);
+            }
+
             EditorGUILayout.Space();
 
-            // ── お邪魔ボール ──
+            // ── 進化ボール（レシピのevolutionChainの数だけ） ──
+            EditorGUILayout.LabelField("── 進化ボール ──", EditorStyles.boldLabel);
+            if (recipe == null)
+            {
+                EditorGUILayout.HelpBox("このレベルのレシピが見つかりません（recipeId未設定？）。", MessageType.Info);
+            }
+            else
+            {
+                EditorGUILayout.BeginHorizontal();
+                for (int i = 0; i < recipe.evolutionChain.Count; i++)
+                {
+                    if (GUILayout.Button("進化" + i))
+                    {
+                        HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Evolution, i, Vector3.zero);
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.Space();
+
+            // ── 特殊ボール（レシピのspecialListの数だけ） ──
+            EditorGUILayout.LabelField("── 特殊ボール ──", EditorStyles.boldLabel);
+            if (recipe != null && recipe.specialList.Count > 0)
+            {
+                EditorGUILayout.BeginHorizontal();
+                for (int i = 0; i < recipe.specialList.Count; i++)
+                {
+                    if (GUILayout.Button("特殊" + i))
+                    {
+                        HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Special, i, Vector3.zero);
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+
+            EditorGUILayout.Space();
+
+            // ── お邪魔ボール（レシピに紐づかない。種類番号をそのまま） ──
             EditorGUILayout.LabelField("── お邪魔ボール ──", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             for (int i = 0; i < 5; i++)
             {
-                BallEntry entry = ballData.GetBall(BallCategory.Nuisance, i);
-                string label = (entry == null || string.IsNullOrEmpty(entry.ballName)) ? "NuisanceBall_" + i : entry.ballName;
-                if (GUILayout.Button(label))
+                if (GUILayout.Button("お邪魔" + i))
                 {
-                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Nuisance, 0, i, Vector3.zero);
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.Space();
-
-            // ── 進化ボール ──
-            EditorGUILayout.LabelField("── 進化ボール ──", EditorStyles.boldLabel);
-            hkSelectedBranch = (Branch)EditorGUILayout.EnumPopup("系統", hkSelectedBranch);
-            EditorGUILayout.BeginHorizontal();
-            for (int level = 0; level <= 10; level++)
-            {
-                if (GUILayout.Button("Lv" + (level + 1)))
-                {
-                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Evolution, (int)hkSelectedBranch, level, Vector3.zero);
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.Space();
-
-            // ── 特殊ボール ──
-            EditorGUILayout.LabelField("── 特殊ボール ──", EditorStyles.boldLabel);
-            EditorGUILayout.BeginHorizontal();
-            for (int i = 0; i < 5; i++)
-            {
-                BallEntry entry = ballData.GetBall(BallCategory.Special, i);
-                string label = (entry == null || string.IsNullOrEmpty(entry.ballName)) ? "SpecialBall_" + i : entry.ballName;
-                if (GUILayout.Button(label))
-                {
-                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Special, 0, i, Vector3.zero);
+                    HKSpawnAndRegisterBall(bubblePrefab, BallCategory.Nuisance, i, Vector3.zero);
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -400,18 +406,36 @@ namespace Watermelon.BubbleMerge
 
             EditorGUILayout.PropertyField(selectedLevelRepresentation.ballPlacementsProperty, true);
         }
+        // hk追加：今エディターで開いているLevelに紐づくGameLevelData（＝レシピ）を探す
+        private GameLevelData FindGameLevelForCurrentLevel()
+        {
+            string[] guids = AssetDatabase.FindAssets("t:LevelDatabase");
+            if (guids.Length == 0) return null;
+
+            LevelDatabase db = AssetDatabase.LoadAssetAtPath<LevelDatabase>(AssetDatabase.GUIDToAssetPath(guids[0]));
+            if (db == null) return null;
+
+            UnityEngine.Object currentLevel = levelsHandler.SelectedLevelProperty.objectReferenceValue;
+            if (currentLevel == null) return null;
+
+            foreach (GameLevelData gl in db.GameLevels)
+            {
+                if (gl != null && gl.levelDesign == currentLevel)
+                    return gl;
+            }
+            return null;
+        }
 
         // hk追加：ボールをシーンに配置してプロパティにも仮登録するヘルパー
-        private void HKSpawnAndRegisterBall(GameObject prefab, BallCategory category, int branchIndex, int ballLevelIndex, Vector3 position)
+        private void HKSpawnAndRegisterBall(GameObject prefab, BallCategory category, int index, Vector3 position)
         {
-            EditorSceneController.Instance.SpawnBallPlacement(prefab, position, category, branchIndex, ballLevelIndex);
+            EditorSceneController.Instance.SpawnBallPlacement(prefab, position, category, index);
 
             int newIndex = selectedLevelRepresentation.ballPlacementsProperty.arraySize;
             selectedLevelRepresentation.ballPlacementsProperty.arraySize++;
             SerializedProperty newElement = selectedLevelRepresentation.ballPlacementsProperty.GetArrayElementAtIndex(newIndex);
             newElement.FindPropertyRelative("category").intValue = (int)category;
-            newElement.FindPropertyRelative("branchIndex").intValue = branchIndex;
-            newElement.FindPropertyRelative("ballLevelIndex").intValue = ballLevelIndex;
+            newElement.FindPropertyRelative("index").intValue = index; // hk修正：branchIndex/ballLevelIndex廃止、indexに一本化
             newElement.FindPropertyRelative("position").vector3Value = position;
             selectedLevelRepresentation.ApplyChanges();
         }
@@ -648,14 +672,6 @@ namespace Watermelon.BubbleMerge
                 LoadLevelShape();
             }
 
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(selectedLevelRepresentation.levelBackTypeProperty);
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                LoadLevelBackground();
-            }
-
             EditorGUILayout.Space();
             DisplaySaveSection();
             itemsListWidthRect = EditorGUILayout.BeginVertical();
@@ -856,10 +872,9 @@ namespace Watermelon.BubbleMerge
             {
                 SerializedProperty element = selectedLevelRepresentation.ballPlacementsProperty.GetArrayElementAtIndex(i);
                 BallCategory category = (BallCategory)element.FindPropertyRelative("category").intValue;
-                int branchIndex = element.FindPropertyRelative("branchIndex").intValue;
-                int ballLevelIndex = element.FindPropertyRelative("ballLevelIndex").intValue;
+                int index = element.FindPropertyRelative("index").intValue; // hk修正：branchIndex/ballLevelIndex廃止、indexに一本化
                 Vector3 position = element.FindPropertyRelative("position").vector3Value;
-                EditorSceneController.Instance.SpawnBallPlacement(bubblePrefab, position, category, branchIndex, ballLevelIndex);
+                EditorSceneController.Instance.SpawnBallPlacement(bubblePrefab, position, category, index);
             }
         }
 
@@ -893,13 +908,7 @@ namespace Watermelon.BubbleMerge
 
         private void LoadLevelBackground()
         {
-            LevelBackgroundType backgroundType = (LevelBackgroundType)selectedLevelRepresentation.levelBackTypeProperty.intValue;
-            GameObject prefab = GetLevelBackgroundPrefab(backgroundType);
-
-            if (prefab != null)
-            {
-                EditorSceneController.Instance.SpawnLevelBackground(prefab);
-            }
+            // hk修正：Level.levelBackTypeを廃止したため、エディターでの背景下敷き表示を撤去。
         }
 
         private void LoadLevelItems()
@@ -1041,6 +1050,11 @@ namespace Watermelon.BubbleMerge
 
         private GameObject GetLevelBackgroundPrefab(LevelBackgroundType levelBackgroundType)
         {
+            if (levelBackgroundsSerializedProperty == null)
+            {
+                return null;
+            }
+
             for (int i = 0; i < levelBackgroundsSerializedProperty.arraySize; i++)
             {
                 if ((LevelBackgroundType)levelBackgroundsSerializedProperty.GetArrayElementAtIndex(i).FindPropertyRelative(TYPE_PROPERTY_PATH).intValue == levelBackgroundType)
@@ -1123,7 +1137,6 @@ namespace Watermelon.BubbleMerge
                 canBeUsedInRandomizerProperty = serializedLevelObject.FindProperty(CAN_BE_USED_IN_RANDOMIZER_PROPERTY_NAME);
                 itemsProperty = serializedLevelObject.FindProperty(ITEMS_PROPERTY_NAME);
                 levelShapeTypeProperty = serializedLevelObject.FindProperty(LEVEL_SHAPE_TYPE_PROPERTY_NAME);
-                levelBackTypeProperty = serializedLevelObject.FindProperty(LEVEL_BACK_TYPE_PROPERTY_NAME);
                 ballPlacementsProperty = serializedLevelObject.FindProperty(BALL_PLACEMENTS_PROPERTY_NAME); // hk追加
                 specialEffectsRandomProperty = serializedLevelObject.FindProperty(SPECIAL_EFFECTS_RANDOM_PROPERTY_NAME); // hk追加
                 specialEffectPlacementsProperty = serializedLevelObject.FindProperty(SPECIAL_EFFECT_PLACEMENTS_PROPERTY_NAME); // hk追加
@@ -1140,7 +1153,6 @@ namespace Watermelon.BubbleMerge
                     canBeUsedInRandomizerProperty.boolValue = true;
                     itemsProperty.arraySize = 0;
                     levelShapeTypeProperty.enumValueIndex = 0;
-                    levelBackTypeProperty.enumValueIndex = 0;
 
                     ApplyChanges();
                 }
@@ -1204,6 +1216,7 @@ namespace Watermelon.BubbleMerge
             }
 
             // hk追加：ボール配置を保存する
+            // hk追加：ボール配置を保存する
             public void SaveBallPlacements(BallPlacementHK[] placements)
             {
                 ballPlacementsProperty.arraySize = placements.Length;
@@ -1211,8 +1224,7 @@ namespace Watermelon.BubbleMerge
                 {
                     SerializedProperty element = ballPlacementsProperty.GetArrayElementAtIndex(i);
                     element.FindPropertyRelative("category").intValue = (int)placements[i].category;
-                    element.FindPropertyRelative("branchIndex").intValue = placements[i].branchIndex;
-                    element.FindPropertyRelative("ballLevelIndex").intValue = placements[i].ballLevelIndex;
+                    element.FindPropertyRelative("index").intValue = placements[i].index; // hk修正：branchIndex/ballLevelIndex廃止、indexに一本化
                     element.FindPropertyRelative("position").vector3Value = placements[i].position;
                 }
             }

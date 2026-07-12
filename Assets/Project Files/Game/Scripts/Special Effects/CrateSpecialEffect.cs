@@ -58,15 +58,8 @@ namespace Watermelon.BubbleMerge
 
             if (currentHealth <= 0)
             {
-                for (int i = 0; i < dropBubbles; i++)
-                {
-                    BubbleBehavior extraBubble = LevelController.LevelBehavior.SpawnRandomBubble(true, false);
-                    if (extraBubble != null)
-                    {
-                        extraBubble.transform.position = transform.position + new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
-                        extraBubble.RB.AddForce((transform.position - extraBubble.transform.position).normalized * dropForce, ForceMode2D.Impulse);
-                    }
-                }
+                // hk修正：旧供給（SpawnRandomBubble）で箱からボールを撒く挙動を一旦撤去。
+                // あとでレシピ依存の箱として作り直す。
 
                 graphicsObject.SetActive(false);
 

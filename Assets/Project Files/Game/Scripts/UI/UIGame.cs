@@ -19,8 +19,7 @@ namespace Watermelon
         [SerializeField] RectTransform requirementsParent;
         public RectTransform RequirementsParent => requirementsParent;
 
-        [SerializeField] FlyingObjects flyingObjects;
-        public FlyingObjects FlyingObjects => flyingObjects;
+      
 
         [SerializeField] Button gameSettingsButton;
 
@@ -34,8 +33,6 @@ namespace Watermelon
 
         public override void Init()
         {
-            flyingObjects.Init();
-
             gameSettingsButton.onClick.AddListener(() => OnSettingsButtonClicked());
 
             LevelController.OnTurnChanged += OnTurnChanged;
@@ -47,7 +44,6 @@ namespace Watermelon
 
         private void OnDestroy()
         {
-            flyingObjects.Unload();
         }
 
         #region Show/Hide

@@ -63,23 +63,21 @@ namespace Watermelon.BubbleMerge
             HandleTeleportIfNessesary(gameObject, tempItemSave.Type);
             SelectGameObject(gameObject);
         }
-
         // hk追加：配置ボール（お邪魔・進化・特殊）をシーンに配置する
-        public void SpawnBallPlacement(GameObject prefab, Vector3 position, BallCategory category, int branchIndex, int ballLevelIndex)
+        public void SpawnBallPlacement(GameObject prefab, Vector3 position, BallCategory category, int index)
         {
             GameObject gameObject = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
             gameObject.transform.SetParent(container.transform);
             gameObject.transform.position = position;
             gameObject.transform.rotation = Quaternion.identity;
-            gameObject.name = category + "_B" + branchIndex + "_L" + ballLevelIndex + " (el # " + container.transform.childCount + ")";
+            gameObject.name = category + "_" + index + " (el # " + container.transform.childCount + ")";
 
             SavableItemHK savableItemHK = gameObject.AddComponent<SavableItemHK>();
             savableItemHK.Category = BallCategoryToPlacementCategory(category);
-            savableItemHK.TypeIndex = ballLevelIndex;
-            savableItemHK.BranchIndex = branchIndex;
+            savableItemHK.TypeIndex = index; // hk修正：indexに一本化
 
-            // hk追加：エディター上でボールの見た目を表示する（子オブジェクトに分離してPrefabの構造を壊さない）
-            Sprite sprite = GetEditorSpriteForBall(category, branchIndex, ballLevelIndex, out float size);
+            // hk追加：エディター上でボールの見た目のサイズを反映する
+            Sprite sprite = GetEditorSpriteForBall(category, index, out float size);
             if (sprite != null)
             {
                 GameObject spriteHolder = new GameObject("HK_EditorSprite");
@@ -98,40 +96,19 @@ namespace Watermelon.BubbleMerge
             SelectGameObject(gameObject);
         }
 
-        // hk追加：エディター表示用のスプライトとサイズをカテゴリに応じて取得する
-        private Sprite GetEditorSpriteForBall(BallCategory category, int branchIndex, int ballLevelIndex, out float size)
+        private Sprite GetEditorSpriteForBall(BallCategory category, int index, out float size)
         {
             size = 1f;
 
-            if (category == BallCategory.Evolution)
-            {
-                // エディターはLevelControllerが未初期化のためAssetDatabaseから直接取得する
-                string[] guids = AssetDatabase.FindAssets("t:LevelDatabase");
-                if (guids.Length == 0) return null;
-
-                LevelDatabase levelDatabase = AssetDatabase.LoadAssetAtPath<LevelDatabase>(AssetDatabase.GUIDToAssetPath(guids[0]));
-                if (levelDatabase == null) return null;
-
-                EvolutionBranch branch = levelDatabase.GetBranch((Branch)branchIndex);
-                if (branch == null) return null;
-                if (ballLevelIndex < 0 || ballLevelIndex >= branch.stages.Length) return null;
-
-                size = branch.stages[ballLevelIndex].size;
-                return branch.stages[ballLevelIndex].icon;
-            }
-
+            // hk修正：branch除去に伴い、BallDataからサイズを取る
             BallData ballData = AssetDatabase.LoadAssetAtPath<BallData>("Assets/Project Files/Data/HK/BallData.asset");
             if (ballData == null) return null;
 
-            if (category == BallCategory.Nuisance || category == BallCategory.Special)
-            {
-                BallEntry entry = ballData.GetBall(category, ballLevelIndex);
-                if (entry == null) return null;
-                size = entry.size;
-                return null; // hk修正：画像はフォルダ方式で別途対応。エディタ表示ではサイズのみ反映
-            }
+            BallEntry entry = ballData.GetBall(category, index);
+            if (entry == null) return null;
 
-            return null;
+            size = entry.size;
+            return null; // hk修正：画像はフォルダ方式で別途対応。エディタ表示ではサイズのみ反映
         }
 
         // hk追加：BallCategoryをPlacementCategoryに変換する
@@ -171,8 +148,7 @@ namespace Watermelon.BubbleMerge
                 result.Add(new BallPlacementHK()
                 {
                     category = ballCategory,
-                    branchIndex = savableItems[i].BranchIndex,
-                    ballLevelIndex = savableItems[i].TypeIndex,
+                    index = savableItems[i].TypeIndex, // hk修正：branchIndex廃止。TypeIndexをindexに一本化
                     position = savableItems[i].transform.position
                 });
             }
@@ -309,6 +285,11 @@ namespace Watermelon.BubbleMerge
             }
 
             if (container == null)
+            {
+                return false;
+            }
+
+            if (itemsCached == null)
             {
                 return false;
             }

@@ -9,8 +9,7 @@ namespace Watermelon.BubbleMerge
         [SerializeField, LevelEditorSetting] GameLevelData[] gameLevels; // hk追加：1レベル分の設定一式を並べる配列（統合先）
         [SerializeField, LevelEditorSetting] LevelItem[] items;
         [SerializeField, LevelEditorSetting] LevelShape[] levelShapes;
-        [SerializeField] EvolutionBranch[] branches;
-        [SerializeField] Sprite[] potionSprites; //used for generation in level editor
+  
 
         public LevelItem[] Items => items;
         public LevelShape[] LevelShapes => levelShapes;
@@ -47,16 +46,7 @@ namespace Watermelon.BubbleMerge
             return gameLevels[levelId % gameLevels.Length];
         }
 
-        public EvolutionBranch GetBranch(Branch branchType)
-        {
-            for (int i = 0; i < branches.Length; i++)
-            {
-                if (branches[i].branch == branchType)
-                    return branches[i];
-            }
-
-            return null;
-        }
+       
 
         public LevelItem GetItem(Item itemType)
         {

@@ -21,7 +21,6 @@ namespace Watermelon
         [SerializeField] RectTransform safeAreaRectTransform;
 
         private TweenCase continuePingPongCase;
-        private List<RequirementBehavior> requirements = new List<RequirementBehavior>();
 
         [NonSerialized]
         public float HiddenPageDelay = 0f;
@@ -55,38 +54,6 @@ namespace Watermelon
 
                 UIController.OnPageOpened(this);
             });
-
-            List<RequirementBehavior> activeReqsList = LevelController.LevelBehavior.GetRequirements();
-
-            for (int i = 0; i < requirements.Count; i++)
-            {
-                requirements[i].ClearAndHide();
-            }
-
-            for (int i = 0; i < activeReqsList.Count; i++)
-            {
-                EvolutionBranch branch = LevelController.Database.GetBranch(activeReqsList[i].Requirement.branch);
-
-                GameObject requirementObject = Instantiate(branch.requirementUIPrefab);
-
-                requirementObject.transform.SetParent(levelResultsHolder);
-                requirementObject.transform.ResetLocal();
-
-                RequirementBehavior requirement = requirementObject.GetComponent<RequirementBehavior>();
-
-                requirement.Init(activeReqsList[i].Requirement, i);
-
-                if (activeReqsList[i].IsSetCompleted)
-                {
-                    requirement.SetVisuallyCompleted();
-                }
-                else
-                {
-                    requirement.SetVisuallyFailed();
-                }
-
-                requirements.Add(requirement);
-            }
         }
 
         public override void PlayHideAnimation()

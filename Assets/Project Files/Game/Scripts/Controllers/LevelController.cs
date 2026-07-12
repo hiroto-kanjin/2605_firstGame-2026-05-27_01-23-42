@@ -94,25 +94,26 @@ namespace Watermelon.BubbleMerge
 
         public void StartLevel(int levelId)
         {
-            Level = database.GetLevel(levelId);
+            GameLevelData currentGameLevel = HKGameManager.Instance.GetCurrentLevel();
+            if (currentGameLevel == null)
+            {
+                Debug.LogError("GameLevelDataが取得できません");
+                return;
+            }
+
+            Level = currentGameLevel.levelDesign; // hk修正：levels配列ではなくGameLevelDataのLevel Designから取る
             Level.Init();
 
             LevelBehavior.ChangeShape(database.GetShape(Level.LevelShapeType).Prefab);
-            // hk修正：背景はGameLevelDataのlevelBackgroundPrefabを直接使う（共通配列は廃止）
-            GameLevelData currentGameLevel = HKGameManager.Instance.GetCurrentLevel();
-            if (currentGameLevel != null && currentGameLevel.levelBackgroundPrefab != null)
+
+            if (currentGameLevel.levelBackgroundPrefab != null)
                 LevelBehavior.ChangeBackround(currentGameLevel.levelBackgroundPrefab);
             else
                 Debug.LogWarning("背景プレハブが未設定です（levelBackgroundPrefab）");
 
-            // hk修正：爆弾は使わないため空配列を渡す（Level.Requirements依存を外す）
             LevelBehavior.SetLevelItems(Level.Items, new BombData[0], database);
 
-            // hk修正：turnsLimitはLevel（盤面デザイン）ではなくGameLevelData（レベル管理）から取る
-            if (currentGameLevel != null)
-                turnsLimit = currentGameLevel.turnsLimit;
-            else
-                Debug.LogWarning("GameLevelDataが取得できず、turnsLimitが未設定です");
+            turnsLimit = currentGameLevel.turnsLimit;
 
             Turn = 0;
 
@@ -169,48 +170,40 @@ namespace Watermelon.BubbleMerge
             });
         }
 
-        public static bool TryGetSpawnData(BubbleData data, out BubbleSpawnData spawnData)
-        {
-            return Level.TryGetSimilarSpawnData(data, out spawnData);
-        }
+       
 
-        public static bool GetRandomSpawnBubble(out BubbleSpawnData data)
-        {
-            return Level.GetNextSpawnData(out data);
-        }
+     
 
         public static bool CreateRandomBubbleData(BubbleSpawnData spawnData, out BubbleData data)
         {
             return CreateBubbleData(spawnData, out data);
         }
 
-        public static bool CreateRandomBubbleData(out BubbleData data)
-        {
-            Level.GetNextSpawnData(out var spawnData);
-            return CreateBubbleData(spawnData, out data);
-        }
+
 
         public static BubbleData IncrementData(BubbleData data)
         {
-            var newData = data;
+            // hk修正：branchを使わず、番号+1の進化ボールをBallDataから作り直す
+            BubbleSpawnData spawnData = new BubbleSpawnData() { stageId = data.stageId + 1 };
 
-            var branch = Database.GetBranch(data.branch);
-
-            if (newData.stageId < branch.stages.Length)
+            if (CreateBubbleData(spawnData, out var newData))
             {
-                newData.stageId++;
-
-                newData.icon = branch.stages[newData.stageId].icon;
+                return newData;
             }
 
-            return newData;
+            return data;
         }
 
         public static bool IsLastStage(BubbleData data)
         {
-            var branch = Database.GetBranch(data.branch);
+            // hk修正：branchではなく、現在レベルのレシピのevolutionChainで最終段階を判定する
+            GameLevelData level = HKGameManager.Instance.GetCurrentLevel();
+            if (level == null) return true;
 
-            return data.stageId == branch.stages.Length - 1;
+            RecipeEntry recipe = HKSupplyManager.Instance.RecipeData.GetRecipeById(level.recipeId);
+            if (recipe == null) return true;
+
+            return data.stageId >= recipe.evolutionChain.Count - 1;
         }
 
         public static bool CreateBubbleData(BubbleSpawnData settings, out BubbleData data)
@@ -227,34 +220,8 @@ namespace Watermelon.BubbleMerge
             if (entry == null)
                 return false;
 
-            // branch/stageIdはCompare（合体判定）でまだ使うので残す。除去は次段階。
-            data.branch = settings.branch;
             data.stageId = settings.stageId;
             data.size = entry.size; // hk修正：BallDataのsizeを使う
-
-            // icon/colorは読み出し箇所が無いため設定しない（除去2aで確認済み）
-
-            return true;
-        }
-
-        public static bool CreateBubbleData(Requirement settings, out BubbleData data)
-        {
-            data = new BubbleData();
-
-            EvolutionBranch branch = Database.GetBranch(settings.branch);
-            if (branch == null)
-                return false;
-
-            if (branch.stages.Length <= settings.stageId)
-                return false;
-
-            var stage = branch.stages[settings.stageId];
-
-            data.branch = settings.branch;
-            data.stageId = settings.stageId;
-            data.color = branch.backgroundColor;
-            data.icon = stage.icon;
-            data.size = stage.size; // hk追加
 
             return true;
         }

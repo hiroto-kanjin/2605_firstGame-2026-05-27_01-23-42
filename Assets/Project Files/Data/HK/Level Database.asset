@@ -76,20 +76,15 @@ MonoBehaviour:
   - type: 6
     prefab: {fileID: 0}
   - type: 7
-    prefab: {fileID: 5589433557728770110, guid: b5b24d4857f8ea34d9a10f963e548cee,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 8
-    prefab: {fileID: 8930806374085835510, guid: 554469bcdcf85194a9d938e700478835,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 9
-    prefab: {fileID: 4040315276881711964, guid: e846a4ec8fb56fd47ad73d51176f8984,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 10
-    prefab: {fileID: 1819127869025072936, guid: 46af4b0e4857246408ded8d4f42f7d97,
-      type: 3}
+    prefab: {fileID: 0}
   - type: 11
-    prefab: {fileID: 2591912774970588568, guid: f118f13aaf692824386eeab6b8c68cb4,
-      type: 3}
+    prefab: {fileID: 0}
   branches:
   - branch: 0
     backgroundColor: {r: 0, g: 0, b: 0, a: 0}

@@ -22,11 +22,8 @@ namespace Watermelon.BubbleMerge
             {
                 BubbleBehavior bubbleBehavior = collision.transform.GetComponent<BubbleBehavior>();
 
-                LevelController.Level.AddBubbleToQueue(bubbleBehavior.Data);
-
                 if (bubbleBehavior.IsMerging && bubbleBehavior.MergingPartner != null)
                 {
-                    LevelController.Level.AddBubbleToQueue(bubbleBehavior.MergingPartner.Data);
                     bubbleBehavior.MergingPartner.Pop();
                 }
 

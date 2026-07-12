@@ -132,15 +132,6 @@ namespace Watermelon.BubbleMerge
             return !isIceActive;
         }
 
-        public void OnRequirementMet(RequirementBehavior requirementBehavior, RequirementCallback completeRequirement)
-        {
-            UIGame gameUI = UIController.GetPage<UIGame>();
-
-            gameUI.FlyingObjects.Activate(transform.position, flyingObjectSprite, requirementBehavior, () =>
-            {
-                completeRequirement?.Invoke(false);
-            });
-        }
 
         public override bool IsDragAllowed()
         {

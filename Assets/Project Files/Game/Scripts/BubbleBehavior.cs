@@ -9,7 +9,7 @@ using Watermelon;
 
 namespace Watermelon.BubbleMerge
 {
-    public class BubbleBehavior : MonoBehaviour, IRequirementObject
+    public class BubbleBehavior : MonoBehaviour
     {
         public const float DEFAULT_RADIUS = 0.5f;
 
@@ -267,7 +267,11 @@ namespace Watermelon.BubbleMerge
 
         public bool Compare(BubbleBehavior bubble)
         {
-            return Data.branch == bubble.Data.branch && Data.stageId == bubble.Data.stageId;
+            BallBehaviorHK a = GetComponent<BallBehaviorHK>();
+            BallBehaviorHK b = bubble.GetComponent<BallBehaviorHK>();
+            if (a == null || b == null) return false;
+
+            return a.GetBallCategory() == b.GetBallCategory() && a.GetNumber() == b.GetNumber();
         }
 
         public bool IsActive()
@@ -420,17 +424,7 @@ namespace Watermelon.BubbleMerge
             });
         }
 
-        public void OnRequirementMet(RequirementBehavior requirementBehavior, RequirementCallback completeRequirement)
-        {
-            UIGame gameUI = UIController.GetPage<UIGame>();
-
-            Pop();
-
-            gameUI.FlyingObjects.Activate(transform.position, Data.icon, requirementBehavior, () =>
-            {
-                completeRequirement?.Invoke(true);
-            });
-        }
+      
 
         public void SetTeleport(TeleportBehavior teleport)
         {

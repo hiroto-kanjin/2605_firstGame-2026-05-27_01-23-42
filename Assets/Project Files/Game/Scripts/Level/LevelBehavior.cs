@@ -18,7 +18,7 @@ namespace Watermelon.BubbleMerge
         private List<GameObject> items = new List<GameObject>();
         private List<BombData> bombData = new List<BombData>();
 
-        private List<RequirementBehavior> requirements = new List<RequirementBehavior>();
+       
 
         public event SimpleCallback OnTapHappened;
 
@@ -136,26 +136,9 @@ namespace Watermelon.BubbleMerge
             bombData.AddRange(bombs);
         }
 
-        public List<RequirementBehavior> GetRequirements()
-        {
-            return requirements;
-        }
 
-        public void SpawnIceBubble()
-        {
-            if (LevelController.CreateRandomBubbleData(out var data))
-            {
-                var pos = new Vector3(Random.Range(-2f, 2f), Random.Range(-3f, 3f));
 
-                BubbleBehavior bubbleBehavior = SpawnBubble(data, pos, false, Vector2.zero);
-
-                LevelController.IceSpecialEffect.ApplyEffect(bubbleBehavior);
-            }
-            else
-            {
-                Debug.LogError("Couldn't generate new random bubble");
-            }
-        }
+       
 
         public void Clear()
         {
@@ -170,12 +153,12 @@ namespace Watermelon.BubbleMerge
                 bubble.gameObject.SetActive(false);
             });
 
-            requirements.ForEach((requirement) => Destroy(requirement.gameObject));
+            
             bombPool.ReturnToPoolEverything();
             bombPUPool.ReturnToPoolEverything();
 
             bubbles.Clear();
-            requirements.Clear();
+     
 
             for (int i = 0; i < items.Count; i++)
             {
@@ -305,28 +288,44 @@ namespace Watermelon.BubbleMerge
         }
         // hk追加：ゲーム開始時に手動配置ボールをスポーンする（Level.BallPlacementsを使用）
         // hk修正：Nuisanceだけでなく、Evolution・Specialも配置できるようcategoryで振り分ける
+        // hk追加：ゲーム開始時に手動配置ボールをスポーンする（Level.BallPlacementsを使用）
+        // hk修正：branch除去。indexをレシピ（evolutionChain/specialList）経由でnumberに変換して撒く。
         public void SpawnBallPlacementsHK()
         {
             Level level = LevelController.Level;
             if (level == null) return;
+
+            GameLevelData gameLevel = HKGameManager.Instance.GetCurrentLevel();
+            if (gameLevel == null) return;
+
+            RecipeEntry recipe = HKSupplyManager.Instance.RecipeData.GetRecipeById(gameLevel.recipeId);
+            if (recipe == null) return;
 
             foreach (BallPlacementHK placement in level.BallPlacements)
             {
                 switch (placement.category)
                 {
                     case BallCategory.Evolution:
-                        // 進化ボール：branchは当面kinoko固定（除去フェーズでまとめて外す）。段階番号はballLevelIndex。
-                        SpawnBallHK(Branch.kinoko, placement.ballLevelIndex, placement.position);
+                        // 進化：レシピのevolutionChainのindex番目からnumberを引く
+                        if (placement.index >= 0 && placement.index < recipe.evolutionChain.Count)
+                        {
+                            int number = recipe.evolutionChain[placement.index];
+                            SpawnBallHK(Branch.kinoko, number, placement.position);
+                        }
                         break;
 
                     case BallCategory.Special:
-                        // 特殊ボール：番号はballLevelIndexを流用。
-                        SpawnSpecialBallHK(placement.ballLevelIndex, placement.position);
+                        // 特殊：レシピのspecialListのindex番目からnumberを引く
+                        if (placement.index >= 0 && placement.index < recipe.specialList.Count)
+                        {
+                            int number = recipe.specialList[placement.index].number;
+                            SpawnSpecialBallHK(number, placement.position);
+                        }
                         break;
 
                     case BallCategory.Nuisance:
-                        // お邪魔ボール：種類インデックスはballLevelIndex。
-                        SpawnNuisanceBallHK(placement.ballLevelIndex, placement.position);
+                        // お邪魔：レシピに紐づかない。indexをそのまま種類番号として使う
+                        SpawnNuisanceBallHK(placement.index, placement.position);
                         break;
 
                     default:
@@ -377,54 +376,9 @@ namespace Watermelon.BubbleMerge
         }
 
 
-        public BubbleBehavior SpawnRandomBubble(bool checkAvailable, bool checkAmount = true)
-        {
-            if (bubbles.Count > LevelController.Level.BubblesOnTheFieldAmount && checkAmount)
-                return null;
+        
 
-            if (PairAvailable() || !checkAvailable)
-            {
-                if (!LevelController.GetRandomSpawnBubble(out var bubbleSpawnData))
-                    return null;
 
-                if (LevelController.CreateRandomBubbleData(bubbleSpawnData, out var data))
-                {
-                    return SpawnBubble(bubbleSpawnData, data, GetRandomPosition(), false, Vector2.zero);
-                }
-                else
-                {
-                    Debug.LogError("Couldn't generate new random bubble");
-                    return null;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < bubbles.Count; i++)
-                {
-                    var bubble = bubbles[i];
-
-                    if (bubble.Data.stageId == 0 && !IsBranchCompleted(bubble.Data.branch) && LevelController.TryGetSpawnData(bubble.Data, out var spawnData))
-                    {
-                        LevelController.CreateRandomBubbleData(spawnData, out var data);
-
-                        return SpawnBubble(spawnData, data, GetRandomPosition(), false, Vector2.zero);
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private bool IsBranchCompleted(Branch branch)
-        {
-            for (int i = 0; i < requirements.Count; i++)
-            {
-                if (requirements[i].Requirement.branch == branch)
-                    return requirements[i].IsSetCompleted;
-            }
-
-            return true;
-        }
 
         public void SwapSmallestBubble()
         {
@@ -599,15 +553,8 @@ namespace Watermelon.BubbleMerge
 
         public void OnBubblePopped(BubbleBehavior bubbleBehavior)
         {
-            while (bubbles.Count < LevelController.Level.BubblesOnTheFieldAmount && LevelController.Level.SpawnQueue.Count > 0)
-            {
-                if (SpawnRandomBubble(true) == null)
-                {
-                    SpawnRandomBubble(false);
-                }
-            }
+            // hk修正：旧供給（SpawnQueueからの自動補充）を撤去。供給はHKSupplyManagerが担当。
         }
-
         private bool PairAvailable()
         {
             for (int i = 0; i < bubbles.Count - 1; i++)
@@ -822,16 +769,6 @@ namespace Watermelon.BubbleMerge
             return smallestBubble;
         }
 
-        public RequirementBehavior GetRequirementBehavior(Branch branch)
-        {
-            for (int i = 0; i < requirements.Count; i++)
-            {
-                if (requirements[i].Requirement.branch == branch)
-                    return requirements[i];
-            }
-
-            return null;
-        }
 
         public bool IsActiveBubbleExists()
         {
@@ -870,15 +807,7 @@ namespace Watermelon.BubbleMerge
 
                 OnBubbleMerged?.Invoke(newBubble);
             }
-            else
-            {
-                // 次の段階が作れなかった場合の保険（従来通り）
-                var fallbackBubble = SpawnRandomBubble(true);
-                if (fallbackBubble != null)
-                {
-                    OnBubbleMerged?.Invoke(fallbackBubble);
-                }
-            }
+            // hk修正：旧供給（SpawnRandomBubble）を撤去。次段階が作れない場合は何もしない。
         }
 
         #region Dev
