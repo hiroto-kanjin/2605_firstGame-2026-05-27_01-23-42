@@ -12,25 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70f3410f70d99a46953bdfa1cb4655c, type: 3}
   m_Name: Level 001
   m_EditorClassIdentifier: 
-  note: 'Base + x1 Bomb + x2 Ice(2hp) + x10 Box(17hp) '
+  note: Base + x1 BounceZone
   bubblesOnTheFieldAmount: 236
-  turnsLimit: 30
-  coinsReward: 200
-  requirements:
-    recipe:
-      ResultPreview: {fileID: 21300000, guid: 03828651c97bb3e4b9d243d4997cbfee, type: 3}
-      Ingridients:
-      - branch: 0
-        stageId: 1
-        amount: 1
-    iceBubblesPerLevel: 2
-    iceBubblesHealth: 2
-    boxesPerLevel: 10
-    boxesHealth: 17
-    bombsData:
-    - movesToSpawn: 25
   canBeUsedInRandomizer: 0
-  items: []
+  items:
+  - type: 0
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 0, y: 0, z: 0}
   ballPlacements:
   - category: 0
     branchIndex: 0

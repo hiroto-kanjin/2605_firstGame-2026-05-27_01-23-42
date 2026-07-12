@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3957912005644861032}
   - component: {fileID: 7349332004102407695}
   - component: {fileID: 7667392931469995671}
+  - component: {fileID: 6775142015406012119}
   m_Layer: 0
   m_Name: Bubble
   m_TagString: Bubble
@@ -96,6 +97,126 @@ MonoBehaviour:
   branch: 0
   ballType: 0
   ballIndex: 0
+--- !u!114 &6775142015406012119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2575003353096176513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4b142a6e6ce12c419c7b87674456678, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.BubbleScalePunch
+  punchCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0.6998816
+      outSlope: 0.6998816
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.08808792
+      value: 1.0616511
+      inSlope: 1.4241241
+      outSlope: 1.4241241
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.023692088
+    - serializedVersion: 3
+      time: 0.49038005
+      value: 1.0674349
+      inSlope: -0.6167753
+      outSlope: -0.6167753
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.19362825
+    - serializedVersion: 3
+      time: 0.600786
+      value: 1.0231018
+      inSlope: -0.24524567
+      outSlope: -0.24524567
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.85407084
+      value: 1.0005734
+      inSlope: -0.0056352434
+      outSlope: -0.0056352434
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.7369506
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -0.003929281
+      outSlope: -0.003929281
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  duration: 0.4
+  minStrength: 0.5
+  maxStrength: 5
+  mergeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.25000095
+      value: 1.4585438
+      inSlope: -0.005543907
+      outSlope: -0.005543907
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24724917
+      outWeight: 0.26747632
+    - serializedVersion: 3
+      time: 0.7053983
+      value: 0.93257344
+      inSlope: -0.6617664
+      outSlope: -0.6617664
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  mergeDuration: 0.2
+  mergeMinStrength: 0
+  mergeMaxStrength: 5
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0

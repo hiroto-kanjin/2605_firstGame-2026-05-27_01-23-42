@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Watermelon;
 
@@ -34,6 +35,7 @@ namespace Watermelon.BubbleMerge
         private TweenCase scaleTween;
 
         private BubbleBehavior mergingPartner;
+        private BubbleScalePunch scalePunch; // hk追加
         public BubbleBehavior MergingPartner { get { return mergingPartner; } set { mergingPartner = value; } }
 
         private bool isMagnetActive;
@@ -42,6 +44,7 @@ namespace Watermelon.BubbleMerge
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
+            scalePunch = GetComponent<BubbleScalePunch>(); // hk追加：付いていなければnullのまま（無くても動く）
         }
 
         private void OnDisable()
@@ -169,6 +172,14 @@ namespace Watermelon.BubbleMerge
                     MergingPartner = bubble;
                     bubble.MergingPartner = this;
 
+                    // hk追加：合体時の拡縮（速度をゼロにする前に、ぶつかった強さを使う）
+                    if (scalePunch != null && scalePunch.enabled)
+                        scalePunch.PlayMergePunch(rb.mass * collision.relativeVelocity.magnitude);
+
+                    // hk追加：相手側は自分のOnCollisionEnter2Dが呼ばれない可能性があるため、ここで明示的に呼ぶ
+                    if (bubble.scalePunch != null && bubble.scalePunch.enabled)
+                        bubble.scalePunch.PlayMergePunch(bubble.rb.mass * collision.relativeVelocity.magnitude);
+
                     // hk修正：合体決定の瞬間、跳ね返りによる動きを両方ともゼロにする（バウンド防止）
                     bubble.RB.SetVelocity(Vector3.zero);
                     bubble.DisablePhysics();
@@ -207,13 +218,21 @@ namespace Watermelon.BubbleMerge
                 else
                 {
                     if (!IsMerging && (bubble.BubbleSpecialEffect != null && bubble.BubbleSpecialEffect.EffectType != BubbleSpecialEffect.Type.Cage))
+                    {
                         graphics.Squish(collision.GetContact(0));
+                        if (scalePunch != null && scalePunch.enabled)
+                            scalePunch.PlayPunch(rb.mass * collision.relativeVelocity.magnitude);
+                    }
                 }
             }
             else
             {
                 if (!IsMerging)
+                {
                     graphics.Squish(collision.GetContact(0));
+                    if (scalePunch != null && scalePunch.enabled)
+                        scalePunch.PlayPunch(rb.mass * collision.relativeVelocity.magnitude);
+                }
             }
 
             AudioController.PlaySound(AudioController.AudioClips.bubbleHitSound);
@@ -456,6 +475,9 @@ namespace Watermelon.BubbleMerge
         }
 
         private GameObject currentVisual; // hk追加：今差し込んでいる見た目プレハブ
+        private float visualBaseScale; // hk追加：拡縮演出用の固定基準サイズ
+        public Transform VisualTransform => currentVisual != null ? currentVisual.transform : null; // hk追加
+        public float VisualBaseScale => visualBaseScale; // hk追加
 
         // hk追加：①BallDataのvisualPrefabを、ボールの見た目として差し込む
         // ボールは使い回す（プール）ので、前の見た目を消してから新しいものを入れる
@@ -496,6 +518,7 @@ namespace Watermelon.BubbleMerge
             currentVisual = Instantiate(entry.visualPrefab, transform);
             currentVisual.transform.localPosition = Vector3.zero;
             currentVisual.transform.localScale = Vector3.one * entry.size * ballData.VisualScale;
+            visualBaseScale = entry.size * ballData.VisualScale; // hk追加：拡縮演出の基準サイズを固定で記録
         }
     }
 

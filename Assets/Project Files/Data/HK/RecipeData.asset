@@ -18,6 +18,8 @@ MonoBehaviour:
     recipeNameRomaji: yakikinokogushi
     evolutionChain: 000000000100000004000000030000000200000005000000
     requiredList:
+    - number: 0
+      count: 0
     - number: 1
       count: 2
     - number: 4
@@ -76,6 +78,8 @@ MonoBehaviour:
     recipeNameRomaji: shishikababu
     evolutionChain: 000000000400000005000000070000000f00000002000000
     requiredList:
+    - number: 0
+      count: 0
     - number: 4
       count: 2
     - number: 5
@@ -133,12 +137,16 @@ MonoBehaviour:
     recipeNameRomaji: shioramen
     evolutionChain: 000000000200000003000000040000000500000006000000
     requiredList:
+    - number: 0
+      count: 0
     - number: 2
       count: 2
     - number: 3
       count: 2
     - number: 4
       count: 1
+    - number: 5
+      count: 0
     specialList:
     - number: 0
       count: 1
@@ -185,12 +193,16 @@ MonoBehaviour:
     recipeNameRomaji: 
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
+    - number: 1
+      count: 0
     - number: 2
       count: 2
     - number: 3
       count: 2
     - number: 4
       count: 1
+    - number: 5
+      count: 0
     specialList:
     - number: 0
       count: 1
@@ -237,12 +249,16 @@ MonoBehaviour:
     recipeNameRomaji: 
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
+    - number: 1
+      count: 0
     - number: 2
       count: 2
     - number: 3
       count: 2
     - number: 4
       count: 1
+    - number: 5
+      count: 0
     specialList:
     - number: 0
       count: 1
