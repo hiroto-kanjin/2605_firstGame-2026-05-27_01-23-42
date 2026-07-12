@@ -46,5 +46,6 @@ jobs:
 履歴の反映: 上記の設定であれば、毎日決まった時間に自動でGitに差分が反映されます。
 
 今すぐGitに反映したい時: GitHubの「Actions」タブを開き、「Sync Google Sheets to Git」を選んで 「Run workflow」 ボタンを押せば、その瞬間の最新データがCSVとしてGitにコミットされます。","","",""
+"","ByAI","","",""
 "","https://docs.google.com/spreadsheets/d","","","1TTMlDXzClfeay1luh4tpcCFzCUEgBrGf2lFOQWG87WU"
 "","","","","1TTMlDXzClfeay1luh4tpcCFzCUEgBrGf2lFOQWG87WU"
