@@ -1,3 +1,4 @@
+// RecipeData.cs
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -89,6 +90,7 @@ namespace Watermelon.BubbleMerge
     {
         public int recipeId;                      // 完成料理のID（重複しない番号。③やCSVから指すキー）
         public string recipeName;                 // 完成料理の名前
+        public string recipeNameRomaji;           // hk追加：フォルダ名用のローマ字（CSVでは日本語名の次の行に記載）
 
         [Header("進化の枠（最後のnumberはイレギュラー素材。レシピに使わない）")]
         public List<int> evolutionChain = new List<int>(); // numberを順に並べる
@@ -108,6 +110,7 @@ namespace Watermelon.BubbleMerge
         public int secretNuisanceCount;            // 裏：お邪魔の必要数
         public int secretIrregularCount;           // 裏：イレギュラー素材の必要数
         public GameObject secretPrefab;            // 裏（Anomaly）の演出プレハブ（絵もエフェクトも中に仕込む）
+        public Sprite anomalySprite;                // hk追加：裏メニュー（Anomaly）の絵（CSV読み込みでanomaly.pngが自動セット）
 
         [Header("カテゴリ（料理パターン。右上表示用）")]
         public int categoryId;                     // hk追加：料理カテゴリのID（Categoryフォルダを指すキー）
@@ -130,5 +133,6 @@ namespace Watermelon.BubbleMerge
         public string cookingName; // hk追加：このランクで完成したときに表示する料理名
         public int minScore;       // この点数以上ならこのランク（下限）
         public GameObject prefab;  // 完成演出のプレハブ（絵もエフェクトも中に仕込む）
+        public Sprite rankSprite;  // hk追加：ランクの絵（CSV読み込みで{ランク名}.pngが自動セット。無ければcommon）
     }
 }

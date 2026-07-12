@@ -15,10 +15,9 @@ MonoBehaviour:
   recipes:
   - recipeId: 0
     recipeName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
+    recipeNameRomaji: yakikinokogushi
     evolutionChain: 000000000100000004000000030000000200000005000000
     requiredList:
-    - number: 0
-      count: 0
     - number: 1
       count: 2
     - number: 4
@@ -36,36 +35,47 @@ MonoBehaviour:
     - rankName: Masterpiece
       cookingName: "\u3046\u3089\u307F\u30AD\u30CE\u30B3\u5730\u7344\u4E32"
       minScore: 200
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 3db69277b3ea4ad4f84f10730eea3095,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: e72c06b42c4563e46970f6e3ec4b1e3f, type: 3}
     - rankName: Delicious
       cookingName: "\u4E32\u523A\uFF01\u713C\u304D\u30AD\u30CE\u30B3"
       minScore: 100
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: bf6a0d7b59c13f745a7d216e652679d8,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: d554d0df0a558634da3659aef931176b, type: 3}
     - rankName: Good
       cookingName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
       minScore: 80
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 657ec2aeca9f8a446b6775e011c9bce4,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: 891f1d39527f4ba48a9eb20ece8eb2b3, type: 3}
     - rankName: Mediocre
       cookingName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32"
       minScore: 60
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 55a51ff1b03c52e4ca63beed466f08d8,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: 29f9840cb765ce341a90cb58f1341111, type: 3}
     - rankName: Bad
       cookingName: "\u713C\u304D\u30AD\u30CE\u30B3\u4E32\uFF1F"
       minScore: -999
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 145ee95097d40ca4899aa1e804103eee,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: cd7255107a1263a4d939347bc1b00a99, type: 3}
     hasSecret: 1
     secretCookingName: "\u30AD\u30CE\u30B3\u306E\u8E0A\u308A\u3050\u3044"
     secretNuisanceCount: 10
     secretIrregularCount: 2
-    secretPrefab: {fileID: 0}
+    secretPrefab: {fileID: 8316768132464706698, guid: 51e17f5b15bd5ec4392524ed96fe2728,
+      type: 3}
+    anomalySprite: {fileID: 21300000, guid: 5692e40412c8bc2468cabd664cb06f68, type: 3}
     categoryId: 0
     dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}
   - recipeId: 1
     recipeName: "\u30B7\u30B7\u30AB\u30D0\u30D6\u30FC"
+    recipeNameRomaji: shishikababu
     evolutionChain: 000000000400000005000000070000000f00000002000000
     requiredList:
-    - number: 0
-      count: 0
     - number: 4
       count: 2
     - number: 5
@@ -83,44 +93,52 @@ MonoBehaviour:
     - rankName: Masterpiece
       cookingName: 
       minScore: 200
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: cfda668df9a3dec4694052e0dcc26fdb,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: fbc9c01031f906e4a93b2fc3175b742f, type: 3}
     - rankName: Delicious
       cookingName: 
       minScore: 100
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: c079058ab06ab0044aabd2b0a7d729e7,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: 53ca90546e8d9ba48bdf29cb5db061ef, type: 3}
     - rankName: Good
       cookingName: 
       minScore: 80
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 69f349bd0fa0a5e419318a52c7b9182a,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: f0c10fbde9bcc904bbb3774c81fab623, type: 3}
     - rankName: Mediocre
       cookingName: 
       minScore: 60
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 95bce84b19788d84da84dfdb1b8e0734,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: 22f8b7acb088c1944b3f8fdb9aa11abe, type: 3}
     - rankName: Bad
       cookingName: 
       minScore: -999
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 145ee95097d40ca4899aa1e804103eee,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: cd7255107a1263a4d939347bc1b00a99, type: 3}
     hasSecret: 0
     secretCookingName: 
     secretNuisanceCount: 0
     secretIrregularCount: 0
     secretPrefab: {fileID: 0}
+    anomalySprite: {fileID: 0}
     categoryId: 0
     dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}
   - recipeId: 2
     recipeName: "\u3057\u304A\u30E9\u30FC\u30E1\u30F3"
+    recipeNameRomaji: shioramen
     evolutionChain: 000000000200000003000000040000000500000006000000
     requiredList:
-    - number: 0
-      count: 0
     - number: 2
       count: 2
     - number: 3
       count: 2
     - number: 4
       count: 1
-    - number: 5
-      count: 0
     specialList:
     - number: 0
       count: 1
@@ -131,43 +149,48 @@ MonoBehaviour:
       cookingName: 
       minScore: 200
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Delicious
       cookingName: 
       minScore: 100
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Good
       cookingName: 
       minScore: 80
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Mediocre
       cookingName: 
       minScore: 60
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: cdeb0e1cab804e64b8f5711a99773356,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: eef858eeecbd32447978dc6099cc4893, type: 3}
     - rankName: Bad
       cookingName: 
       minScore: -999
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 145ee95097d40ca4899aa1e804103eee,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: cd7255107a1263a4d939347bc1b00a99, type: 3}
     hasSecret: 1
     secretCookingName: 
     secretNuisanceCount: 5
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
+    anomalySprite: {fileID: 0}
     categoryId: 1
     dishSprite: {fileID: 21300000, guid: 841b741638837f0438bbfab1150e7805, type: 3}
   - recipeId: 3
     recipeName: "\u30A2\u30A4\u30B9\u30AF\u30EA\u30FC\u30E0"
+    recipeNameRomaji: 
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
-    - number: 1
-      count: 0
     - number: 2
       count: 2
     - number: 3
       count: 2
     - number: 4
       count: 1
-    - number: 5
-      count: 0
     specialList:
     - number: 0
       count: 1
@@ -178,43 +201,48 @@ MonoBehaviour:
       cookingName: 
       minScore: 200
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Delicious
       cookingName: 
       minScore: 100
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Good
       cookingName: 
       minScore: 80
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Mediocre
       cookingName: 
       minScore: 60
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: cdeb0e1cab804e64b8f5711a99773356,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: eef858eeecbd32447978dc6099cc4893, type: 3}
     - rankName: Bad
       cookingName: 
       minScore: -999
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 145ee95097d40ca4899aa1e804103eee,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: cd7255107a1263a4d939347bc1b00a99, type: 3}
     hasSecret: 1
     secretCookingName: 
     secretNuisanceCount: 5
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
+    anomalySprite: {fileID: 0}
     categoryId: 0
     dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}
   - recipeId: 4
     recipeName: "\u30B9\u30FC\u30D7"
+    recipeNameRomaji: 
     evolutionChain: 010000000200000003000000040000000500000006000000
     requiredList:
-    - number: 1
-      count: 0
     - number: 2
       count: 2
     - number: 3
       count: 2
     - number: 4
       count: 1
-    - number: 5
-      count: 0
     specialList:
     - number: 0
       count: 1
@@ -225,26 +253,34 @@ MonoBehaviour:
       cookingName: 
       minScore: 200
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Delicious
       cookingName: 
       minScore: 100
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Good
       cookingName: 
       minScore: 80
       prefab: {fileID: 0}
+      rankSprite: {fileID: 0}
     - rankName: Mediocre
       cookingName: 
       minScore: 60
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: cdeb0e1cab804e64b8f5711a99773356,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: eef858eeecbd32447978dc6099cc4893, type: 3}
     - rankName: Bad
       cookingName: 
       minScore: -999
-      prefab: {fileID: 0}
+      prefab: {fileID: 8316768132464706698, guid: 145ee95097d40ca4899aa1e804103eee,
+        type: 3}
+      rankSprite: {fileID: 21300000, guid: cd7255107a1263a4d939347bc1b00a99, type: 3}
     hasSecret: 1
     secretCookingName: 
     secretNuisanceCount: 5
     secretIrregularCount: 2
     secretPrefab: {fileID: 0}
+    anomalySprite: {fileID: 0}
     categoryId: 0
     dishSprite: {fileID: 21300000, guid: a2c9cf91ecf2b4c4bbb35d4a301657cd, type: 3}

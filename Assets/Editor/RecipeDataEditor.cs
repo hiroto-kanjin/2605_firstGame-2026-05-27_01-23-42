@@ -1,3 +1,4 @@
+// RecipeDataEditor.cs
 using UnityEngine;
 using UnityEditor;
 using System.IO;
@@ -79,6 +80,7 @@ namespace Watermelon.BubbleMerge
 
                 EditorGUILayout.PropertyField(idProp, new GUIContent("レシピID（重複禁止）"));
                 EditorGUILayout.PropertyField(nameProp, new GUIContent("料理名"));
+                EditorGUILayout.PropertyField(recipe.FindPropertyRelative("recipeNameRomaji"), new GUIContent("ローマ字（フォルダ名用）")); // hk追加
 
                 // ID重複チェック
                 int dupCount = 0;
@@ -189,6 +191,7 @@ namespace Watermelon.BubbleMerge
                         EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretNuisanceCount"), new GUIContent("お邪魔の必要数"));
                         EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretIrregularCount"), new GUIContent("イレギュラー素材の必要数"));
                         EditorGUILayout.PropertyField(recipe.FindPropertyRelative("secretPrefab"), new GUIContent("Anomalyの演出プレハブ"));
+                        EditorGUILayout.PropertyField(recipe.FindPropertyRelative("anomalySprite"), new GUIContent("Anomalyの絵")); // hk追加
                     }
                 }
 
@@ -203,6 +206,7 @@ namespace Watermelon.BubbleMerge
                         SerializedProperty cookingName = stage.FindPropertyRelative("cookingName");
                         SerializedProperty minScore = stage.FindPropertyRelative("minScore");
                         SerializedProperty prefab = stage.FindPropertyRelative("prefab");
+                        SerializedProperty rankSprite = stage.FindPropertyRelative("rankSprite"); // hk追加
 
                         EditorGUILayout.BeginHorizontal();
                         int current = System.Array.IndexOf(RANK_NAMES, rankName.stringValue);
@@ -215,6 +219,7 @@ namespace Watermelon.BubbleMerge
                         EditorGUILayout.LabelField("点数下限", GUILayout.Width(55));
                         minScore.intValue = EditorGUILayout.IntField(minScore.intValue, GUILayout.Width(60));
                         EditorGUILayout.PropertyField(prefab, GUIContent.none, GUILayout.Width(120));
+                        EditorGUILayout.PropertyField(rankSprite, GUIContent.none, GUILayout.Width(60)); // hk追加
                         GUILayout.FlexibleSpace();
                         if (GUILayout.Button("削除", GUILayout.Width(50)))
                         {
@@ -301,10 +306,13 @@ namespace Watermelon.BubbleMerge
 
                 r.FindPropertyRelative("recipeId").intValue = src.recipeId;
                 r.FindPropertyRelative("recipeName").stringValue = src.recipeName;
+                r.FindPropertyRelative("recipeNameRomaji").stringValue = src.recipeNameRomaji; // hk追加
                 r.FindPropertyRelative("hasSecret").boolValue = src.hasSecret;
                 r.FindPropertyRelative("secretCookingName").stringValue = src.secretCookingName; // hk追加
                 r.FindPropertyRelative("secretNuisanceCount").intValue = src.secretNuisanceCount;
                 r.FindPropertyRelative("secretIrregularCount").intValue = src.secretIrregularCount;
+                r.FindPropertyRelative("anomalySprite").objectReferenceValue = src.anomalySprite; // hk追加
+                r.FindPropertyRelative("secretPrefab").objectReferenceValue = src.secretPrefab; // hk追加
 
                 CopyIntList(r.FindPropertyRelative("evolutionChain"), src.evolutionChain);
                 CopyRequiredList(r.FindPropertyRelative("requiredList"), src.requiredList);
@@ -368,6 +376,12 @@ namespace Watermelon.BubbleMerge
                     cells[9] = Escape(entry.secretCookingName); // hk追加：裏メニューの料理名
                     cells[10] = entry.secretNuisanceCount.ToString();
                     cells[11] = entry.secretIrregularCount.ToString();
+                }
+
+                // hk追加：2行目（料理名の1つ下）にローマ字を書く
+                if (row == 1)
+                {
+                    cells[0] = Escape(entry.recipeNameRomaji);
                 }
 
                 // 進化の枠（D列）と通常レシピの個数（F列）
@@ -441,7 +455,7 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        // hk追加：CompletionStage（ランク名・料理名・点数）のリストをコピー。プレハブはCSVに無いので触らない
+        // hk追加：CompletionStage（ランク名・料理名・点数・絵・プレハブ）のリストをコピー
         private void CopyCompletionStages(SerializedProperty listProp, List<CompletionStage> src)
         {
             listProp.ClearArray();
@@ -450,8 +464,10 @@ namespace Watermelon.BubbleMerge
             {
                 SerializedProperty stage = listProp.GetArrayElementAtIndex(i);
                 stage.FindPropertyRelative("rankName").stringValue = src[i].rankName;
-                stage.FindPropertyRelative("cookingName").stringValue = src[i].cookingName; // hk追加：料理名
+                stage.FindPropertyRelative("cookingName").stringValue = src[i].cookingName;
                 stage.FindPropertyRelative("minScore").intValue = src[i].minScore;
+                stage.FindPropertyRelative("rankSprite").objectReferenceValue = src[i].rankSprite;
+                stage.FindPropertyRelative("prefab").objectReferenceValue = src[i].prefab; // hk追加
             }
         }
 

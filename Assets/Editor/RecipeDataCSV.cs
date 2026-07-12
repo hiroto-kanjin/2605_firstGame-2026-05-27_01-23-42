@@ -1,3 +1,4 @@
+// RecipeDataCSV.cs
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Watermelon.BubbleMerge
         private const int HeaderRows = 3;   // 各ブロックの上3行は見出し（飛ばす）
 
         // 列の位置（0始まり）。C・E列は飾りなので使わない
-        private const int ColRecipeName = 0;    // A：料理名
+        private const int ColRecipeName = 0;    // A：料理名（次の行の同じ列＝ローマ字）
         private const int ColRecipeId = 1;      // B：ID
         private const int ColEvoNumber = 3;     // D：進化ボールの番号
         private const int ColNormalCount = 5;   // F：通常レシピの個数
@@ -33,6 +34,11 @@ namespace Watermelon.BubbleMerge
         // hk追加：カテゴリ画像のフォルダと固定ファイル名
         private const string CATEGORY_ROOT = "Assets/Project Files/Game/Images/Category";
         private const string DISH_IMAGE_FILE = "Dish_Images.png";
+
+        // hk追加：ランク画像・ランクプレハブ（完成データ・裏メニュー）のフォルダ
+        private const string RANK_ROOT = "Assets/Project Files/Game/Images/Results";
+        private const string RANK_COMMON_FOLDER = "common";
+        private const string ANOMALY_FILE_NAME = "anomaly";
 
         // ランク名の正しい表記。CSVが大文字でも小文字でも、これに合わせて入れ直す
         private static readonly string[] RANK_NAMES = { "Masterpiece", "Delicious", "Good", "Mediocre", "Bad" };
@@ -73,6 +79,13 @@ namespace Watermelon.BubbleMerge
             entry.recipeName = recipeName;
             entry.recipeId = ParseInt(GetCell(head, ColRecipeId), 0);
 
+            // hk追加：ローマ字は、料理名の1行下・同じA列に書く運用
+            if (firstDataRow + 1 < lines.Length)
+            {
+                string[] nextRow = SplitLine(lines[firstDataRow + 1]);
+                entry.recipeNameRomaji = GetCell(nextRow, ColRecipeName);
+            }
+
             // 裏メニュー（先頭行だけ見る）
             entry.hasSecret = ParseBool(GetCell(head, ColSecretFlag));
             entry.secretCookingName = GetCell(head, ColSecretCookingName);
@@ -82,7 +95,6 @@ namespace Watermelon.BubbleMerge
             // hk追加：カテゴリ（先頭行だけ見る）
             entry.categoryId = ParseInt(GetCell(head, ColCategoryId), 0);
             string categoryName = GetCell(head, ColCategoryName);
-            Debug.LogError($"カテゴリ読み込み: recipe={recipeName} categoryId列の生値=[{GetCell(head, ColCategoryId)}] name列=[{categoryName}]");
             entry.dishSprite = LoadCategorySprite(entry.categoryId, categoryName);
 
             entry.evolutionChain = new List<int>();
@@ -153,6 +165,9 @@ namespace Watermelon.BubbleMerge
                 }
             }
 
+            // hk追加：ランク画像・ランクプレハブ・裏メニュー分を、Resultsフォルダから読み込む
+            LoadRankImages(entry);
+
             return entry;
         }
 
@@ -163,7 +178,7 @@ namespace Watermelon.BubbleMerge
             string idText = categoryId.ToString("0000");
 
             // ID基準で、既存フォルダ（0000始まり）を探す
-            string actualFolderName = FindCategoryFolder(idText);
+            string actualFolderName = FindFolderByIdPrefix(CATEGORY_ROOT, idText);
 
             // 無ければ作る（ID重複は作らない）
             if (string.IsNullOrEmpty(actualFolderName))
@@ -189,13 +204,115 @@ namespace Watermelon.BubbleMerge
 #endif
         }
 
-#if UNITY_EDITOR
-        // hk追加：Categoryフォルダの中で、指定ID（4桁）で始まるフォルダ名を返す。無ければ空文字
-        private static string FindCategoryFolder(string idText)
+        // hk追加：レシピIDのフォルダを用意し、ランクごとの画像・プレハブ・裏メニュー分を読み込んでentryに詰める
+        private static void LoadRankImages(RecipeEntry entry)
         {
-            if (!AssetDatabase.IsValidFolder(CATEGORY_ROOT)) return "";
+#if UNITY_EDITOR
+            string folderName = EnsureRecipeFolder(entry.recipeId, entry.recipeNameRomaji);
 
-            string[] subFolders = AssetDatabase.GetSubFolders(CATEGORY_ROOT);
+            foreach (CompletionStage stage in entry.completionStages)
+            {
+                string rankNameLower = stage.rankName.ToLower();
+                stage.rankSprite = LoadRankSprite(folderName, rankNameLower);
+                stage.prefab = LoadRankPrefab(folderName, rankNameLower);
+            }
+
+            if (entry.hasSecret)
+            {
+                entry.anomalySprite = LoadRankSprite(folderName, ANOMALY_FILE_NAME);
+                entry.secretPrefab = LoadRankPrefab(folderName, ANOMALY_FILE_NAME);
+            }
+#endif
+        }
+
+#if UNITY_EDITOR
+        // hk追加：レシピID用のフォルダを探す。無ければ作る。名前がズレていればリネームする
+        private static string EnsureRecipeFolder(int recipeId, string romaji)
+        {
+            if (!AssetDatabase.IsValidFolder(RANK_ROOT))
+            {
+                Debug.LogWarning("Resultsの親フォルダが見つかりません： " + RANK_ROOT);
+                return "";
+            }
+
+            string idText = recipeId.ToString("0000");
+            string existingFolderName = FindFolderByIdPrefix(RANK_ROOT, idText);
+            string wantName = string.IsNullOrEmpty(romaji) ? idText : idText + "_" + romaji;
+
+            if (string.IsNullOrEmpty(existingFolderName))
+            {
+                AssetDatabase.CreateFolder(RANK_ROOT, wantName);
+                AssetDatabase.Refresh();
+                return wantName;
+            }
+
+            if (existingFolderName != wantName)
+            {
+                string error = AssetDatabase.RenameAsset(RANK_ROOT + "/" + existingFolderName, wantName);
+                if (!string.IsNullOrEmpty(error))
+                {
+                    Debug.LogWarning("レシピフォルダのリネームに失敗： " + error);
+                    return existingFolderName;
+                }
+                AssetDatabase.Refresh();
+                return wantName;
+            }
+
+            return existingFolderName;
+        }
+
+        // hk追加：フォルダの中から「番号_ランク名」形式のSpriteを、ランク名だけで探す。無ければcommonフォルダを見る
+        private static Sprite LoadRankSprite(string folderName, string rankNameLower)
+        {
+            if (string.IsNullOrEmpty(folderName)) return null;
+
+            Sprite sprite = FindAssetByRankName<Sprite>(RANK_ROOT + "/" + folderName, "t:Sprite", rankNameLower);
+            if (sprite == null)
+                sprite = FindAssetByRankName<Sprite>(RANK_ROOT + "/" + RANK_COMMON_FOLDER, "t:Sprite", rankNameLower);
+
+            if (sprite == null)
+                Debug.LogWarning("ランク画像が見つかりません： " + rankNameLower + "（" + folderName + " / common どちらにも無し）");
+
+            return sprite;
+        }
+
+        // hk追加：フォルダの中から「番号_ランク名」形式のPrefabを、ランク名だけで探す。無ければcommonフォルダを見る
+        private static GameObject LoadRankPrefab(string folderName, string rankNameLower)
+        {
+            if (string.IsNullOrEmpty(folderName)) return null;
+
+            GameObject prefab = FindAssetByRankName<GameObject>(RANK_ROOT + "/" + folderName, "t:Prefab", rankNameLower);
+            if (prefab == null)
+                prefab = FindAssetByRankName<GameObject>(RANK_ROOT + "/" + RANK_COMMON_FOLDER, "t:Prefab", rankNameLower);
+
+            if (prefab == null)
+                Debug.LogWarning("ランクプレハブが見つかりません： " + rankNameLower + "（" + folderName + " / common どちらにも無し）");
+
+            return prefab;
+        }
+
+        // hk追加：指定フォルダの中を検索し、ファイル名に「ランク名」が含まれる資産を返す（番号の飾りは無視）
+        private static T FindAssetByRankName<T>(string folderPath, string typeFilter, string rankNameLower) where T : Object
+        {
+            if (!AssetDatabase.IsValidFolder(folderPath)) return null;
+
+            string[] guids = AssetDatabase.FindAssets(typeFilter, new[] { folderPath });
+            foreach (string guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                string fileName = Path.GetFileNameWithoutExtension(assetPath).ToLower();
+                if (fileName.Contains(rankNameLower))
+                    return AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            }
+            return null;
+        }
+
+        // hk追加：親フォルダの中で、指定ID（4桁）で始まるフォルダ名を返す。無ければ空文字
+        private static string FindFolderByIdPrefix(string parentFolder, string idText)
+        {
+            if (!AssetDatabase.IsValidFolder(parentFolder)) return "";
+
+            string[] subFolders = AssetDatabase.GetSubFolders(parentFolder);
             foreach (string sub in subFolders)
             {
                 string folderName = Path.GetFileName(sub);
