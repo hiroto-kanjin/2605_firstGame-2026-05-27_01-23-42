@@ -70,11 +70,10 @@ namespace Watermelon
             backgroundFade.Show(duration: 0.3f);
             levelCompleteLabel.Show();
 
-            resultImage.sprite = LevelController.Level.Requirements.Recipe.ResultPreview;
-
             continueButtonFade.Show(0.3f);
 
-            currentReward = LevelController.Level.CoinsReward;
+            GameLevelData currentGameLevel = HKGameManager.Instance.GetCurrentLevel();
+            currentReward = currentGameLevel != null ? currentGameLevel.coinsReward : 0;
 
             ShowRewardLabel(currentReward, false, 0.3f, delegate
             {

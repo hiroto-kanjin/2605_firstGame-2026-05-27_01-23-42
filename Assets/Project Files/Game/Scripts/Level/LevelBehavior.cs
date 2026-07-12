@@ -136,54 +136,6 @@ namespace Watermelon.BubbleMerge
             bombData.AddRange(bombs);
         }
 
-        public void InitialiseRequirements(List<Requirement> requirementsInfo, RequirementReceipt requirementReceipt)
-        {
-            if (!requirements.IsNullOrEmpty())
-            {
-                for (int i = 0; i < requirements.Count; i++)
-                {
-                    Destroy(requirements[i].gameObject);
-                }
-
-                requirements.Clear();
-            }
-
-            gameUI.RequirementsResultImage.sprite = requirementReceipt.ResultPreview;
-
-            for (int i = 0; i < requirementsInfo.Count; i++)
-            {
-                EvolutionBranch branch = LevelController.Database.GetBranch(requirementsInfo[i].branch);
-
-                GameObject requirementObject = Instantiate(branch.requirementUIPrefab);
-                requirementObject.transform.SetParent(gameUI.RequirementsParent);
-                requirementObject.transform.ResetLocal();
-
-                RequirementBehavior requirement = requirementObject.GetComponent<RequirementBehavior>();
-
-                requirement.Init(requirementsInfo[i], i);
-
-                requirements.Add(requirement);
-            }
-
-            for (int i = 0; i < bubbles.Count; i++)
-            {
-                CheckRequirements(bubbles[i]);
-            }
-        }
-
-        public void SetRequirements(List<Requirement> requirementsInfo)
-        {
-            for (int i = 0; i < requirements.Count; i++)
-            {
-                requirements[i].Init(requirementsInfo[i], i);
-            }
-
-            for (int i = 0; i < bubbles.Count; i++)
-            {
-                CheckRequirements(bubbles[i]);
-            }
-        }
-
         public List<RequirementBehavior> GetRequirements()
         {
             return requirements;
@@ -652,45 +604,6 @@ namespace Watermelon.BubbleMerge
                 if (SpawnRandomBubble(true) == null)
                 {
                     SpawnRandomBubble(false);
-                }
-            }
-        }
-
-        public void CheckRequirements(IRequirementObject requirementObject)
-        {
-            for (int i = 0; i < requirements.Count; i++)
-            {
-                RequirementBehavior requirement = requirements[i];
-
-                if (!requirement.IsDone && requirement.Check(requirementObject.Data) && !requirement.IsSetCompleted)
-                {
-                    requirement.MarkDone();
-
-                    AudioController.PlaySound(AudioController.AudioClips.requirementMetSound);
-
-                    highlightedPair.OnRequirementComplete();
-
-                    requirementObject.OnRequirementMet(requirement, (bool spawnNewBubble) =>
-                    {
-                        requirement.OnRequirementMet();
-
-                        // hk追加：自動スポーンを無効化（HKSupplyManagerが代わりに担当）
-                        // if (spawnNewBubble)
-                        // {
-                        //     while (bubbles.Count < LevelController.Level.BubblesOnTheFieldAmount && LevelController.Level.SpawnQueue.Count > 0)
-                        //     {
-                        //         if (SpawnRandomBubble(true) == null)
-                        //         {
-                        //             SpawnRandomBubble(false);
-                        //         }
-                        //     }
-                        // }
-
-                        LevelController.OnRequirementDone(i);
-                        LevelController.UpdateRequirements();
-                    });
-
-                    break;
                 }
             }
         }

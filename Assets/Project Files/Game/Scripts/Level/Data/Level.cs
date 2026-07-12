@@ -1,3 +1,4 @@
+// Level.cs
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,15 +10,6 @@ namespace Watermelon.BubbleMerge
 
         [HideInInspector, SerializeField, LevelEditorSetting] int bubblesOnTheFieldAmount;
         public int BubblesOnTheFieldAmount => bubblesOnTheFieldAmount;
-
-        [HideInInspector, SerializeField, LevelEditorSetting] int turnsLimit;
-        public int TurnsLimit => turnsLimit;
-
-        [HideInInspector, SerializeField, LevelEditorSetting] int coinsReward = 20;
-        public int CoinsReward => (int)(coinsReward * (LevelController.IsLevelCompletedForTheFirstTime ? 1f : 0.3f));
-
-        [HideInInspector, SerializeField, LevelEditorSetting] GeneralLevelTarget requirements = new GeneralLevelTarget();
-        public GeneralLevelTarget Requirements => requirements;
 
         [HideInInspector, SerializeField, LevelEditorSetting] bool canBeUsedInRandomizer = true;
         public bool CanBeUsedInRandomizer => canBeUsedInRandomizer;
@@ -44,51 +36,9 @@ namespace Watermelon.BubbleMerge
 
         public void Init()
         {
+            // hk修正：レシピ（GeneralLevelTarget.recipe）依存だったspawnQueue生成を削除。
+            // 今の供給はGameLevelData.ballSupplyRates／nuisanceSpawnEventsが担当しているため、ここは空で持つだけにする。
             spawnQueue = new List<BubbleSpawnData>();
-
-            var receipt = requirements.Recipe;
-
-            for (int j = 0; j < receipt.Ingridients.Count; j++)
-            {
-                var ingridient = receipt.Ingridients[j];
-
-                int count = ingridient.amount * (int)Mathf.Pow(2, ingridient.stageId);
-
-                for (int k = 0; k < count; k++)
-                {
-                    spawnQueue.Add(new BubbleSpawnData()
-                    {
-                        branch = ingridient.branch,
-                        stageId = 0,
-                        iceHP = 0,
-                        boxHP = 0,
-                    });
-                }
-            }
-
-            spawnQueue.Shuffle();
-
-            List<BubbleSpawnData> bubblesWithoutEffects = new List<BubbleSpawnData>();
-
-            for (int i = 0; i < spawnQueue.Count; i++)
-            {
-                if (!spawnQueue[i].HasEffect)
-                    bubblesWithoutEffects.Add(spawnQueue[i]);
-            }
-
-            bubblesWithoutEffects.Shuffle();
-
-            for (int i = 0; i < requirements.IceBubblesPerLevel && bubblesWithoutEffects.Count > 0; i++)
-            {
-                bubblesWithoutEffects[0].iceHP = requirements.IceBubblesHealth;
-                bubblesWithoutEffects.RemoveAt(0);
-            }
-
-            for (int i = 0; i < requirements.BoxesPerLevel && bubblesWithoutEffects.Count > 0; i++)
-            {
-                bubblesWithoutEffects[0].boxHP = requirements.BoxesHealth;
-                bubblesWithoutEffects.RemoveAt(0);
-            }
         }
 
         public bool GetNextSpawnData(out BubbleSpawnData data)

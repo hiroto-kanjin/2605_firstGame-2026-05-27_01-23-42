@@ -1,3 +1,4 @@
+// LevelController.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,9 +37,7 @@ namespace Watermelon.BubbleMerge
 
         public static LevelBehavior LevelBehavior { get; private set; }
         public static Level Level { get; private set; }
-        public static List<Requirement> CurrentTarget { get; private set; }
 
-        public static GeneralLevelTarget GeneralLevelTargets { get; private set; }
         public static bool IsLevelCompletedForTheFirstTime => GameController.LevelID >= MaxLevelReached;
 
         private static TweenCase effectCheckTweenCase;
@@ -109,11 +108,13 @@ namespace Watermelon.BubbleMerge
             // hk修正：爆弾は使わないため空配列を渡す（Level.Requirements依存を外す）
             LevelBehavior.SetLevelItems(Level.Items, new BombData[0], database);
 
-            turnsLimit = Level.TurnsLimit;
-            Turn = 0;
+            // hk修正：turnsLimitはLevel（盤面デザイン）ではなくGameLevelData（レベル管理）から取る
+            if (currentGameLevel != null)
+                turnsLimit = currentGameLevel.turnsLimit;
+            else
+                Debug.LogWarning("GameLevelDataが取得できず、turnsLimitが未設定です");
 
-            // hk修正：古いレシピ系統（GeneralLevelTargets / InitialiseRequirements）を外した。
-            // レシピ表示・判定はHK側（RecipeDisplayUI / HKGameManager）が担当する。
+            Turn = 0;
 
             UIGame gameUI = UIController.GetPage<UIGame>();
 
@@ -156,18 +157,6 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        public static void UpdateRequirements()
-        {
-            // hk追加：クリア判定を無効化（HKGameManagerが代わりに担当）
-            // if (GeneralLevelTargets.TotalDoneRequirements >= GeneralLevelTargets.TotalRequirementsAmount)
-            // {
-            //     LevelComplete();
-            // }
-
-            CurrentTarget = GeneralLevelTargets.GetActiveRequirements();
-            LevelBehavior.SetRequirements(CurrentTarget);
-        }
-
         public static void OnSpecialEffectAdded()
         {
             effectCheckTweenCase.KillActive();
@@ -178,11 +167,6 @@ namespace Watermelon.BubbleMerge
                     LevelFail();
                 }
             });
-        }
-
-        public static void OnRequirementDone(int id)
-        {
-            GeneralLevelTargets.OnRequirementDone(id);
         }
 
         public static bool TryGetSpawnData(BubbleData data, out BubbleSpawnData spawnData)

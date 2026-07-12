@@ -1,3 +1,4 @@
+// RequirementBehavior.cs
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Watermelon.BubbleMerge
 
             iconImage.sprite = data.icon;
 
-            if(IsSetCompleted)
+            if (IsSetCompleted)
             {
                 checkmarkObject.SetActive(true);
                 totalAmountText.gameObject.SetActive(false);
@@ -58,7 +59,9 @@ namespace Watermelon.BubbleMerge
                 checkmarkObject.SetActive(false);
                 totalAmountText.gameObject.SetActive(true);
 
-                totalAmountText.text = string.Format("x{0}", LevelController.GeneralLevelTargets.GetRequirementsLeftAmount(id));
+                // hk修正：GeneralLevelTargets（旧レシピ系統）削除に伴い参照先が無くなったため0固定にした
+                // このInit自体、呼び出し元(InitialiseRequirements/SetRequirements)を削除済みで今は使われていない
+                totalAmountText.text = string.Format("x{0}", 0);
             }
 
             IsDone = false;

@@ -37,7 +37,6 @@ namespace Watermelon.BubbleMerge
         public static void Show(int levelId)
         {
             UILevelPopUp popUp = UIController.GetPage<UILevelPopUp>();
-            popUp.resultPreview.sprite = LevelController.Database.GetLevel(levelId).Requirements.Recipe.ResultPreview;
             popUp.LevelId = levelId;
             popUp.levelText.text = $"LEVEL {levelId + 1}";
 

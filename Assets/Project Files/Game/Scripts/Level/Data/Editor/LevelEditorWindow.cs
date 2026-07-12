@@ -170,15 +170,15 @@ namespace Watermelon.BubbleMerge
             itemsEnumObjectsList = new EnumObjectsList(itemsSerializedProperty, TYPE_PROPERTY_PATH, PREFAB_PROPERTY_PATH, ITEM_ENUM_FILE_PATH, OnBeforeEnumFileupdateCallback);
             itemsEnumObjectsList.EnableTextureField(EDITOR_TEXTURE_PROPERTY_PATH);
             levelShapesEnumObjectsList = new EnumObjectsList(levelShapesSerializedProperty, TYPE_PROPERTY_PATH, PREFAB_PROPERTY_PATH, LEVEL_SHAPE_ENUM_FILE_PATH, OnBeforeEnumFileupdateCallback, LEVELS_SHAPE_ENUM_NAME);
-        
+
             levelShapesEnumObjectsList.TabLabel = SHAPES_TAB_LABEL;
-           
+
 
             tabHandler = new TabHandler();
             tabHandler.AddTab(new TabHandler.Tab(LEVELS_TAB_NAME, DisplayLevelsTab));
             tabHandler.AddTab(new TabHandler.Tab(ITEMS_TAB_NAME, itemsEnumObjectsList.DisplayTab));
             tabHandler.AddTab(new TabHandler.Tab(LEVEL_SHAPES_TAB_NAME, levelShapesEnumObjectsList.DisplayTab));
-        
+
             tabHandler.AddTab(new TabHandler.Tab(EDITOR_TAB_NAME, DisplayPropertiesTab));
             tabHandler.AddTab(new TabHandler.Tab(BALLS_TAB_NAME, DisplayBallsTab)); // hk追加
             tabHandler.AddTab(new TabHandler.Tab(EFFECTS_TAB_NAME, DisplayEffectsTab)); // hk追加
@@ -732,10 +732,7 @@ namespace Watermelon.BubbleMerge
         private void DisplayLevelFields()
         {
             EditorGUILayout.PropertyField(selectedLevelRepresentation.bubblesOnTheFieldAmountProperty);
-            EditorGUILayout.PropertyField(selectedLevelRepresentation.turnsLimitProperty);
-            EditorGUILayout.PropertyField(selectedLevelRepresentation.coinsRewardProperty);
 
-            selectedLevelRepresentation.DrawRequirementsProperty();
             selectedLevelRepresentation.canBeUsedInRandomizerProperty.boolValue = EditorGUILayout.ToggleLeft(selectedLevelRepresentation.canBeUsedInRandomizerProperty.displayName, selectedLevelRepresentation.canBeUsedInRandomizerProperty.boolValue);
             selectedLevelRepresentation.DisplayProperties();
             selectedLevelRepresentation.UpdateNote();
@@ -1074,57 +1071,8 @@ namespace Watermelon.BubbleMerge
             selectedLevelRepresentation.levelShapeTypeProperty.enumValueIndex = UnityEngine.Random.Range(0, levelShapesSerializedProperty.arraySize);
             selectedLevelRepresentation.levelBackTypeProperty.enumValueIndex = UnityEngine.Random.Range(0, levelBackgroundsSerializedProperty.arraySize);
             selectedLevelRepresentation.bubblesOnTheFieldAmountProperty.intValue = UnityEngine.Random.Range(5, 10);
-            selectedLevelRepresentation.turnsLimitProperty.intValue = UnityEngine.Random.Range(32, 45);
 
-            float random = UnityEngine.Random.Range(0, 1f);
-            int ingredientsAmount = 1;
-
-            if (random < 0.3f)
-            {
-                ingredientsAmount = 2;
-            }
-            else if (random < 0.95f)
-            {
-                ingredientsAmount = 3;
-            }
-            else
-            {
-                ingredientsAmount = 4;
-            }
-
-            selectedLevelRepresentation.CreateRandomRecipe(ingredientsAmount);
-            int randomIndex = UnityEngine.Random.Range(0, potionSpritesSerializedProperty.arraySize);
-            selectedLevelRepresentation.AssignPotionSprite(potionSpritesSerializedProperty.GetArrayElementAtIndex(randomIndex).objectReferenceValue);
-
-            // 30% chance of ice appear
-            if (UnityEngine.Random.Range(0f, 1f) < 0.3f)
-            {
-                selectedLevelRepresentation.SetIce(UnityEngine.Random.Range(1, 4), UnityEngine.Random.Range(4, 10));
-            }
-            else
-            {
-                selectedLevelRepresentation.SetIce(0, 0);
-            }
-
-            // 30% chance of box appear
-            if (UnityEngine.Random.Range(0f, 1f) < 0.3f)
-            {
-                selectedLevelRepresentation.SetBoxes(UnityEngine.Random.Range(1, 4), UnityEngine.Random.Range(1, 4));
-            }
-            else
-            {
-                selectedLevelRepresentation.SetBoxes(0, 0);
-            }
-
-            // 30% chance of bombs appear
-            if (UnityEngine.Random.Range(0f, 1f) < 0.3f)
-            {
-                selectedLevelRepresentation.SetBombs(UnityEngine.Random.Range(2, 5), UnityEngine.Random.Range(0, 8));
-            }
-            else
-            {
-                selectedLevelRepresentation.SetBombs(0, 0);
-            }
+            // hk修正：レシピ・氷・箱・爆弾の自動生成は削除（turnsLimit/requirementsがLevelから無くなったため）
 
             selectedTab = 1;
             LoadLevelShape();
@@ -1141,38 +1089,19 @@ namespace Watermelon.BubbleMerge
             private const string NOTE_PROPERTY_NAME = "note";
 
             private const string BUBBLES_ON_THE_FIELD_PROPERTY_NAME = "bubblesOnTheFieldAmount";
-            private const string TURNS_LIMIT_PROPERTY_NAME = "turnsLimit";
-            private const string COINS_REWARD_PROPERTY_NAME = "coinsReward";
-            private const string REQUIREMENTS_PROPERTY_NAME = "requirements";
+
             private const string CAN_BE_USED_IN_RANDOMIZER_PROPERTY_NAME = "canBeUsedInRandomizer";
 
             private const string ITEMS_PROPERTY_NAME = "items";
-            private const string BOMBS_DATA_PROPERTY_NAME = "bombsData";
             private const string LEVEL_SHAPE_TYPE_PROPERTY_NAME = "levelShapeType";
             private const string LEVEL_BACK_TYPE_PROPERTY_NAME = "levelBackType";
 
-            private const string RECIPE_PROPERTY_NAME = "recipe";
-            private const string RESULT_PREVIEW_PROPERTY_NAME = "ResultPreview";
-            private const string INGRIDIENTS_PROPERTY_NAME = "Ingridients";
-            private const string ICE_BUBBLES_PER_LEVEL_PROPERTY_NAME = "iceBubblesPerLevel";
-            private const string ICE_BUBBLES_HEALTH_PROPERTY_NAME = "iceBubblesHealth";
-            private const string BOXES_PER_LEVEL_PROPERTY_NAME = "boxesPerLevel";
-            private const string BOXES_HEALTH_PROPERTY_NAME = "boxesHealth";
-
-            private const string BRANCH_PROPERTY_NAME = "branch";
-            private const string STAGE_ID_PROPERTY_NAME = "stageId";
-            private const string AMOUNT_PROPERTY_NAME = "amount";
-            private const string MOVES_TO_SPAWN_PROPERTY = "movesToSpawn";
-            private const string BOMBS_LIST_HEADER = "Bombs";
             private const string BALL_PLACEMENTS_PROPERTY_NAME = "ballPlacements"; // hk追加
             private const string SPECIAL_EFFECTS_RANDOM_PROPERTY_NAME = "specialEffectsRandom"; // hk追加
             private const string SPECIAL_EFFECT_PLACEMENTS_PROPERTY_NAME = "specialEffectPlacements"; // hk追加
             public SerializedProperty noteProperty;
 
             public SerializedProperty bubblesOnTheFieldAmountProperty;
-            public SerializedProperty turnsLimitProperty;
-            public SerializedProperty coinsRewardProperty;
-            public SerializedProperty requirementsProperty;
             public SerializedProperty canBeUsedInRandomizerProperty;
             public SerializedProperty itemsProperty;
             public SerializedProperty levelShapeTypeProperty;
@@ -1180,13 +1109,6 @@ namespace Watermelon.BubbleMerge
             public SerializedProperty ballPlacementsProperty; // hk追加
             public SerializedProperty specialEffectsRandomProperty; // hk追加
             public SerializedProperty specialEffectPlacementsProperty; // hk追加
-
-            //temp
-            SerializedProperty ingredientsProperty;
-            SerializedProperty ingredientProperty;
-            SerializedProperty spriteProperty;
-
-            ReorderableList bombsList;
 
             //this empty constructor is nessesary
             public LevelRepresentation(UnityEngine.Object levelObject) : base(levelObject)
@@ -1198,9 +1120,6 @@ namespace Watermelon.BubbleMerge
             {
                 noteProperty = serializedLevelObject.FindProperty(NOTE_PROPERTY_NAME);
                 bubblesOnTheFieldAmountProperty = serializedLevelObject.FindProperty(BUBBLES_ON_THE_FIELD_PROPERTY_NAME);
-                coinsRewardProperty = serializedLevelObject.FindProperty(COINS_REWARD_PROPERTY_NAME);
-                turnsLimitProperty = serializedLevelObject.FindProperty(TURNS_LIMIT_PROPERTY_NAME);
-                requirementsProperty = serializedLevelObject.FindProperty(REQUIREMENTS_PROPERTY_NAME);
                 canBeUsedInRandomizerProperty = serializedLevelObject.FindProperty(CAN_BE_USED_IN_RANDOMIZER_PROPERTY_NAME);
                 itemsProperty = serializedLevelObject.FindProperty(ITEMS_PROPERTY_NAME);
                 levelShapeTypeProperty = serializedLevelObject.FindProperty(LEVEL_SHAPE_TYPE_PROPERTY_NAME);
@@ -1208,8 +1127,6 @@ namespace Watermelon.BubbleMerge
                 ballPlacementsProperty = serializedLevelObject.FindProperty(BALL_PLACEMENTS_PROPERTY_NAME); // hk追加
                 specialEffectsRandomProperty = serializedLevelObject.FindProperty(SPECIAL_EFFECTS_RANDOM_PROPERTY_NAME); // hk追加
                 specialEffectPlacementsProperty = serializedLevelObject.FindProperty(SPECIAL_EFFECT_PLACEMENTS_PROPERTY_NAME); // hk追加
-
-                InitBombsList();
             }
 
 
@@ -1220,20 +1137,10 @@ namespace Watermelon.BubbleMerge
                 {
                     noteProperty.stringValue = string.Empty;
                     bubblesOnTheFieldAmountProperty.intValue = 0;
-                    coinsRewardProperty.intValue = 20;
-                    turnsLimitProperty.intValue = 0;
                     canBeUsedInRandomizerProperty.boolValue = true;
                     itemsProperty.arraySize = 0;
                     levelShapeTypeProperty.enumValueIndex = 0;
                     levelBackTypeProperty.enumValueIndex = 0;
-
-                    requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(RESULT_PREVIEW_PROPERTY_NAME).objectReferenceValue = null;
-                    requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(INGRIDIENTS_PROPERTY_NAME).arraySize = 0;
-                    requirementsProperty.FindPropertyRelative(ICE_BUBBLES_PER_LEVEL_PROPERTY_NAME).intValue = 0;
-                    requirementsProperty.FindPropertyRelative(ICE_BUBBLES_HEALTH_PROPERTY_NAME).intValue = 0;
-                    requirementsProperty.FindPropertyRelative(BOXES_PER_LEVEL_PROPERTY_NAME).intValue = 0;
-                    requirementsProperty.FindPropertyRelative(BOXES_HEALTH_PROPERTY_NAME).intValue = 0;
-                    requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).arraySize = 0;
 
                     ApplyChanges();
                 }
@@ -1246,28 +1153,6 @@ namespace Watermelon.BubbleMerge
                 stringBuilder.Append(levelShapeTypeProperty.enumNames[levelShapeTypeProperty.enumValueIndex]);
 
                 GetItemsString(stringBuilder);
-
-                if (requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).arraySize > 0)
-                {
-                    stringBuilder.Append(" + x" + requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).arraySize + " ");
-                    stringBuilder.Append("Bomb");
-                }
-
-                if (requirementsProperty.FindPropertyRelative(ICE_BUBBLES_PER_LEVEL_PROPERTY_NAME).intValue > 0)
-                {
-                    stringBuilder.Append(" + x" + requirementsProperty.FindPropertyRelative(ICE_BUBBLES_PER_LEVEL_PROPERTY_NAME).intValue + " ");
-                    stringBuilder.Append("Ice(");
-                    stringBuilder.Append(requirementsProperty.FindPropertyRelative(ICE_BUBBLES_HEALTH_PROPERTY_NAME).intValue);
-                    stringBuilder.Append("hp)");
-                }
-
-                if (requirementsProperty.FindPropertyRelative(BOXES_PER_LEVEL_PROPERTY_NAME).intValue > 0)
-                {
-                    stringBuilder.Append(" + x" + requirementsProperty.FindPropertyRelative(BOXES_PER_LEVEL_PROPERTY_NAME).intValue + " ");
-                    stringBuilder.Append("Box(");
-                    stringBuilder.Append(requirementsProperty.FindPropertyRelative(BOXES_HEALTH_PROPERTY_NAME).intValue);
-                    stringBuilder.Append("hp) ");
-                }
 
                 noteProperty.stringValue = stringBuilder.ToString();
                 ApplyChanges();
@@ -1316,164 +1201,6 @@ namespace Watermelon.BubbleMerge
 
                 stringBuilder.Append("x" + counter + " ");
                 stringBuilder.Append(type.enumNames[previousType]);
-            }
-
-            public void GetIngredientsString(StringBuilder stringBuilder)
-            {
-                stringBuilder.Append('(');
-                ingredientsProperty = requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(INGRIDIENTS_PROPERTY_NAME);
-                SerializedProperty branchProperty;
-
-                for (int i = 0; i < ingredientsProperty.arraySize; i++)
-                {
-                    if (i > 0)
-                    {
-                        stringBuilder.Append('+');
-                    }
-
-                    branchProperty = ingredientsProperty.GetArrayElementAtIndex(i).FindPropertyRelative(BRANCH_PROPERTY_NAME);
-                    string[] words = branchProperty.enumDisplayNames[branchProperty.enumValueIndex].Split('_');
-
-                    for (int j = 0; j < words.Length; j++)
-                    {
-                        if (j > 0)
-                        {
-                            stringBuilder.Append('_');
-                        }
-
-                        stringBuilder.Append(words[j].Substring(0, 2));
-                    }
-                }
-
-                stringBuilder.Append(')');
-            }
-
-            public void DrawRequirementsProperty()
-            {
-                ingredientsProperty = requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(INGRIDIENTS_PROPERTY_NAME);
-                EditorGUILayout.BeginVertical(GUI.skin.box);
-                ingredientsProperty.arraySize = EditorGUILayout.IntField("Ingredients count", ingredientsProperty.arraySize);
-
-                EditorGUILayout.BeginHorizontal();
-
-                EditorGUILayout.BeginVertical(GUILayout.MaxWidth(100f));
-                EditorGUILayout.LabelField("Sprite", GUILayout.MaxWidth(100f));
-                spriteProperty = requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(RESULT_PREVIEW_PROPERTY_NAME);
-                spriteProperty.objectReferenceValue = EditorGUILayout.ObjectField(spriteProperty.objectReferenceValue, typeof(Sprite), false, GUILayout.MinHeight(64f));
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.BeginVertical(GUILayout.MinWidth(150f), GUILayout.ExpandWidth(true));
-                EditorGUILayout.LabelField(BRANCH_PROPERTY_NAME, GUILayout.MaxWidth(50f));
-
-                for (int i = 0; i < ingredientsProperty.arraySize; i++)
-                {
-                    ingredientProperty = ingredientsProperty.GetArrayElementAtIndex(i);
-                    ingredientProperty.FindPropertyRelative(BRANCH_PROPERTY_NAME).intValue = (int)((Branch)EditorGUILayout.EnumPopup((Branch)ingredientProperty.FindPropertyRelative(BRANCH_PROPERTY_NAME).intValue));
-                }
-
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.BeginVertical(GUILayout.MaxWidth(50f));
-                EditorGUILayout.LabelField(STAGE_ID_PROPERTY_NAME, GUILayout.MaxWidth(50f));
-
-                for (int i = 0; i < ingredientsProperty.arraySize; i++)
-                {
-                    ingredientProperty = ingredientsProperty.GetArrayElementAtIndex(i);
-                    ingredientProperty.FindPropertyRelative(STAGE_ID_PROPERTY_NAME).intValue = EditorGUILayout.IntField(ingredientProperty.FindPropertyRelative(STAGE_ID_PROPERTY_NAME).intValue);
-                }
-
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.BeginVertical(GUILayout.MaxWidth(50f));
-                EditorGUILayout.LabelField(AMOUNT_PROPERTY_NAME, GUILayout.MaxWidth(50f));
-
-                for (int i = 0; i < ingredientsProperty.arraySize; i++)
-                {
-                    ingredientProperty = ingredientsProperty.GetArrayElementAtIndex(i);
-                    ingredientProperty.FindPropertyRelative(AMOUNT_PROPERTY_NAME).intValue = EditorGUILayout.IntField(ingredientProperty.FindPropertyRelative(AMOUNT_PROPERTY_NAME).intValue);
-                }
-
-                EditorGUILayout.EndVertical();
-
-                EditorGUILayout.EndHorizontal();
-                EditorGUILayout.PropertyField(requirementsProperty.FindPropertyRelative(ICE_BUBBLES_PER_LEVEL_PROPERTY_NAME));
-                EditorGUILayout.PropertyField(requirementsProperty.FindPropertyRelative(ICE_BUBBLES_HEALTH_PROPERTY_NAME));
-                EditorGUILayout.PropertyField(requirementsProperty.FindPropertyRelative(BOXES_PER_LEVEL_PROPERTY_NAME));
-                EditorGUILayout.PropertyField(requirementsProperty.FindPropertyRelative(BOXES_HEALTH_PROPERTY_NAME));
-                bombsList.DoLayoutList();
-                EditorGUILayout.EndVertical();
-            }
-
-            public void CreateRandomRecipe(int ingredientsAmount)
-            {
-                ingredientsProperty = requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(INGRIDIENTS_PROPERTY_NAME);
-                ingredientsProperty.arraySize = ingredientsAmount;
-
-                int enumSize = Enum.GetValues(typeof(Branch)).Length;
-                List<int> list = new List<int>();
-
-                for (int i = 0; i < enumSize; i++)
-                {
-                    list.Add(i);
-                }
-
-                list.Shuffle();
-
-
-                for (int i = 0; i < ingredientsAmount; i++)
-                {
-                    ingredientProperty = ingredientsProperty.GetArrayElementAtIndex(i);
-                    ingredientProperty.FindPropertyRelative(BRANCH_PROPERTY_NAME).enumValueIndex = list[i];
-                    ingredientProperty.FindPropertyRelative(STAGE_ID_PROPERTY_NAME).intValue = 2;
-                    ingredientProperty.FindPropertyRelative(AMOUNT_PROPERTY_NAME).intValue = UnityEngine.Random.Range(2, 5);
-                }
-            }
-
-            public void AssignPotionSprite(UnityEngine.Object objectReferenceValue)
-            {
-                requirementsProperty.FindPropertyRelative(RECIPE_PROPERTY_NAME).FindPropertyRelative(RESULT_PREVIEW_PROPERTY_NAME).objectReferenceValue = objectReferenceValue;
-            }
-
-            public void SetIce(int health, int amount)
-            {
-                requirementsProperty.FindPropertyRelative(ICE_BUBBLES_HEALTH_PROPERTY_NAME).intValue = health;
-                requirementsProperty.FindPropertyRelative(ICE_BUBBLES_PER_LEVEL_PROPERTY_NAME).intValue = amount;
-            }
-
-            public void SetBoxes(int health, int amount)
-            {
-                requirementsProperty.FindPropertyRelative(BOXES_HEALTH_PROPERTY_NAME).intValue = health;
-                requirementsProperty.FindPropertyRelative(BOXES_PER_LEVEL_PROPERTY_NAME).intValue = amount;
-            }
-
-            internal void SetBombs(int amount, int firstBombDelay)
-            {
-                requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).arraySize = amount;
-                int currentDelay = firstBombDelay;
-
-                for (int i = 0; i < requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).arraySize; i++)
-                {
-                    requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).GetArrayElementAtIndex(i).FindPropertyRelative(MOVES_TO_SPAWN_PROPERTY).intValue = currentDelay;
-                    currentDelay += UnityEngine.Random.Range(3, 7);
-                }
-            }
-
-            private void InitBombsList()
-            {
-                bombsList = new ReorderableList(serializedLevelObject, requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME), true, true, true, true);
-                bombsList.drawElementCallback += BombsDrawElementCallback;
-                bombsList.drawHeaderCallback += BombsDrawHeaderCallback;
-                bombsList.elementHeight = EditorGUIUtility.singleLineHeight;
-            }
-
-            private void BombsDrawHeaderCallback(Rect rect)
-            {
-                EditorGUI.LabelField(rect, BOMBS_LIST_HEADER);
-            }
-
-            private void BombsDrawElementCallback(Rect rect, int index, bool isActive, bool isFocused)
-            {
-                EditorGUI.PropertyField(rect, requirementsProperty.FindPropertyRelative(BOMBS_DATA_PROPERTY_NAME).GetArrayElementAtIndex(index).FindPropertyRelative(MOVES_TO_SPAWN_PROPERTY));
             }
 
             // hk追加：ボール配置を保存する

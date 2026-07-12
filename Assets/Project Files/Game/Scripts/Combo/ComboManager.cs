@@ -186,7 +186,7 @@ namespace Watermelon.BubbleMerge
                         hit.transform.position = bubble.transform.position + settings.hitParticleOffset;
                         Tween.DelayedCall(settings.hitParticleDuraion, () => hit.SetActive(false));
 
-                        bubble.SwapData(LevelController.IncrementData(bubble.Data), () => LevelController.LevelBehavior.CheckRequirements(bubble));
+                        bubble.SwapData(LevelController.IncrementData(bubble.Data), () => { });
 
                         continue;
                     }
