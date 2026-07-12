@@ -37,6 +37,15 @@ namespace Watermelon.BubbleMerge
         public static void Show(int levelId)
         {
             UILevelPopUp popUp = UIController.GetPage<UILevelPopUp>();
+
+            // hk修正：カテゴリ画像（dishSprite）をrecipeId経由で自動セット
+            GameLevelData gameLevel = LevelController.Database.GetGameLevel(levelId);
+            if (gameLevel != null)
+            {
+                RecipeEntry recipe = HKSupplyManager.Instance.RecipeData.GetRecipeById(gameLevel.recipeId);
+                popUp.resultPreview.sprite = recipe != null ? recipe.dishSprite : null;
+            }
+
             popUp.LevelId = levelId;
             popUp.levelText.text = $"LEVEL {levelId + 1}";
 

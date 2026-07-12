@@ -36,6 +36,16 @@ namespace Watermelon.BubbleMerge
 
             return levels[randomLevelIndex];
         }
+        // hk追加：レベルIDに対応するGameLevelDataを返す（GetLevelと同じ考え方）
+        public GameLevelData GetGameLevel(int levelId)
+        {
+            if (levelId < gameLevels.Length)
+            {
+                return gameLevels[levelId % gameLevels.Length];
+            }
+
+            return gameLevels[levelId % gameLevels.Length];
+        }
 
         public EvolutionBranch GetBranch(Branch branchType)
         {
