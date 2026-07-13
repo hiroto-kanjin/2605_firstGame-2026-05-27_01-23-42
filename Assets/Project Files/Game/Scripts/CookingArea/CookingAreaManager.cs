@@ -52,7 +52,7 @@ namespace Watermelon.BubbleMerge
             if (ball != null && ballsInPot.Contains(ball))
             {
                 ballsInPot.Remove(ball);
-                Debug.Log("ballsInPot から削除(鍋の外へ): " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count);
+                Debug.Log("ballsInPot から削除(鍋の外へ): " + ball.GetNumber() + " 現在の個数: " + ballsInPot.Count);
                 HKGameManager.Instance.OnPotContentsChanged();
                 RecipeDisplayUI.Instance.UpdatePotContents(ballsInPot);
             }
@@ -90,14 +90,14 @@ namespace Watermelon.BubbleMerge
             if (isBallSlowEnough && !ballsInPot.Contains(ball))
             {
                 ballsInPot.Add(ball);
-                Debug.Log("ballsInPot に追加(停止): " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count);
+                Debug.Log("ballsInPot に追加(停止): " + ball.GetNumber() + " 現在の個数: " + ballsInPot.Count);
                 HKGameManager.Instance.OnPotContentsChanged();
                 RecipeDisplayUI.Instance.UpdatePotContents(ballsInPot);
             }
             else if (!isBallSlowEnough && ballsInPot.Contains(ball))
             {
                 ballsInPot.Remove(ball);
-                Debug.Log("ballsInPot から削除(動いている): " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count);
+                Debug.Log("ballsInPot から削除(動いている): " + ball.GetNumber() + " 現在の個数: " + ballsInPot.Count);
                 HKGameManager.Instance.OnPotContentsChanged();
                 RecipeDisplayUI.Instance.UpdatePotContents(ballsInPot);
             }
@@ -149,7 +149,7 @@ namespace Watermelon.BubbleMerge
         {
             if (ballsInPot.Remove(ball))
             {
-                Debug.Log("ballsInPot から削除(破棄): " + ball.GetBallType() + " 現在の個数: " + ballsInPot.Count);
+                Debug.Log("ballsInPot から削除(破棄): " + ball.GetNumber() + " 現在の個数: " + ballsInPot.Count);
                 HKGameManager.Instance.OnPotContentsChanged();
                 RecipeDisplayUI.Instance.UpdatePotContents(ballsInPot);
             }

@@ -24,22 +24,7 @@ MonoBehaviour:
     position: {x: 2.7, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0}
     scale: {x: 1, y: 1, z: 1}
-  ballPlacements:
-  - category: 1
-    branchIndex: 0
-    ballLevelIndex: 0
-    position: {x: 1.55, y: 1.2, z: 0}
+  ballPlacements: []
   specialEffectsRandom: 0
-  specialEffectPlacements:
-  - type: 2
-    position: {x: 0, y: 0, z: 0}
-  - type: 0
-    position: {x: 0, y: 0, z: 0}
-  - type: 1
-    position: {x: 0, y: 0, z: 0}
-  - type: 2
-    position: {x: 0, y: 0, z: 0}
-  - type: 1
-    position: {x: 0, y: 0, z: 0}
+  specialEffectPlacements: []
   levelShapeType: 0
-  levelBackType: 0

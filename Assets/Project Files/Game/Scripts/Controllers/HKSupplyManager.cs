@@ -274,12 +274,7 @@ namespace Watermelon.BubbleMerge
             }
         }
 
-        // hk修正：変換を1箇所にまとめる。BallBehaviorHKの共通メソッドを呼ぶ
-        // ※category＋number化により当面呼ばれなくなるが、他からの参照に備え残置。掃除は後段階。
-        private int GetStageIdFromBallType(BallType ballType)
-        {
-            return BallBehaviorHK.GetEvolutionNumber(ballType);
-        }
+        
 
         public (BallCategory, int) GetCurrentBall() => currentBall;   // hk修正：戻り値の型をcategory＋numberに
         public (BallCategory, int) GetNextBall() => nextBall;         // hk修正

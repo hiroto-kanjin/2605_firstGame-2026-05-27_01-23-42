@@ -89,20 +89,23 @@ namespace Watermelon
             }
         }
 
-        public static void OnLevelStart(int levelId)
+   public static void OnLevelStart(int levelId)
         {
             LivesSystem.LockLife();
 
             LevelSave.Value = levelId;
             OnLevelChanged?.Invoke();
-            LevelController.LoadLevel(levelId);
+
+            HKGameManager.Instance.StartGame(); // GameLevelDataを先に決める
+
+            LevelController.LoadLevel(levelId); // Levelをセットして盤面を組む
+
+            LevelController.LevelBehavior.SpawnBallPlacementsHK(); // hk修正：Levelがセットされた後にボールを撒く
 
             mapBehavior.Hide();
 
             UIController.HidePage<UIMainMenu>();
             UIController.ShowPage<UIGame>();
-
-            HKGameManager.Instance.StartGame(); // hk追加：引数不要になった
         }
 
         public static void OnLevelCompleted()

@@ -272,7 +272,7 @@ namespace Watermelon.BubbleMerge
             BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.kinoko, stageId = 0 };
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                return SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Nuisance, default, default, index);
+                return SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Nuisance, index);
             }
             return null;
         }
@@ -282,7 +282,7 @@ namespace Watermelon.BubbleMerge
             BubbleSpawnData spawnData = new BubbleSpawnData() { branch = Branch.kinoko, stageId = 0 };
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
-                return SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Special, default, default, number);
+                return SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Special, number);
             }
             return null;
         }
@@ -366,7 +366,7 @@ namespace Watermelon.BubbleMerge
             if (LevelController.CreateRandomBubbleData(spawnData, out var data))
             {
                 // hk修正：indexにstageId（番号）を渡す。番号はBallIndexから引かれる（Ball Type依存を廃止）
-                BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Evolution, default, default, stageId);
+               BubbleBehavior bubble = SpawnBubble(spawnData, data, position, false, Vector2.zero, BallCategory.Evolution, stageId);
 
                 return bubble;
             }
@@ -390,25 +390,20 @@ namespace Watermelon.BubbleMerge
 
             smallest.SwapData(secondSmallest.Data);
         }
-
-        // hk修正：category/ballBranch/ballType/indexを追加。渡された場合、Initより前にSetDataを呼び、正しい物理データ・見た目を適用させる
-        private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity, BallCategory? category = null, Branch ballBranch = default, BallType ballType = default, int? index = null)
+       private BubbleBehavior SpawnBubble(BubbleSpawnData spawnData, BubbleData data, Vector3 position, bool quickAppearance, Vector2 startVelocity, BallCategory? category = null, int? index = null)
         {
             BubbleBehavior bubble = bubblesPool.GetPooledComponent();
+            bubble.enabled = true; // hk修正：プール再利用時にBubbleBehaviorが無効のままになるのを防ぐ
             bubble.transform.SetParent(transform);
             bubble.transform.position = position;
 
             // hk修正：Initより前にSetDataを呼ぶ（プールから使い回した古いデータのままInitされるのを防ぐ）
-            if (category.HasValue)
+            if (category.HasValue && index.HasValue)
             {
                 BallBehaviorHK ballHK = bubble.GetComponent<BallBehaviorHK>();
                 if (ballHK != null)
                 {
-                    // hk修正：indexが渡されたら特殊・お邪魔用のSetData、なければ進化用のSetDataを呼ぶ
-                    if (index.HasValue)
-                        ballHK.SetData(category.Value, index.Value);
-                    else
-                        ballHK.SetData(category.Value, ballBranch, ballType);
+                    ballHK.SetData(category.Value, index.Value);
                 }
             }
 
