@@ -169,7 +169,7 @@ namespace Watermelon.BubbleMerge
 
         private void OnBubbleLaunched(BubbleBehavior launchedBubble)
         {
-            Debug.Log("OnBubbleLaunched called. isFinisherActive=" + isFinisherActive + " bubble=" + launchedBubble.name);
+            
 
             HKGameManager.Instance.OnShotFired();
 
