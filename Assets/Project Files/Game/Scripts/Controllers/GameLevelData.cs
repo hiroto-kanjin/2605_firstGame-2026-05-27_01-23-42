@@ -8,6 +8,7 @@ namespace Watermelon.BubbleMerge
     {
         [Header("基本設定")]
         public string levelName;
+        [HideInInspector] public string gameLevelId; // hk追加：追加・複製・並び替えをしても変わらない固有ID。直接編集しない。
         public int turnsLimit = 20;
         public int coinsReward = 20;
         public int recipeId; // hk追加：このレベルで使う完成料理のID（②RecipeDataを指す）

@@ -24,8 +24,16 @@ namespace Watermelon
 
         public static event SimpleCallback OnLevelChanged;
 
-        public static SimpleIntSave LevelSave { get; private set; }
-        public static int LevelID => LevelSave.Value;
+        public static SimpleStringSave LevelSaveId { get; private set; } // hk修正：番号ではなく固有IDで保存する
+
+        public static int LevelID // hk修正：外部互換のため、固有IDから配列の位置(番号)を逆算して返す
+        {
+            get
+            {
+                int index = LevelController.Database.GetIndexByGameLevelId(LevelSaveId.Value);
+                return index >= 0 ? index : 0;
+            }
+        }
 
         public static GameData Data => instance.gameData;
 
@@ -33,7 +41,7 @@ namespace Watermelon
         {
             instance = this;
 
-            LevelSave = SaveController.GetSaveObject<SimpleIntSave>("levelSave");
+            LevelSaveId = SaveController.GetSaveObject<SimpleStringSave>("levelSaveId"); // hk修正：キー名も変更（旧データと衝突させないため）
 
             CacheComponent(out particlesController);
             CacheComponent(out floatingTextController);
@@ -89,16 +97,17 @@ namespace Watermelon
             }
         }
 
-        public static void OnLevelStart(int levelId)
+        public static void OnLevelStart(int levelId) // hk修正：外部（マップ等）からは今まで通り番号を受け取り、ここで固有IDに変換する
         {
             LivesSystem.LockLife();
 
-            LevelSave.Value = levelId;
+            GameLevelData targetLevel = LevelController.Database.GameLevels[levelId];
+            LevelSaveId.Value = targetLevel.gameLevelId;
             OnLevelChanged?.Invoke();
 
-            LevelController.LoadLevel(levelId); // hk修正：先に盤面を掃除＆構築する（中でClearが走るため、ボール生成より前に済ませる）
-
-            HKGameManager.Instance.StartGame(); // hk修正：掃除の後にボールを生成する（Clearで消されるのを防ぐ）
+            HKGameManager.Instance.SetCurrentLevel(LevelSaveId.Value);
+            LevelController.LoadLevel(LevelSaveId.Value);
+            HKGameManager.Instance.StartGame();
 
             mapBehavior.Hide();
 
@@ -106,25 +115,33 @@ namespace Watermelon
             UIController.ShowPage<UIGame>();
         }
 
-        public static void OnLevelCompleted()
+        public static void OnLevelCompleted() // hk修正：固有IDベースで次のレベルへ進む
         {
             UIController.HidePage<UIGame>();
             UIController.ShowPage<UIComplete>();
 
-            LevelSave.Value++;
+            int currentIndex = LevelController.Database.GetIndexByGameLevelId(LevelSaveId.Value);
+            int nextIndex = currentIndex + 1;
 
-            if (LevelSave.Value > LevelController.MaxLevelReached)
-                LevelController.MaxLevelReached = LevelSave.Value;
+            if (nextIndex < LevelController.Database.GameLevels.Length)
+            {
+                LevelSaveId.Value = LevelController.Database.GameLevels[nextIndex].gameLevelId;
+            }
+
+            if (nextIndex > LevelController.MaxLevelReached)
+                LevelController.MaxLevelReached = nextIndex;
         }
 
         public static void NextLevel()
         {
             SaveController.MarkAsSaveIsRequired();
-            LevelController.LoadLevel(LevelSave.Value);
+
+            HKGameManager.Instance.SetCurrentLevel(LevelSaveId.Value);
+            LevelController.LoadLevel(LevelSaveId.Value);
 
             OnLevelChanged?.Invoke();
 
-            HKGameManager.Instance.StartGame(); // hk追加
+            HKGameManager.Instance.StartGame();
 
             AdsManager.ShowInterstitial(null);
         }
@@ -139,9 +156,11 @@ namespace Watermelon
         {
             UIController.HidePage<UIGameOver>();
             UIController.ShowPage<UIGame>();
-            LevelController.LoadLevel(LevelSave.Value);
 
-            HKGameManager.Instance.StartGame(); // hk追加
+            HKGameManager.Instance.SetCurrentLevel(LevelSaveId.Value);
+            LevelController.LoadLevel(LevelSaveId.Value);
+
+            HKGameManager.Instance.StartGame();
 
             AdsManager.ShowInterstitial(null);
         }

@@ -1251,12 +1251,11 @@ namespace Watermelon.BubbleMerge
                 }
                 else
                 {
-                    UpdateNote();
                     stringBuilder.Clear();
                     stringBuilder.Append(NUMBER);
                     stringBuilder.Append(index + 1);
                     stringBuilder.Append(SEPARATOR);
-                    stringBuilder.Append(noteProperty.stringValue);
+                    stringBuilder.Append(levelObject.name);
                     return stringBuilder.ToString();
                 }
             }

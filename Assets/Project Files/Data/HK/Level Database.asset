@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e635abd98c978bd4398a2e23e9350a48, type: 3}
   m_Name: Level Database
   m_EditorClassIdentifier: 
+  "_\u672A\u6574\u7406\u30E1\u30E2": "\u203B levels / items / levelShapes \u306F\u4F11\u7720\u4E2D\uFF08\u672A\u4F7F\u7528\uFF09\u3002\u8868\u793A\u3092\u6B62\u3081\u3066\u3044\u308B\u3060\u3051\u3067\u30C7\u30FC\u30BF\u306F\u6B8B\u5B58\u3002\u6574\u7406\u6642\u306B\u524A\u9664\u3059\u308B\u3053\u3068\u3002"
   levels:
   - {fileID: 11400000, guid: c6570b5e6cc0ea243817d1caf88c1bd8, type: 2}
   gameLevels:
@@ -85,24 +86,3 @@ MonoBehaviour:
     prefab: {fileID: 0}
   - type: 11
     prefab: {fileID: 0}
-  branches:
-  - branch: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    requirementUIPrefab: {fileID: 8795762186055714128, guid: 73f5c55e267b5a0439d5f1dc72f91de1,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
-      size: 1
-  - branch: 0
-    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    requirementUIPrefab: {fileID: 8795762186055714128, guid: 73f5c55e267b5a0439d5f1dc72f91de1,
-      type: 3}
-    stages:
-    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
-      size: 1
-    - icon: {fileID: 21300000, guid: 50eb667f18fe0454ea31688e61136cd0, type: 3}
-      size: 1
-  potionSprites:
-  - {fileID: 21300000, guid: 5774bb467539ec343881ad7097c871bc, type: 3}

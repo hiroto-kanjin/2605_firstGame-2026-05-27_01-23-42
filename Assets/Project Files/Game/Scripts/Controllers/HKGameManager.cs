@@ -22,23 +22,29 @@ namespace Watermelon.BubbleMerge
             Instance = this;
         }
 
-        public void StartGame() // hk追加
+        public void SetCurrentLevel(string gameLevelId) // hk修正：番号ではなく固有IDで受け取る
         {
-            Debug.Log("StartGame called");
+            GameLevelData level = LevelController.Database.GetGameLevelById(gameLevelId);
 
-            // hk修正：古いGameLevelDatabaseではなく、新しいLevelDatabase.GameLevelsから取得（棚を統合）
-            GameLevelData[] gameLevels = LevelController.Database.GameLevels;
-            int levelId = GameController.LevelID;
-
-            if (gameLevels == null || levelId < 0 || levelId >= gameLevels.Length)
+            if (level == null)
             {
-                Debug.LogError($"HKGameManager: ゲームレベル{levelId}のデータがありません");
+                Debug.LogError($"HKGameManager: gameLevelId「{gameLevelId}」のデータがありません");
                 currentLevel = null;
                 return;
             }
 
-            currentLevel = gameLevels[levelId];
-            if (currentLevel == null) return;
+            currentLevel = level;
+        }
+
+        public void StartGame() // hk修正：currentLevelは事前にSetCurrentLevelでセットされている前提にした
+        {
+            Debug.Log("StartGame called");
+
+            if (currentLevel == null)
+            {
+                Debug.LogError("HKGameManager: currentLevelが未設定です。StartGameの前にSetCurrentLevelを呼んでください。");
+                return;
+            }
 
             currentScore = 0;
             isRecipeReady = false;
@@ -52,8 +58,7 @@ namespace Watermelon.BubbleMerge
 
             UIController.GetPage<Watermelon.UIGame>().ResetCountUI();
             UIController.GetPage<Watermelon.UIGame>().UpdateShotsRemaining(shotsRemaining);
-            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.recipeId); // hk修正：recipeIdで②から食材を組み立てる
-           
+            RecipeDisplayUI.Instance.SetupRecipe(currentLevel.recipeId);
         }
 
         public void OnShotFired() // hk追加

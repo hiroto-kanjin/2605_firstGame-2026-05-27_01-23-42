@@ -56,9 +56,10 @@ namespace Watermelon
         {
             Overlay.Show(0.3f, () =>
             {
-                GameController.LevelSave.Value = Mathf.Clamp(GameController.LevelID - 1, 0, int.MaxValue);
+                int prevIndex = Mathf.Clamp(GameController.LevelID - 1, 0, LevelController.Database.GameLevels.Length - 1);
+                GameController.LevelSaveId.Value = LevelController.Database.GameLevels[prevIndex].gameLevelId;
                 GameController.OnLevelManuallyChanged();
-                LevelController.LoadLevel(GameController.LevelID);
+                LevelController.LoadLevel(GameController.LevelSaveId.Value);
 
                 SaveController.MarkAsSaveIsRequired();
 
@@ -72,11 +73,14 @@ namespace Watermelon
         {
             Overlay.Show(0.3f, () =>
             {
-                GameController.LevelSave.Value++;
-                if (GameController.LevelID > LevelController.MaxLevelReached)
-                    LevelController.MaxLevelReached = GameController.LevelID;
+                int nextIndex = Mathf.Clamp(GameController.LevelID + 1, 0, LevelController.Database.GameLevels.Length - 1);
+                GameController.LevelSaveId.Value = LevelController.Database.GameLevels[nextIndex].gameLevelId;
+
+                if (nextIndex > LevelController.MaxLevelReached)
+                    LevelController.MaxLevelReached = nextIndex;
+
                 GameController.OnLevelManuallyChanged();
-                LevelController.LoadLevel(GameController.LevelID);
+                LevelController.LoadLevel(GameController.LevelSaveId.Value);
 
                 Overlay.Hide(0.3f);
             });

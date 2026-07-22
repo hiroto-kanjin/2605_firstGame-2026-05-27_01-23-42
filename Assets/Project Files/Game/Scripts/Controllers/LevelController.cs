@@ -92,7 +92,7 @@ namespace Watermelon.BubbleMerge
             LevelBehavior.OnBubbleSelected += BubbleSelected;
         }
 
-        public void StartLevel(int levelId)
+        public void StartLevel(string gameLevelId) // hk修正：番号ではなく固有IDで受け取る
         {
             GameLevelData currentGameLevel = HKGameManager.Instance.GetCurrentLevel();
             if (currentGameLevel == null)
@@ -100,6 +100,8 @@ namespace Watermelon.BubbleMerge
                 Debug.LogError("GameLevelDataが取得できません");
                 return;
             }
+
+            int displayIndex = database.GetIndexByGameLevelId(gameLevelId); // hk追加：UI表示や初回判定など、番号が必要な場面用に変換しておく
 
             Level = currentGameLevel.levelDesign; // hk修正：levels配列ではなくGameLevelDataのLevel Designから取る
             Level.Init();
@@ -122,11 +124,11 @@ namespace Watermelon.BubbleMerge
             if (!gameUI.IsPageDisplayed)
                 UIController.ShowPage<UIGame>();
 
-            gameUI.OnLevelStarted(levelId);
+            gameUI.OnLevelStarted(displayIndex); // hk修正：番号が必要なのでdisplayIndexを渡す
 
             LevelBehavior.InitialSpawn(() =>
             {
-                if (levelId == 0)
+                if (displayIndex == 0) // hk修正：番号が必要なのでdisplayIndexを使う
                 {
                     ITutorial firstLevelTutorial = new FirstLevelTutorial();
 
@@ -139,7 +141,7 @@ namespace Watermelon.BubbleMerge
                 }
             });
 
-            SavePresets.CreateSave("Level " + (levelId + 1), "Levels");
+            SavePresets.CreateSave("Level " + (displayIndex + 1), "Levels"); // hk修正：番号が必要なのでdisplayIndexを使う
 
             IsGameplayActive = true;
         }
@@ -170,16 +172,10 @@ namespace Watermelon.BubbleMerge
             });
         }
 
-       
-
-     
-
         public static bool CreateRandomBubbleData(BubbleSpawnData spawnData, out BubbleData data)
         {
             return CreateBubbleData(spawnData, out data);
         }
-
-
 
         public static BubbleData IncrementData(BubbleData data)
         {
@@ -243,10 +239,10 @@ namespace Watermelon.BubbleMerge
 
         }
 
-        public static void LoadLevel(int levelId)
+        public static void LoadLevel(string gameLevelId) // hk修正：番号ではなく固有IDで受け取る
         {
             instance.ClearLevel();
-            instance.StartLevel(levelId);
+            instance.StartLevel(gameLevelId);
         }
 
         public static void CloseLevel()
