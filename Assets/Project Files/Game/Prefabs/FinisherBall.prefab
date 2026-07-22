@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7349332004102407695}
   - component: {fileID: 7667392931469995671}
   - component: {fileID: 3554567422226418192}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FinisherBall
   m_TagString: Bubble
   m_Icon: {fileID: 0}
@@ -94,8 +94,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.BallBehaviorHK
   ballCategory: 0
-  branch: 0
-  ballType: 0
   ballIndex: 0
 --- !u!114 &3554567422226418192
 MonoBehaviour:
@@ -127,7 +125,7 @@ GameObject:
   - component: {fileID: 4794553568996346258}
   - component: {fileID: 4666644514279186004}
   - component: {fileID: 7602372591959898215}
-  m_Layer: 13
+  m_Layer: 7
   m_Name: Attraction Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

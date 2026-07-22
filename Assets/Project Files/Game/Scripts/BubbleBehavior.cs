@@ -139,8 +139,8 @@ namespace Watermelon.BubbleMerge
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            bool didMerge = false; // hk追加：今回のぶつかりで合体したかどうかの目印
             Vector2 velocityBeforeCollision = rb.linearVelocity; // hk追加：ぶつかる前の速度（向きも強さも）を保存
+            bool didMerge = false; // hk修正：TryMergeの戻り値をここに入れる
 
             if (collision.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE))
             {
@@ -161,61 +161,9 @@ namespace Watermelon.BubbleMerge
                 if (bubbleSpecialEffect != null)
                     bubbleSpecialEffect.OnBubbleCollided(bubble);
 
-                if (CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()
-                    && !IsNuisance() && !bubble.IsNuisance() && IsNextStageAllowed()) // hk追加：BallDataに次の段階が実在する場合のみ進化する
-                {
-                    didMerge = true; // hk追加：合体することが決まった目印
+                didMerge = TryMerge(bubble, collision); // hk修正：合体の判定・実行はTryMergeに共通化
 
-                    bubble.IsMerging = true;
-                    IsMerging = true;
-
-                    MergingPartner = bubble;
-                    bubble.MergingPartner = this;
-
-                    // hk追加：合体時の拡縮（速度をゼロにする前に、ぶつかった強さを使う）
-                    if (scalePunch != null && scalePunch.enabled)
-                        scalePunch.PlayMergePunch(rb.mass * collision.relativeVelocity.magnitude);
-
-                    // hk追加：相手側は自分のOnCollisionEnter2Dが呼ばれない可能性があるため、ここで明示的に呼ぶ
-                    if (bubble.scalePunch != null && bubble.scalePunch.enabled)
-                        bubble.scalePunch.PlayMergePunch(bubble.rb.mass * collision.relativeVelocity.magnitude);
-
-                    // hk修正：合体決定の瞬間、跳ね返りによる動きを両方ともゼロにする（バウンド防止）
-                    bubble.RB.SetVelocity(Vector3.zero);
-                    bubble.DisablePhysics();
-                    RB.SetVelocity(Vector3.zero);
-                    bubble.graphics.DoMerge(transform);
-
-                    graphics.DoMerge(bubble.transform, () =>
-                    {
-#if MODULE_HAPTIC
-                        Haptic.Play(Haptic.HAPTIC_LIGHT);
-#endif
-
-                        AudioController.PlaySound(AudioController.AudioClips.bubbleMergeSound);
-
-                        LevelController.LevelBehavior.OnBubblesMerged(this, bubble, (transform.position));
-
-                        bubble.Pop();
-                        Pop();
-
-                        colliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
-                        gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
-
-                        bubble.colliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
-                        bubble.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
-
-                        MergingPartner = null;
-                        IsMerging = false;
-
-                        bubble.MergingPartner = null;
-                        bubble.IsMerging = false;
-                    });
-
-                    TrajectoryController.OnBubblePoped(bubble);
-                    TrajectoryController.OnBubblePoped(this);
-                }
-                else
+                if (!didMerge)
                 {
                     if (!IsMerging && (bubble.BubbleSpecialEffect != null && bubble.BubbleSpecialEffect.EffectType != BubbleSpecialEffect.Type.Cage))
                     {
@@ -263,6 +211,81 @@ namespace Watermelon.BubbleMerge
                     patternForLimit.SquishOnCollisionSensitivity
                 );
             }
+        }
+
+        // hk追加：合体条件を満たしていれば合体を実行する共通処理。OnCollisionEnter2D・OnCollisionStay2Dの両方から呼ばれる
+        private bool TryMerge(BubbleBehavior bubble, Collision2D collision)
+        {
+            if (!(CanBeMerge() && bubble.CanBeMerge() && Compare(bubble) && !HKSupplyManager.Instance.IsFinisherActive()
+                && !IsNuisance() && !bubble.IsNuisance() && IsNextStageAllowed())) // hk追加：BallDataに次の段階が実在する場合のみ進化する
+            {
+                return false;
+            }
+
+            bubble.IsMerging = true;
+            IsMerging = true;
+
+            MergingPartner = bubble;
+            bubble.MergingPartner = this;
+
+            // hk追加：合体時の拡縮（速度をゼロにする前に、ぶつかった強さを使う）
+            if (scalePunch != null && scalePunch.enabled)
+                scalePunch.PlayMergePunch(rb.mass * collision.relativeVelocity.magnitude);
+
+            // hk追加：相手側は自分のOnCollisionEnter2Dが呼ばれない可能性があるため、ここで明示的に呼ぶ
+            if (bubble.scalePunch != null && bubble.scalePunch.enabled)
+                bubble.scalePunch.PlayMergePunch(bubble.rb.mass * collision.relativeVelocity.magnitude);
+
+            // hk修正：合体決定の瞬間、跳ね返りによる動きを両方ともゼロにする（バウンド防止）
+            bubble.RB.SetVelocity(Vector3.zero);
+            bubble.DisablePhysics();
+            RB.SetVelocity(Vector3.zero);
+            bubble.graphics.DoMerge(transform);
+
+            graphics.DoMerge(bubble.transform, () =>
+            {
+#if MODULE_HAPTIC
+                Haptic.Play(Haptic.HAPTIC_LIGHT);
+#endif
+
+                AudioController.PlaySound(AudioController.AudioClips.bubbleMergeSound);
+
+                LevelController.LevelBehavior.OnBubblesMerged(this, bubble, (transform.position));
+
+                bubble.Pop();
+                Pop();
+
+                colliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+                gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+
+                bubble.colliderRef.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+                bubble.gameObject.layer = PhysicsHelper.LAYER_BUBBLE;
+
+                MergingPartner = null;
+                IsMerging = false;
+
+                bubble.MergingPartner = null;
+                bubble.IsMerging = false;
+            });
+
+            TrajectoryController.OnBubblePoped(bubble);
+            TrajectoryController.OnBubblePoped(this);
+
+            return true;
+        }
+
+        // hk追加：ぶつかった瞬間の合図を取りこぼした場合の保険。触れている間、合体条件だけを毎フレーム確認する
+        private void OnCollisionStay2D(Collision2D collision)
+        {
+            if (IsMerging) return;
+            if (!collision.gameObject.CompareTag(PhysicsHelper.TAG_BUBBLE)) return;
+            if (collision.gameObject.GetComponent<FinisherBall>() != null) return;
+            if (GetComponent<FinisherBall>() != null) return;
+
+            BubbleBehavior bubble = collision.gameObject.GetComponent<BubbleBehavior>();
+            if (bubble == null) return;
+
+            TryMerge(bubble, collision);
         }
 
         public bool Compare(BubbleBehavior bubble)

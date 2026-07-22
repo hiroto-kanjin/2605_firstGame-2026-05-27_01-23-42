@@ -17,6 +17,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c6570b5e6cc0ea243817d1caf88c1bd8, type: 2}
   gameLevels:
   - levelName: 001
+    gameLevelId: 45bc66c7-82ed-4e15-a0ac-4daba3d70ab1
     turnsLimit: 1000
     coinsReward: 200
     recipeId: 0
@@ -62,27 +63,39 @@ MonoBehaviour:
   - type: 0
     prefab: {fileID: 5363470372480083075, guid: 64b6356a5a040c4449262c01b8436e73,
       type: 3}
+    mergeLineY: 0.46000004
   - type: 1
     prefab: {fileID: 8793055630726231160, guid: 487eb6bd3f64bdd4c9e4c7654b22495d,
       type: 3}
+    mergeLineY: 0
   - type: 2
     prefab: {fileID: 5363470372480083075, guid: afad2355cb699944a8b9166fc73939c4,
       type: 3}
+    mergeLineY: 0
   - type: 3
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 4
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 5
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 6
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 7
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 8
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 9
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 10
     prefab: {fileID: 0}
+    mergeLineY: 0
   - type: 11
     prefab: {fileID: 0}
+    mergeLineY: 0

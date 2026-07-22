@@ -19,8 +19,14 @@ namespace Watermelon.BubbleMerge
         [Header("威力カーブ（横：引っ張り具合0〜1／縦：威力の割合0〜1）")]
         [SerializeField] private AnimationCurve forceCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
+        [Header("発射直後のすり抜け設定")] // hk追加
+        [SerializeField] private string launchingLayerName = "LaunchingBall"; // hk追加：発射直後の間だけ使うレイヤー名
+        [SerializeField] private string normalLayerName = "Bubble";           // hk修正：Defaultではなく盤面ボールのレイヤーに戻す
+
         private Rigidbody2D rb;   // 飛ばすための物理の体
         private bool isDragging;  // 今引っ張り中かどうか
+
+        private bool isLaunching;        // hk追加：今すり抜け状態中かどうか
 
         private void Awake()
         {
@@ -42,6 +48,12 @@ namespace Watermelon.BubbleMerge
             if (isDragging && Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 DoRelease();
+            }
+
+            // hk修正：すり抜け状態中なら、毎フレーム中間ラインをチェックする
+            if (isLaunching)
+            {
+                CheckClearLine();
             }
         }
 
@@ -101,6 +113,36 @@ namespace Watermelon.BubbleMerge
             // ④引っ張りと反対方向へ発射（キャラはここまで一切動かしていない）
             Vector3 launchDir = -pullVector.normalized;
             rb.AddForce(launchDir * force, ForceMode2D.Impulse);
+
+            // hk追加：発射直後のすり抜け状態を開始する
+            StartLaunchingState();
+        }
+
+        // hk修正：レイヤー変更のみ行う（距離の記録は不要になった）
+        private void StartLaunchingState()
+        {
+            isLaunching = true;
+            SetLayerRecursive(transform, LayerMask.NameToLayer(launchingLayerName));
+        }
+
+        // hk修正：発射地点からの距離ではなく、盤面の中間ライン(Y座標)を超えたかで判定する
+        private void CheckClearLine()
+        {
+            if (transform.position.y >= LevelController.CurrentMergeLineY)
+            {
+                isLaunching = false;
+                SetLayerRecursive(transform, LayerMask.NameToLayer(normalLayerName));
+            }
+        }
+
+        // hk追加：自分自身と、すべての子オブジェクトのレイヤーをまとめて変更する
+        private void SetLayerRecursive(Transform target, int layer)
+        {
+            target.gameObject.layer = layer;
+            foreach (Transform child in target)
+            {
+                SetLayerRecursive(child, layer);
+            }
         }
     }
 }

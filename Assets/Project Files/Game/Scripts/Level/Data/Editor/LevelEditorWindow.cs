@@ -672,6 +672,12 @@ namespace Watermelon.BubbleMerge
                 LoadLevelShape();
             }
 
+            // hk追加：発射直後のすり抜け判定に使う中間ラインを自動計算するボタン
+            if (GUILayout.Button("中間位置を計算 (Merge Line Y)"))
+            {
+                ComputeAndSaveMergeLineY();
+            }
+
             EditorGUILayout.Space();
             DisplaySaveSection();
             itemsListWidthRect = EditorGUILayout.BeginVertical();
@@ -1046,6 +1052,55 @@ namespace Watermelon.BubbleMerge
 
             Debug.LogError("GetLevelShapePrefab element not found");
             return null;
+        }
+
+        // hk追加：選択中のLevel Shape Typeに対応するシェイプのprefabから、壁の当たり判定を集めて中間の高さを計算し、mergeLineYに書き込む
+        private void ComputeAndSaveMergeLineY()
+        {
+            LevelShapeType shapeType = (LevelShapeType)selectedLevelRepresentation.levelShapeTypeProperty.intValue;
+
+            for (int i = 0; i < levelShapesSerializedProperty.arraySize; i++)
+            {
+                SerializedProperty shapeElement = levelShapesSerializedProperty.GetArrayElementAtIndex(i);
+
+                if ((LevelShapeType)shapeElement.FindPropertyRelative(TYPE_PROPERTY_PATH).intValue != shapeType)
+                    continue;
+
+                GameObject prefab = (GameObject)shapeElement.FindPropertyRelative(PREFAB_PROPERTY_PATH).objectReferenceValue;
+
+                if (prefab == null)
+                {
+                    Debug.LogError("ComputeAndSaveMergeLineY: prefabが未設定です");
+                    return;
+                }
+
+                Collider2D[] colliders = prefab.GetComponentsInChildren<Collider2D>();
+
+                if (colliders.Length == 0)
+                {
+                    Debug.LogError("ComputeAndSaveMergeLineY: Collider2Dが見つかりません");
+                    return;
+                }
+
+                float minY = float.MaxValue;
+                float maxY = float.MinValue;
+
+                foreach (Collider2D collider in colliders)
+                {
+                    minY = Mathf.Min(minY, collider.bounds.min.y);
+                    maxY = Mathf.Max(maxY, collider.bounds.max.y);
+                }
+
+                float middleY = (minY + maxY) / 2f;
+
+                shapeElement.FindPropertyRelative("mergeLineY").floatValue = middleY;
+                levelShapesSerializedProperty.serializedObject.ApplyModifiedProperties();
+
+                Debug.Log($"中間位置を計算しました: {middleY}");
+                return;
+            }
+
+            Debug.LogError("ComputeAndSaveMergeLineY: 該当するシェイプが見つかりません");
         }
 
         private GameObject GetLevelBackgroundPrefab(LevelBackgroundType levelBackgroundType)

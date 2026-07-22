@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7667392931469995671}
   - component: {fileID: 6775142015406012119}
   - component: {fileID: 3408107532016930254}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bubble
   m_TagString: Bubble
   m_Icon: {fileID: 0}
@@ -95,8 +95,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.BallBehaviorHK
   ballCategory: 0
-  branch: 0
-  ballType: 0
   ballIndex: 0
 --- !u!114 &6775142015406012119
 MonoBehaviour:
@@ -257,6 +255,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  launchingLayerName: LaunchingBall
+  normalLayerName: Bubble
+  clearDistance: 10
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +269,7 @@ GameObject:
   - component: {fileID: 4794553568996346258}
   - component: {fileID: 4666644514279186004}
   - component: {fileID: 7602372591959898215}
-  m_Layer: 13
+  m_Layer: 7
   m_Name: Attraction Trigger
   m_TagString: Bubble
   m_Icon: {fileID: 0}
