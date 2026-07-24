@@ -23,15 +23,12 @@ namespace Watermelon.BubbleMerge
         public SpecialEffectSaveHK[] SpecialEffectPlacements => specialEffectPlacements; // hk追加
 
         [SerializeField, LevelEditorSetting] LevelShapeType levelShapeType;
-
-        [SerializeField, LevelEditorSetting] bool overrideMergeLine; // hk追加：このレベルだけ判定ラインを個別調整するか
-        [SerializeField, LevelEditorSetting] float mergeLineYOverride; // hk追加：個別調整する場合の高さ
+        [SerializeField, LevelEditorSetting] float mergeLineYOffset; // hk追加：中間位置の微調整（+で上、-で下）
 
         public ItemSave[] Items => items;
         public int ItemsAmount => items.Length;
         public LevelShapeType LevelShapeType => levelShapeType;
-        public bool OverrideMergeLine => overrideMergeLine; // hk追加
-        public float MergeLineYOverride => mergeLineYOverride; // hk追加
+        public float MergeLineYOffset => mergeLineYOffset; // hk追加
 
         public void Init()
         {

@@ -114,6 +114,13 @@ namespace Watermelon.BubbleMerge
             Vector3 launchDir = -pullVector.normalized;
             rb.AddForce(launchDir * force, ForceMode2D.Impulse);
 
+            // hk追加：発射が成立したので、次のボールへ進めるための合図を出す
+            BubbleBehavior bubbleBehavior = GetComponent<BubbleBehavior>();
+            if (bubbleBehavior != null)
+            {
+                LevelController.LevelBehavior.NotifyBubbleLaunched(bubbleBehavior);
+            }
+
             // hk追加：発射直後のすり抜け状態を開始する
             StartLaunchingState();
         }

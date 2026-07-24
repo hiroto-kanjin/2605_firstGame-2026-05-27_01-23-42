@@ -1633,13 +1633,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   recipeSlotPrefab: {fileID: 361836695}
   slotParent: {fileID: 455933387}
-  layouts:
-  - ingredientCount: 0
-    positions:
-    - {x: 0, y: 0}
-  - ingredientCount: 0
-    positions: []
-  autoSlotSpacing: 150
+  columns: 3
+  slotSpacingX: 150
+  slotSpacingY: 150
+  paddingLeft: 0
+  paddingTop: 0
+  previewEvolutionCount: 6
+  previewSpecialCount: 3
 --- !u!1 &503710161
 GameObject:
   m_ObjectHideFlags: 0

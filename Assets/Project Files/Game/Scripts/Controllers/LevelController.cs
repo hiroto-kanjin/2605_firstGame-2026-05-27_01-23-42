@@ -68,6 +68,8 @@ namespace Watermelon.BubbleMerge
 
         public static event SimpleCallback OnTurnChanged;
 
+        public static float CurrentMergeLineY { get; private set; } // hk追加：発射直後のボールが盤面ボールと衝突し始める高さ
+
         private void Awake()
         {
             instance = this;
@@ -92,8 +94,6 @@ namespace Watermelon.BubbleMerge
             LevelBehavior.OnBubbleSelected += BubbleSelected;
         }
 
-        public static float CurrentMergeLineY { get; private set; } // hk追加：発射直後のボールが盤面ボールと衝突し始める高さ
-
         public void StartLevel(string gameLevelId) // hk修正：番号ではなく固有IDで受け取る
         {
             GameLevelData currentGameLevel = HKGameManager.Instance.GetCurrentLevel();
@@ -110,8 +110,8 @@ namespace Watermelon.BubbleMerge
 
             LevelShape currentShape = database.GetShape(Level.LevelShapeType); // hk追加
 
-            // hk追加：レベル側で個別調整が指定されていればそちらを優先、無ければシェイプの自動値を使う
-            CurrentMergeLineY = Level.OverrideMergeLine ? Level.MergeLineYOverride : currentShape.MergeLineY;
+            // hk修正：シェイプの自動計算値に、レベル側のオフセットを足した数値を使う
+            CurrentMergeLineY = currentShape.MergeLineY + Level.MergeLineYOffset;
 
             LevelBehavior.ChangeShape(currentShape.Prefab);
 

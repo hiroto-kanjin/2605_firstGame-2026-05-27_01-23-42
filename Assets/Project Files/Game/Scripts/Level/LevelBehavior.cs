@@ -32,6 +32,12 @@ namespace Watermelon.BubbleMerge
         public event BubbleCallback OnBubbleLaunched;
         public event BubbleCallback OnBubbleMerged;
 
+        // hk追加：HKMochiLauncherなど、Updateの旧ドラッグ発射を経由しない発射方式から、発射合図を出すための窓口
+        public void NotifyBubbleLaunched(BubbleBehavior bubble)
+        {
+            OnBubbleLaunched?.Invoke(bubble);
+        }
+
         private ComboManager comboManager;
 
         private List<Vector2> positionsList = new List<Vector2>();
@@ -483,7 +489,11 @@ namespace Watermelon.BubbleMerge
                 if (selectedBubble != null)
                 {
                     Ray ray = Camera.main.ScreenPointToRay(InputController.MousePosition);
-                    if (Vector3.Distance(ray.origin.SetZ(selectedBubble.transform.position.z), selectedBubble.transform.position) > 0.25f)
+
+                    // hk追加：モチランチャー搭載のボールは、そちら側で発射・合図を出すため、旧発射処理はスキップする（二重発射防止）
+                    bool hasMochiLauncher = selectedBubble.GetComponent<HKMochiLauncher>() != null;
+
+                    if (!hasMochiLauncher && Vector3.Distance(ray.origin.SetZ(selectedBubble.transform.position.z), selectedBubble.transform.position) > 0.25f)
                     {
                         // hk追加：ファイナルカウントが0の時は発射しない
                         if (!HKGameManager.Instance.IsFinalCountZero())
