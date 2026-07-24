@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7349332004102407695}
   - component: {fileID: 7667392931469995671}
   - component: {fileID: 6775142015406012119}
-  - component: {fileID: 3408107532016930254}
+  - component: {fileID: 371547735418765867}
   m_Layer: 7
   m_Name: Bubble
   m_TagString: Bubble
@@ -216,7 +216,7 @@ MonoBehaviour:
   mergeDuration: 0.2
   mergeMinStrength: 0
   mergeMaxStrength: 5
---- !u!114 &3408107532016930254
+--- !u!114 &371547735418765867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -225,20 +225,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 2575003353096176513}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b3eed04a5f14c944bbb18acfb8dc2f9, type: 3}
+  m_Script: {fileID: 11500000, guid: ce8727ffc81515d45931a61ad72a8de6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.HKMochiLauncher
-  minForce: 2
-  maxForce: 12
-  maxPullDistance: 3
-  forceCurve:
+  m_EditorClassIdentifier: Assembly-CSharp::Watermelon.BubbleMerge.HKMochiVisual
+  ballSprite: {fileID: 21300000, guid: bd0bb2ebf32d8c142802818c66c4592e, type: 3}
+  ballColor: {r: 0, g: 1, b: 1, a: 1}
+  ballCount: 6
+  ballBaseSize: 0.5
+  widthCurveNear:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
-      outSlope: 1
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -246,7 +247,7 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
+      inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
@@ -255,9 +256,32 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  launchingLayerName: LaunchingBall
-  normalLayerName: Bubble
-  clearDistance: 10
+  widthCurveFar:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxPullDistance: 3
+  sortingOrder: -1
 --- !u!1 &2867641702327692016
 GameObject:
   m_ObjectHideFlags: 0
